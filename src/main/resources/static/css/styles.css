@@ -1,0 +1,42 @@
+body{
+    margin: 0 auto;
+
+
+}
+
+nav{
+    height: 35px;
+    width: 100%;
+    padding: 10px 15px 0px 0px;
+    background-color: aliceblue;
+    margin :0;
+    font-size: 18px;
+    font-weight: revert;
+    position: relative
+}
+
+#file{
+    padding:0px 5px 0px 10px;
+}
+#edit{
+    padding:0px 5px 0px 5px;
+}
+#help{
+    padding:0px 5px 0px 5px;
+    border-right: 1px solid;
+}
+#view{
+    padding:0px 5px 0px 5px;
+
+}
+#nameList{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    color: rgba(84, 54, 7, 0.91);
+    font-size: 22px;
+    font-style: italic;
+}
+
