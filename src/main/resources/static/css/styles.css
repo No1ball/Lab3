@@ -116,13 +116,29 @@ main{
     width: 48%;
 }
 .table{
-    padding-top: 15px;
-    padding-left: 10px;
+    padding-top: 5px;
+    padding-left: 5px;
     display:inline-block;
     vertical-align: top;
     text-align: center;
+    border-collapse: collapse;
+    /*убираем пустые промежутки между ячейками*/
+    border: 1px solid grey;
+    width: 1300px;
 
+}
+td{
+    border-bottom: 1px solid grey;
+    border-right: 1px solid grey;
+    border-collapse: collapse;
+    width: 320px;
+}
+td:first-child{
+    width: 2%;
+}
 
+td:last-child{
+    border-right: none;
 }
 
 
