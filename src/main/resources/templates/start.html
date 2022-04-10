@@ -2,9 +2,74 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
     <title>My app</title>
 </head>
 <body>
     Spring test
+    <header>
+        <nav class = "tools">
+            <div>
+                <p>File</p>
+                <p>Edit</p>
+                <p>View</p>
+                <p>Help</p>
+            </div>
+            <span class = "nameList">Name Table</span>
+        </nav>
+    </header>
+    <main>
+        <section class = "rightPanel">
+            <article class  = "search">
+                <form>
+                    <input type="search" name = "q" placeholder = "Search query">
+                </form>
+            </article>
+            <article class = "list">
+                <p>Clients</p>
+                <p>Contracts</p>
+                <p>Equpments</p>
+                <p>First contacts</p>
+            </article>
+            <article class="buttons">
+                <form>
+                    <button type="submit">Load data</button>
+                    <button type="submit">Save data</button>
+                </form>
+            </article>
+        </section>
+        <section class="table">
+            <table>
+                <tr>
+                    <td>№</td>
+                    <td>Name</td>
+                    <td>Price</td>
+                    <td>Count Sale</td>
+                    <td>Total Summ</td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Name1</td>
+                    <td>Price1</td>
+                    <td>Count Sale1</td>
+                    <td>Total Summ1</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Name2</td>
+                    <td>Price2</td>
+                    <td>Count Sale2</td>
+                    <td>Total Summ2</td>
+                </tr>
+                <tr>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                </tr>
+            </table>
+        </section>
+    </main>
 </body>
 </html>
