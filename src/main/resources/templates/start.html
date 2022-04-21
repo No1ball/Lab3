@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="../../css/styles.css" th:href="@{/css/styles.css}" type="text/css" media="all"  >
+    <link rel="stylesheet" href="../../css/mainpage.css" th:href="@{/css/mainpage.css}" type="text/css" media="all"  >
     <title>My app</title>
 </head>
 <body>
@@ -12,7 +12,7 @@
             <span id="edit">Edit</span>
             <span id="view">View</span>
             <span id="help">Help</span>
-            <span id = "nameList">Name Table</span>
+            <span id = "nameList">Statr Page. Select category.</span>
         </nav>
     </header>
     <main>
@@ -23,10 +23,10 @@
                 </form>
             </article>
             <article class = "list">
-                <button id="cliets">Clients</button>
-                <button id="contracts">Contracts</button>
-                <button id="equpments">Equpments</button>
-                <button id="firstCon">First contacts</button>
+                <a href="../clients" id="cliets">Clients</a>
+                <a href="../contracts" id="contracts">Contracts</a>
+                <a href="../equpments" id="equpments">Equpments</a>
+                <a href="../firstContracts" id="firstCon">First contacts</a>
 
                 <article class="buttons">
                     <form>
@@ -36,38 +36,7 @@
                 </article>
             </article>
         </section>
-        <section class="table">
-            <table>
-                <tr>
-                    <td>№</td>
-                    <td>Name</td>
-                    <td>Price</td>
-                    <td>Count Sale</td>
-                    <td>Total Summ</td>
-                </tr>
-                <tr>
-                    <td>1</td>
-                    <td>Name1</td>
-                    <td>Price1</td>
-                    <td>Count Sale1</td>
-                    <td>Total Summ1</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Name2</td>
-                    <td>Price2</td>
-                    <td>Count Sale2</td>
-                    <td>Total Summ2</td>
-                </tr>
-                <tr>
-                    <td> </td>
-                    <td> </td>
-                    <td> </td>
-                    <td> </td>
-                    <td> </td>
-                </tr>
-            </table>
-        </section>
+
     </main>
 </body>
 </html>
