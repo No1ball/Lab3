@@ -1,0 +1,117 @@
+body{
+    margin: 0 auto;
+
+
+}
+
+header{
+    position: static;
+}
+nav{
+    height: 35px;
+    width: 100%;
+    padding: 10px 0px 0px 0px;
+    background-color: aliceblue;
+    margin :0;
+    font-size: 18px;
+    font-weight: revert;
+    position: relative;
+
+
+}
+
+#file{
+    padding:0px 5px 0px 10px;
+}
+#edit{
+    padding:0px 5px 0px 5px;
+}
+#help{
+    padding:0px 15px 0px 5px;
+    border-right: 1px solid;
+}
+#view{
+    padding:0px 5px 0px 5px;
+
+}
+#nameList{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    color: rgba(84, 54, 7, 0.91);
+    font-size: 22px;
+    font-style: italic;
+}
+main{
+    height: 100%;
+    width: 100%;
+}
+.rightPanel{
+    padding-top: 15px;
+
+    display:inline-block;
+    width: 200px;
+    height:665px;
+    background-color:lightgray;
+}
+.search{
+    width: auto;
+    display:block;
+    text-align: center;
+}
+#inpform{
+    height: 30px;
+}
+.list{
+    display:block;
+
+    text-align: center;
+}
+#cliets{
+
+    font-size: 20px;
+    height:70px;
+    width:100%;
+    padding-top: 10px;
+    margin-top:10px;
+}
+#contracts{
+    font-size: 20px;
+    height:70px;
+    width:100%;
+    margin-top:10px;
+    padding-top: 10px;
+}
+#firstCon{
+    font-size: 20px;
+    height:70px;
+    width:100%;
+    margin-top:10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+#equpments{
+    font-size: 20px;
+    height:70px;
+    width:100%;
+    margin-top:10px;
+    padding-top: 10px;
+}
+.buttons{
+    position:absolute;
+    padding-left: 10px;
+    margin: 0 auto;
+    bottom:10px;
+    width: 180px;
+}
+#load{
+    display:inline;
+    width: 48%;
+
+}
+#save{
+    display:inline;
+    width: 48%;
+}
