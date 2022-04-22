@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="../../css/styles.css" th:href="@{/css/styles.css}" type="text/css" media="all"  >
-    <title>My app</title>
+    <title>My app's Contracts</title>
 </head>
 <body>
 <header>
@@ -37,36 +37,40 @@
         </article>
     </section>
     <section class="table">
+
         <table>
             <tr>
                 <td>№</td>
                 <td>Name</td>
+                <td>Relevance</td>
+                <td>fDate</td>
+                <td>lDate</td>
                 <td>Price</td>
-                <td>Count Sale</td>
-                <td>Total Summ</td>
+                <td>Equipments</td>
             </tr>
+            <div th:each="contract :${contracts}">
             <tr>
-                <td>1</td>
-                <td>Name1</td>
-                <td>Price1</td>
-                <td>Count Sale1</td>
-                <td>Total Summ1</td>
+                <td th:text="${contract.GetId()}">1</td>
+                <td th:text="${contract.GetCompName()}">Name</td>
+                <td th:text="${contract.GetRelevance()}">Relevance</td>
+                <td th:text="${contract.GetFDate()}">fDate</td>
+                <td th:text="${contract.GetLDate()}">lDate</td>
+                <td th:text="${contract.GetPrice()}">Price</td>
+                <td th:text="${contract.GetEquipments()}">Equipments</td>
             </tr>
-            <tr>
-                <td>2</td>
-                <td>Name2</td>
-                <td>Price2</td>
-                <td>Count Sale2</td>
-                <td>Total Summ2</td>
-            </tr>
+
             <tr>
                 <td> </td>
                 <td> </td>
                 <td> </td>
                 <td> </td>
                 <td> </td>
+                <td> </td>
+                <td> </td>
             </tr>
+            </div>
         </table>
+
     </section>
 </main>
 </body>

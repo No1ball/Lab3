@@ -3,15 +3,15 @@ package com.example.springtest.models;
 import java.util.ArrayList;
 
 public class Contracts {
-    private String id;
+    private int id;
     private String CompName;
     private boolean relevance;
-    private int fDate;
-    private int lDate;
+    private String fDate;
+    private String lDate;
     private int price;
-    private ArrayList<Devices> equipments;
+    private ArrayList<String> equipments;
 
-    public boolean SetID(String new_id){ //prototype
+    public boolean SetID(int new_id){ //prototype
         this.id = new_id;
         return true;
     }
@@ -26,12 +26,12 @@ public class Contracts {
         return true;
     }
 
-    public boolean SetFDate(int new_fDate){ //prototype
+    public boolean SetFDate(String new_fDate){ //prototype
         this.fDate = new_fDate;
         return true;
     }
 
-    public boolean SetLDate(int new_lDate){ //prototype
+    public boolean SetLDate(String new_lDate){ //prototype
         this.lDate = new_lDate;
         return true;
     }
@@ -41,7 +41,7 @@ public class Contracts {
         return true;
     }
 
-    public boolean SetEquipments(ArrayList <Devices> new_device){ //prototype
+    public boolean SetEquipments(ArrayList <String> new_device){ //prototype
         this.equipments = new_device;
         return true;
     }
@@ -50,7 +50,7 @@ public class Contracts {
         return this.CompName;
     }
 
-    public String GetId(){
+    public int GetId(){
         return this.id;
     }
 
@@ -58,11 +58,11 @@ public class Contracts {
         return this.relevance;
     }
 
-    public int GetLDate(){
+    public String GetLDate(){
         return this.lDate;
     }
 
-    public int GetFDate(){
+    public String GetFDate(){
         return this.fDate;
     }
 
@@ -70,7 +70,7 @@ public class Contracts {
         return this.price;
     }
 
-    public ArrayList <Devices> GetEquipments(){
+    public ArrayList <String> GetEquipments(){
         return this.equipments;
     }
 }
