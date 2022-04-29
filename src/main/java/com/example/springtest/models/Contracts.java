@@ -8,6 +8,7 @@ public class Contracts {
     private boolean relevance;
     private String fDate;
     private String lDate;
+
     private int price;
     private ArrayList<String> equipments;
 
