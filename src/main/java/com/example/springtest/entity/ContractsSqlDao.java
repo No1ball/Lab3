@@ -1,6 +1,6 @@
 package com.example.springtest.entity;
 
-import com.example.springtest.DAO.DevicesDAO;
+
 
 import javax.persistence.*;
 import java.util.ArrayList;
