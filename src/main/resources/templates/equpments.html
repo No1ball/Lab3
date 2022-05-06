@@ -7,56 +7,94 @@
     <!-- Только CSS -->
     <!--<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">-->
     <!-- Пакет JavaScript с Popper -->
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <script type="text/javascript">
-    function showDevice(){
-        $.get('/equpments', function(data){
 
-            console.log(data);
+    var app = angular.module("CREATE_DEVICE",[]);
+    app.controller("CREATE_DEVICE_CTRL", function($scope, $http){
+        console.log("check");
+        $scope.devices = [];
+        $scope.getDevice = function(){
+            $http({
+                url: '/equpments2',
+                method: 'GET',
+            }).then(function(response){
+                console.log(response);
+                $scope.devices = response.data;
+            });
 
-            let table = "<tr>";
-            for(let i = 0; i < data.length; i++){
-                table = table + "<td>" + data[i].id + "</td><td>" +data[i].name + "</td><td>" + data[i].price + "</td><td>" + data[i].countSale + "</td><td>" + data[i].totalSale + "</td><td>";
-            }
-            table = table + "</tr>";
+        }
 
-            $("newdata").html(table);
-        })
-    }
+        $scope.getDevice();
 
-    $(document).ready(function () {
-        showDevice();
-    });
-
-
-    function send_device(){
-        $.ajax({
-            url: '/add_device',
-            dataType:'json',
-            type: 'POST',
-            cache: false,
-            contentType:'application/json',
-            data: JSON.stringify({
-                id:$("#deviceId").val(),
-                name:$("#deviceName").val(),
-                price:$("#devicePrice").val(),
-                countSale: $("#deviceCount").val(),
-                totalSumm: $("#deviceSumm").val(),
-                contract: null
-            }),
-            success: function (data){
-                if(data.status){
-                    showDevice();
+        $scope.saveDevice = function(){
+            $http({
+                url:'/add_device',
+                method: 'POST',
+                data:{
+                    id: $scope.device.id,
+                    name: $scope.device.name,
+                    price: $scope.device.price,
+                    countSale: $scope.device.count,
+                    totalSumm: $scope.device.summ,
+                    contract: null,
                 }
-            }
+            }).then(function(response){
+                console.log(response);
+                $scope.getDevice();
+            });
+        }
+
+    });
+    //function showDevice(){
+      //  $.get('/equpments', function(data){
+
+        //    console.log(data);
+
+          //  let table = "<tr>";
+           // for(let i = 0; i < data.length; i++){
+             //   table = table + "<td>" + data[i].id + "</td><td>" +data[i].name + "</td><td>" + data[i].price + "</td><td>" + data[i].countSale + "</td><td>" + data[i].totalSale + "</td><td>";
+            //}
+            //table = table + "</tr>";
+
+            //$("newdata").html(table);
+        //})
+    //}
+
+    //$(document).ready(function () {
+      //  showDevice();
+    //});
 
 
-        })
+    //function send_device(){
+        //$.ajax({
+            //url: '/add_device',
+           // dataType:'json',
+          //  type: 'POST',
+           // cache: false,
+          //  contentType:'application/json',
+          //  data: JSON.stringify({
+             //   id:$("#deviceId").val(),
+             //   name:$("#deviceName").val(),
+             //   price:$("#devicePrice").val(),
+               // countSale: $("#deviceCount").val(),
+               // totalSumm: $("#deviceSumm").val(),
+               // contract: null
+          //  }),
+          //  success: function (data){
+           //     if(data.status){
+                //    showDevice();
+              //  }
+           // }
 
-    }
+
+//        })
+
+  //  }
 </script>
-<body>
+<body ng-app="CREATE_DEVICE" ng-controller="CREATE_DEVICE_CTRL">
 <header>
     <nav>
         <span id="file">File</span>
@@ -97,44 +135,39 @@
                 <td>TotalSumm</td>
                 <td>Contract</td>
             </tr>
-            <div th:each="device :${devices}">
-            <tr>
-                <td th:text="${device.getId()}">1</td>
-                <td th:text="${device.getName()}">Name</td>
-                <td th:text="${device.getPrice()}">Relevance</td>
-                <td th:text="${device.getCountSale()}">fDate</td>
-                <td th:text="${device.getTotalSumm()}">lDate</td>
-                <td th:text="${device.getContract()}">lDate</td>
+            <tr ng-repeat="devic in devices track by $index" >
+                <td>{{devic.id}}</td>
+                <td>{{devic.name}}</td>
+                <td>{{devic.price}}</td>
+                <td>{{devic.countSale}}</td>
+                <td>{{devic.totalSumm}}</td>
+                <td>{{devic.contracts}}</td>
             </tr>
-            </div>
-            <div id="newdata">
-
-            </div>
-                <tr>
-                    <form>
-                        <td>
-                        <input type="text" id = "deviceId" placeholder = "Search id" >
-                        </td>
-                        <td>
-                        <input type="text" id = "deviceName" placeholder = "Search Name" >
-                        </td>
-                        <td>
-                        <input type="text" id = "devicePrice" placeholder = "Search Price" >
-                        </td>
-                        <td>
-                        <input type="text" id = "deviceCount" placeholder = "Search Count Sale" >
-                        </td>
-                        <td>
-                        <input type="text" id = "deviceSumm" placeholder = "Search Total Summ" >
-                        </td>
-                        <td>
+            <tr>
+                <form>
+                    <td>
+                        <input ng-model="device.id" type="text" id = "deviceId" placeholder = "Search id" >
+                    </td>
+                    <td>
+                        <input ng-model="device.name" type="text" id = "deviceName" placeholder = "Search Name" >
+                    </td>
+                    <td>
+                        <input ng-model="device.price" type="text" id = "devicePrice" placeholder = "Search Price" >
+                    </td>
+                    <td>
+                        <input ng-model="device.count" type="text" id = "deviceCount" placeholder = "Search Count Sale" >
+                    </td>
+                    <td>
+                        <input ng-model="device.summ" type="text" id = "deviceSumm" placeholder = "Search Total Summ" >
+                    </td>
+                    <td>
                         <input type="text" name = "q" placeholder = "Search query" >
-                        </td>
-                        <td>
-                        <input type="button" onclick="send_device()" value="Добавить">
-                        </td>
-                    </form>
-                </tr>
+                    </td>
+                    <td>
+                        <button type="button" ng-click="saveDevice()">Добавить</button>
+                    </td>
+                </form>
+            </tr>
         </table>
     </section>
 </main>

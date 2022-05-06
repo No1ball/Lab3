@@ -1,9 +1,6 @@
 package com.example.springtest.controllers;
 import com.example.springtest.entity.ClientsSqlDao;
-import com.example.springtest.entity.CompanySqlDAO;
-import com.example.springtest.entity.DevicesSqlDao;
 import com.example.springtest.repos.ClientsRepo;
-import com.example.springtest.repos.CompanyRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
