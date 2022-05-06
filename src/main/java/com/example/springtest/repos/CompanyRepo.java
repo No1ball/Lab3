@@ -2,11 +2,10 @@ package com.example.springtest.repos;
 
 import com.example.springtest.entity.CompanySqlDAO;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.NoRepositoryBean;
 
 
-// This will be AUTO IMPLEMENTED by Spring into a Bean called userRepository
-// CRUD refers Create, Read, Update, Delete
-
+@NoRepositoryBean
 public interface CompanyRepo extends CrudRepository<CompanySqlDAO, Integer> {
 
 }

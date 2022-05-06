@@ -19,7 +19,7 @@ public class DevicesSqlDao {
     @Column(name = "iddevice")
     private int id;
 
-    @Column(name="contractUsed")
+
     @ManyToMany(mappedBy = "equipments")
     private List<ContractsSqlDao> contract;
 

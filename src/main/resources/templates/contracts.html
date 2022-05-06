@@ -4,7 +4,54 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="../../css/styles.css" th:href="@{/css/styles.css}" type="text/css" media="all"  >
     <title>My app's Contracts</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
+<script text="text/javascript">
+    function showDevice(){
+        $.get('/contracts', function(data){
+
+            console.log(data);
+
+            let table = "<tr>";
+            for(let i = 0; i < data.length; i++){
+                table = table + "<td>" + data[i].id + "</td><td>" +data[i].compName + "</td><td>" + data[i].relevance + "</td><td>" + data[i].fDate+ "</td><td>" + data[i].lDate + "</td><td>" + data[i].price + "</td><td>";
+            }
+            table = table + "</tr>";
+
+            $("newdata").html(table);
+        })
+    }
+
+    $(document).ready(function () {
+        showDevice();
+    });
+
+
+    function send_device(){
+        $.ajax({
+            url: '/add_contracts',
+            dataType:'json',
+            type: 'POST',
+            cache: false,
+            contentType:'application/json',
+            data: JSON.stringify({
+                id:$("#contractsId").val(),
+                compName:$("#contractsName").val(),
+                relevance:$("#contractsRelevance").val(),
+                fdate: $("#contractsfdate").val(),
+                ldate: $("#contractsldate").val(),
+                price: $("#contractsPrice").val(),
+            }),
+            success: function (data){
+                if(data.status){
+                    showDevice();
+                }
+            }
+
+        })
+
+    }
+</script>
 <body>
 <header>
     <nav>
@@ -26,7 +73,7 @@
             <a href="../clients" id="cliets">Clients</a>
             <a href="../contracts" id="contracts">Contracts</a>
             <a href="../equpments" id="equpments">Equpiments</a>
-            <a href="../firstContracts" id="firstCon">First contacts</a>
+            <a href="../firstContacts" id="firstCon">First contacts</a>
 
             <article class="buttons">
                 <form>
@@ -50,25 +97,47 @@
             </tr>
             <div th:each="contract :${contracts}">
             <tr>
-                <td th:text="${contract.GetId()}">1</td>
-                <td th:text="${contract.GetCompName()}">Name</td>
-                <td th:text="${contract.GetRelevance()}">Relevance</td>
-                <td th:text="${contract.GetFDate()}">fDate</td>
-                <td th:text="${contract.GetLDate()}">lDate</td>
-                <td th:text="${contract.GetPrice()}">Price</td>
-                <td th:text="${contract.GetEquipments()}">Equipments</td>
-            </tr>
-
-            <tr>
-                <td> </td>
-                <td> </td>
-                <td> </td>
-                <td> </td>
-                <td> </td>
-                <td> </td>
-                <td> </td>
+                <td th:text="${contract.getId()}">1</td>
+                <td th:text="${contract.getCompName()}">Name</td>
+                <td th:text="${contract.getRelevance()}">Relevance</td>
+                <td th:text="${contract.getFDate()}">fDate</td>
+                <td th:text="${contract.getLDate()}">lDate</td>
+                <td th:text="${contract.getPrice()}">Price</td>
+                <td th:text="${contract.getEquipments()}">Equipments</td>
             </tr>
             </div>
+            <div id="newdata">
+
+            </div>
+            <tr>
+                <form>
+                    <td>
+                        <input type="text" id = "contractsId" placeholder = "Search id" >
+                    </td>
+                    <td>
+                        <input type="text" id = "contractsName" placeholder = "Search Name" >
+                    </td>
+                    <td>
+                        <input type="text" id = "contractsRelevance" placeholder = "Search Price" >
+                    </td>
+                    <td>
+                        <input type="text" id = "contractsfdate" placeholder = "Search Count Sale" >
+                    </td>
+                    <td>
+                        <input type="text" id = "contractsldate" placeholder = "Search Total Summ" >
+                    </td>
+                    <td>
+                        <input type="text" id = "contractsPrice" placeholder = "Search Total Summ" >
+                    </td>
+
+                    <td>
+                        <input type="text" name = "q" placeholder = "Search query" >
+                    </td>
+                    <td>
+                        <input type="button" onclick="send_device()" value="Добавить">
+                    </td>
+                </form>
+            </tr>
         </table>
 
     </section>

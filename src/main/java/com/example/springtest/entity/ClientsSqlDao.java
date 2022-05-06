@@ -11,29 +11,32 @@ import java.util.List;
 public class ClientsSqlDao extends CompanySqlDAO {
 
     @Column(name = "totalSumm")
-    private int TotalSumm = 0;
+    private int totalSumm = 0;
+    @Column(name="oldContractId")
     @OneToMany (mappedBy="id", fetch=FetchType.LAZY)
-    private List<ContractsSqlDao> OldContractID;
+    private List<ContractsSqlDao> oldContractID;
 
 
 
     public boolean setTotalSumm(int new_summ){ //prototype
-        this.TotalSumm = new_summ;
+        this.totalSumm = new_summ;
         return true;
     }
 
     public boolean setOldContractID(List<ContractsSqlDao> new_oldcntrid){ //prototype
-        this.OldContractID = new_oldcntrid;
+        this.oldContractID = new_oldcntrid;
         return true;
     }
 
 
 
     public int getTotalSumm(){
-        return this.TotalSumm;
+        return this.totalSumm;
     }
 
     public List <ContractsSqlDao> getOldCntrctID(){
-        return this.OldContractID;
+        return this.oldContractID;
     }
+
+
 }

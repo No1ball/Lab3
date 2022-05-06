@@ -1,10 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="../../css/styles.css" th:href="@{/css/styles.css}" type="text/css" media="all"  >
   <title>My app</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js"></script>
 </head>
+<script type="text/javascript">
+
+
+
+
+  $(document).ready(function () {
+
+  });
+
+
+  function send_device(){
+    $.ajax({
+      url: '/add_clients',
+      dataType:'json',
+      type: 'POST',
+      cache: false,
+      contentType:'application/json',
+      data: JSON.stringify({
+        contractId:$("#clientContract").val(),
+        name:$("#clientName").val(),
+        contact:$("#clientContact").val(),
+        totalSumm: $("#clientTotalSumm").val(),
+        oldContractID: null,
+      }),
+      success: function (data){
+        if(data.status){
+          console.log(data)
+        }
+      }
+
+
+    })
+
+  }
+</script>
 <body>
 <header>
   <nav>
@@ -26,7 +63,7 @@
       <a href="../clients" id="cliets">Clients</a>
       <a href="../contracts" id="contracts">Contracts</a>
       <a href="../equpments" id="equpments">Equipments</a>
-      <a href="../firstContracts" id="firstCon">First contacts</a>
+      <a href="../firstContacts" id="firstCon">First contacts</a>
 
       <article class="buttons">
         <form>
@@ -36,37 +73,50 @@
       </article>
     </article>
   </section>
+
   <section class="table">
     <table>
       <tr>
-        <td>№</td>
         <td>Name</td>
-        <td>Price</td>
-        <td>Count Sale</td>
+        <td>Contact</td>
+        <td>ContractID</td>
+        <td>OldCntrctID</td>
         <td>Total Summ</td>
       </tr>
+      <div th:each="client :${clients}">
+        <tr>
+          <td th:text="${client.getName()}">Name</td>
+          <td th:text="${client.getContact()}">Contact</td>
+          <td th:text="${client.getContractID()}">Relevance</td>
+          <td th:text="${client.getOldCntrctID()}">fDate</td>
+          <td th:text="${client.getTotalSumm()}">lDate</td>
+        </tr>
+      </div>
+
       <tr>
-        <td>1</td>
-        <td>Name1</td>
-        <td>Price1</td>
-        <td>Count Sale1</td>
-        <td>Total Summ1</td>
-      </tr>
-      <tr>
-        <td>2</td>
-        <td>Name2</td>
-        <td>Price2</td>
-        <td>Count Sale2</td>
-        <td>Total Summ2</td>
-      </tr>
-      <tr>
-        <td> </td>
-        <td> </td>
-        <td> </td>
-        <td> </td>
-        <td> </td>
+        <form>
+          <td>
+            <input type="text" id = "clientName" placeholder = "Search Name" >
+          </td>
+          <td>
+            <input  type="text" id = "clientContact" placeholder = "Search Price" >
+          </td>
+          <td>
+            <input  type="text" id = "clientContract" placeholder = "Search Count Sale" >
+          </td>
+          <td>
+            <input  type="text" id = "clientOldContract" placeholder = "Search Total Summ" >
+          </td>
+          <td>
+            <input  type="text" id = "clientTotalSumm" placeholder = "Search query" >
+          </td>
+          <td>
+            <input onclick="send_device()" type="button" value="Сохранить">
+          </td>
+        </form>
       </tr>
     </table>
+
   </section>
 </main>
 </body>

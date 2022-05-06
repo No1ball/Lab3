@@ -14,13 +14,13 @@ public class ContractsSqlDao {
     @Column(name = "Id")
     private int id;
     @Column(name="name")
-    private String CompName;
+    private String compName;
     @Column(name = "relevance")
     private boolean relevance;
-    @Column(name = "fDate")
-    private String fDate;
-    @Column(name = "lDate")
-    private String lDate;
+    @Column(name = "f_date")
+    private String fdate;
+    @Column(name = "l_date")
+    private String ldate;
     @Column(name = "price")
     private int price;
     @ManyToMany(targetEntity = DevicesSqlDao.class)
@@ -36,7 +36,7 @@ public class ContractsSqlDao {
     }
 
     public boolean setCompName(String new_CompName){ //prototype
-        this.CompName = new_CompName;
+        this.compName = new_CompName;
         return true;
     }
 
@@ -46,12 +46,12 @@ public class ContractsSqlDao {
     }
 
     public boolean setFDate(String new_fDate){ //prototype
-        this.fDate = new_fDate;
+        this.fdate = new_fDate;
         return true;
     }
 
     public boolean setLDate(String new_lDate){ //prototype
-        this.lDate = new_lDate;
+        this.ldate = new_lDate;
         return true;
     }
 
@@ -66,7 +66,7 @@ public class ContractsSqlDao {
     }
 
     public String getCompName(){
-        return this.CompName;
+        return this.compName;
     }
 
     public int getId(){
@@ -78,18 +78,18 @@ public class ContractsSqlDao {
     }
 
     public String getLDate(){
-        return this.lDate;
+        return this.ldate;
     }
 
     public String getFDate(){
-        return this.fDate;
+        return this.fdate;
     }
 
     public int getPrice(){
         return this.price;
     }
 
-    public List <DevicesSqlDao> GetEquipments(){
+    public List <DevicesSqlDao> getEquipments(){
         return this.equipments;
     }
 }
