@@ -72,7 +72,7 @@
         <article class = "list">
             <a href="../clients" id="cliets">Clients</a>
             <a href="../contracts" id="contracts">Contracts</a>
-            <a href="../equpments" id="equpments">Equpiments</a>
+            <a href="../equpments" id="equpments">Equipments</a>
             <a href="../firstContacts" id="firstCon">First contacts</a>
 
             <article class="buttons">
@@ -94,6 +94,7 @@
                 <td>lDate</td>
                 <td>Price</td>
                 <td>Equipments</td>
+                <td>Button</td>
             </tr>
             <div th:each="contract :${contracts}">
             <tr>
@@ -103,7 +104,11 @@
                 <td th:text="${contract.getFDate()}">fDate</td>
                 <td th:text="${contract.getLDate()}">lDate</td>
                 <td th:text="${contract.getPrice()}">Price</td>
-                <td th:text="${contract.getEquipments()}">Equipments</td>
+                <td th:text="${contract.getEquipments()}">Equipments
+                <td>
+                    <button type="button">Удаление</button>
+                    <button type="button">Редактирование</button>
+                </td>
             </tr>
             </div>
             <div id="newdata">

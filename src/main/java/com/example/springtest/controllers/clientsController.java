@@ -15,14 +15,6 @@ public class clientsController {
     @Autowired
     private ClientsRepo clientsRepo;
 
-    @GetMapping("/clients")
-    public List <ClientsSqlDao> showClients(Model model){
-        Iterable <ClientsSqlDao> clients = clientsRepo.findAll();
-        model.addAttribute("clients", clients);
-        List <ClientsSqlDao> clientsList= new ArrayList<>();
-        clientsRepo.findAll().forEach(clientsList::add);
-        return clientsList;
-    }
 
 
     @PostMapping ("/add_clients")

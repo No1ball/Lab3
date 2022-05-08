@@ -14,12 +14,7 @@ public class contractsController {
     @Autowired
     private ContractsRepo contractsRepo;
 
-    @GetMapping("/contracts")
-    public String showContracts(Model model) {
-        Iterable <ContractsSqlDao> contracts = contractsRepo.findAll();
-        model.addAttribute("contracts", contracts);
-        return "contracts";
-    }
+
 
     @PostMapping("/add_contracts")
     public String addContracts(@RequestBody ContractsSqlDao contracts){

@@ -1,7 +1,11 @@
 package com.example.springtest.controllers;
 
 
+import com.example.springtest.entity.ClientsSqlDao;
+import com.example.springtest.entity.ContractsSqlDao;
 import com.example.springtest.entity.DevicesSqlDao;
+import com.example.springtest.repos.ClientsRepo;
+import com.example.springtest.repos.ContractsRepo;
 import com.example.springtest.repos.DevicesRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,12 +20,14 @@ public class MyAppController {
     @Autowired
     private DevicesRepo devicesRepo;
 
-    @GetMapping("/equpments")
-    public String showEquipments(Model model) {
-        Iterable <DevicesSqlDao> devices = devicesRepo.findAll();
-        model.addAttribute("devices", devices);
-        return "equpments";
-    }
+    @Autowired
+    private ClientsRepo clientsRepo;
+
+    @Autowired
+    private ContractsRepo contractsRepo;
+
+    @Autowired
+    private ClientsRepo companyRepo;
 
     @RequestMapping("/")
     public String index() {
@@ -33,5 +39,33 @@ public class MyAppController {
         return "start";
     }
 
+    @GetMapping("/equpments")
+    public String showEquipments(Model model) {
+        Iterable <DevicesSqlDao> devices = devicesRepo.findAll();
+        model.addAttribute("devices", devices);
+        return "equpments";
+    }
 
+    @GetMapping("/contracts")
+    public String showContracts(Model model) {
+        Iterable <ContractsSqlDao> contracts = contractsRepo.findAll();
+        model.addAttribute("contracts", contracts);
+        return "contracts";
+    }
+
+    @GetMapping("/firstContacts")
+    public String showFirstContracts(Model model){
+        Iterable <ClientsSqlDao> clients = companyRepo.findAll();
+        model.addAttribute("clients", clients);
+        return "firstContacts";
+    }
+
+    @GetMapping("/clients")
+    public List <ClientsSqlDao> showClients(Model model){
+        Iterable <ClientsSqlDao> clients = clientsRepo.findAll();
+        model.addAttribute("clients", clients);
+        List <ClientsSqlDao> clientsList= new ArrayList<>();
+        clientsRepo.findAll().forEach(clientsList::add);
+        return clientsList;
+    }
 }

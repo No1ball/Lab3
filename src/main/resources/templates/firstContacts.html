@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="../../css/styles.css" th:href="@{/css/styles.css}" type="text/css" media="all"  >
     <title>My app</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js"></script>
 </head>
@@ -49,6 +50,7 @@
         <span id="view">View</span>
         <span id="help">Help</span>
         <span id = "nameList">Clients</span>
+        <span id="#test">{{message}}</span>
     </nav>
 </header>
 <main>
@@ -79,12 +81,17 @@
                 <td>Name</td>
                 <td>Contact</td>
                 <td>ContractID</td>
+                <td>Button</td>
             </tr>
             <div th:each="client :${clients}">
                 <tr>
                     <td th:text="${client.getName()}">Name</td>
                     <td th:text="${client.getContact()}">Contact</td>
                     <td th:text="${client.getContractID()}">Relevance</td>
+                    <td>
+                        <button type="button">Удаление</button>
+                        <button type="button">Редактирование</button>
+                    </td>
                 </tr>
             </div>
             <div id="newdata">

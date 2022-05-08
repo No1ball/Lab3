@@ -82,6 +82,7 @@
         <td>ContractID</td>
         <td>OldCntrctID</td>
         <td>Total Summ</td>
+        <td>Button</td>
       </tr>
       <div th:each="client :${clients}">
         <tr>
@@ -89,7 +90,11 @@
           <td th:text="${client.getContact()}">Contact</td>
           <td th:text="${client.getContractID()}">Relevance</td>
           <td th:text="${client.getOldCntrctID()}">fDate</td>
-          <td th:text="${client.getTotalSumm()}">lDate</td>
+          <td th:text="${client.getTotalSumm()}">lDate
+          <td>
+            <button type="button">Удаление</button>
+            <button type="button">Редактирование</button>
+          </td>
         </tr>
       </div>
 

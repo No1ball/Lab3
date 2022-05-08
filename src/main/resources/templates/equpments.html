@@ -5,8 +5,8 @@
     <link rel="stylesheet" href="../../css/styles.css" th:href="@{/css/styles.css}" type="text/css" media="all"  >
     <title>My app</title>
     <!-- Только CSS -->
-    <!--<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">-->
-    <!-- Пакет JavaScript с Popper -->
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">-->
+     <!-- Пакет JavaScript с Popper -->
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
@@ -16,19 +16,26 @@
     app.controller("CREATE_DEVICE_CTRL", function($scope, $http){
         console.log("check");
         $scope.devices = [];
+        $scope.eddevid = 13;
+
         $scope.getDevice = function(){
             $http({
-                url: '/equpments2',
+                url: '/newequpments',
                 method: 'GET',
-            }).then(function(response){
-                console.log(response);
-                $scope.devices = response.data;
+            }).then(resp=>{
+                $scope.devices = resp.data;
             });
 
         }
 
         $scope.getDevice();
+        $scope.delete = function(devic){
+            $http.delete("/equpments/del/" + devic.id).then(devices=>{
+                let ix = $scope.devices.map(devic=>devic.id).indexOf(devic.id);
+                $scope.devices.splice(ix,1);
 
+            });
+        }
         $scope.saveDevice = function(){
             $http({
                 url:'/add_device',
@@ -46,53 +53,29 @@
                 $scope.getDevice();
             });
         }
-
+        $scope.s = function(devic){
+            $scope.eddevid = devic.id;
+        }
+        $scope.edit = function(){
+            $http
+            ({
+                url:"/equpments/ed/" + $scope.eddevid,
+                method:'PUT',
+                data:{
+                    id: $scope.eddevid,
+                    name: $scope.eddevice.name,
+                    price: $scope.eddevice.price,
+                    countSale: $scope.eddevice.count,
+                    totalSumm: $scope.eddevice.summ,
+                    contract: null,
+                }
+            }).then(function (response) {
+                console.log(response.data);
+                $scope.getDevice();
+            });
+        }
     });
-    //function showDevice(){
-      //  $.get('/equpments', function(data){
 
-        //    console.log(data);
-
-          //  let table = "<tr>";
-           // for(let i = 0; i < data.length; i++){
-             //   table = table + "<td>" + data[i].id + "</td><td>" +data[i].name + "</td><td>" + data[i].price + "</td><td>" + data[i].countSale + "</td><td>" + data[i].totalSale + "</td><td>";
-            //}
-            //table = table + "</tr>";
-
-            //$("newdata").html(table);
-        //})
-    //}
-
-    //$(document).ready(function () {
-      //  showDevice();
-    //});
-
-
-    //function send_device(){
-        //$.ajax({
-            //url: '/add_device',
-           // dataType:'json',
-          //  type: 'POST',
-           // cache: false,
-          //  contentType:'application/json',
-          //  data: JSON.stringify({
-             //   id:$("#deviceId").val(),
-             //   name:$("#deviceName").val(),
-             //   price:$("#devicePrice").val(),
-               // countSale: $("#deviceCount").val(),
-               // totalSumm: $("#deviceSumm").val(),
-               // contract: null
-          //  }),
-          //  success: function (data){
-           //     if(data.status){
-                //    showDevice();
-              //  }
-           // }
-
-
-//        })
-
-  //  }
 </script>
 <body ng-app="CREATE_DEVICE" ng-controller="CREATE_DEVICE_CTRL">
 <header>
@@ -128,47 +111,100 @@
     <section class="table">
         <table>
             <tr>
-                <td>№</td>
-                <td>Name</td>
-                <td>Price</td>
-                <td>CountSale</td>
-                <td>TotalSumm</td>
-                <td>Contract</td>
+                <td >№</td>
+                <td >Name</td>
+                <td >Price</td>
+                <td >CountSale</td>
+                <td >TotalSumm</td>
+                <td >Contract</td>
+                <td >Buttons</td>
             </tr>
             <tr ng-repeat="devic in devices track by $index" >
-                <td>{{devic.id}}</td>
-                <td>{{devic.name}}</td>
-                <td>{{devic.price}}</td>
-                <td>{{devic.countSale}}</td>
-                <td>{{devic.totalSumm}}</td>
-                <td>{{devic.contracts}}</td>
+                <td >{{devic.id}}</td>
+                <td >{{devic.name}}</td>
+                <td >{{devic.price}}</td>
+                <td >{{devic.countSale}}</td>
+                <td >{{devic.totalSumm}}</td>
+                <td >{{devic.contracts}}</td>
+                <td>
+                    <button ng-click="delete(devic)" type="button">
+                        Удалить
+                    </button>
+                    <button ng-click="s(devic)" type="button">
+                        <a href="#zat">Редактировать</a>
+                    </button>
+                </td>
             </tr>
             <tr>
+
                 <form>
-                    <td>
+
+                    <td class="mai">
                         <input ng-model="device.id" type="text" id = "deviceId" placeholder = "Search id" >
                     </td>
-                    <td>
+                    <td class="mai">
                         <input ng-model="device.name" type="text" id = "deviceName" placeholder = "Search Name" >
                     </td>
-                    <td>
+                    <td class="mai">
                         <input ng-model="device.price" type="text" id = "devicePrice" placeholder = "Search Price" >
-                    </td>
-                    <td>
+                    </td >
+                    <td class="mai">
                         <input ng-model="device.count" type="text" id = "deviceCount" placeholder = "Search Count Sale" >
                     </td>
-                    <td>
+                    <td class="mai">
                         <input ng-model="device.summ" type="text" id = "deviceSumm" placeholder = "Search Total Summ" >
                     </td>
-                    <td>
+                    <td class="mai">
                         <input type="text" name = "q" placeholder = "Search query" >
                     </td>
-                    <td>
+                    <td class="mai">
                         <button type="button" ng-click="saveDevice()">Добавить</button>
                     </td>
                 </form>
             </tr>
         </table>
+        <div id="zat">
+        <div id="form">
+
+            <table class="table">
+                <tr>
+                    <td >№</td>
+                    <td >Name</td>
+                    <td >Price</td>
+                    <td >CountSale</td>
+                    <td >TotalSumm</td>
+                    <td >Contract</td>
+                </tr>
+                <tr><form>
+
+                    <td>
+                        <input ng-model="eddevice.id" type="text" placeholder = "Search id" >{{$scope.eddevid}}
+                    </td>
+                    <td>
+                        <input ng-model="eddevice.name" type="text" id = "eddeviceName" placeholder = "Search Name" >
+                    </td>
+                    <td>
+                        <input ng-model="eddevice.price" type="text" id = "eddevicePrice" placeholder = "Search Price" >
+                    </td>
+                    <td>
+                        <input ng-model="eddevice.count" type="text" id = "eddeviceCount" placeholder = "Search Count Sale" >
+                    </td>
+                    <td>
+                        <input ng-model="eddevice.summ" type="text" id = "eddeviceSumm" placeholder = "Search Total Summ" >
+                    </td>
+                    <td>
+                        <input type="text" name = "q" placeholder = "Search query" >
+                    </td>
+
+                </form>
+                </tr>
+            </table>
+            <a href="#" class="close">Закрыть окно</a>
+            <button ng-click="edit()" type="button">
+                Редактировать
+            </button>
+        </div>
+        </div>
     </section>
 </main>
 </body>

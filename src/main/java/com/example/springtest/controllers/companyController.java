@@ -16,13 +16,10 @@ public class companyController {
     @Autowired
     private ClientsRepo companyRepo;
 
-    @GetMapping("/firstContacts")
-    public String showFirstContracts(Model model){
-        Iterable <ClientsSqlDao> clients = companyRepo.findAll();
-        model.addAttribute("clients", clients);
-        return "firstContacts";
+    @GetMapping("/company2")
+    public ResponseEntity shownCompany(){
+        return ResponseEntity.ok(companyRepo.findAll());
     }
-
     @PostMapping("/add_company")
     public String addCompany(@RequestBody ClientsSqlDao company){
         companyRepo.save(company);
