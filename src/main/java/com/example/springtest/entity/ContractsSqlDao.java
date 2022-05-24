@@ -28,6 +28,8 @@ public class ContractsSqlDao {
             joinColumns=@JoinColumn (name="contractid"),
             inverseJoinColumns=@JoinColumn(name="count"))
     private List<DevicesSqlDao> equipments;
+    @ManyToOne
+    private ClientsSqlDao client;
 
 
     public boolean setID(int new_id){ //prototype
@@ -64,6 +66,10 @@ public class ContractsSqlDao {
         this.equipments = new_device;
         return true;
     }
+    public boolean setClient(ClientsSqlDao newclient ){
+        this.client = newclient;
+        return true;
+    }
 
     public String getCompName(){
         return this.compName;
@@ -91,6 +97,10 @@ public class ContractsSqlDao {
 
     public List <DevicesSqlDao> getEquipments(){
         return this.equipments;
+    }
+
+    public ClientsSqlDao getClient(){
+        return this.client;
     }
 }
 
