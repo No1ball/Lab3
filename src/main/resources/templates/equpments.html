@@ -61,7 +61,7 @@
                     name: $scope.device.name,
                     price: $scope.device.price,
                     countSale: $scope.device.count,
-                    totalSumm: $scope.device.summ,
+
                     contract: null,
                 }
             }).then(function(response){
@@ -82,7 +82,6 @@
                     name: $scope.eddevice.name,
                     price: $scope.eddevice.price,
                     countSale: $scope.eddevice.count,
-                    totalSumm: $scope.eddevice.summ,
                     contract: null,
                 }
             }).then(function (response) {
@@ -125,9 +124,8 @@
         </article>
     </section>
     <section class="table1">
-
-            <div class="table-responsive-md">
-        <table class="table">
+            <div class="table-responsive-lx">
+            <table class="table">
             <thead class="thead-dark">
 
             <tr>
@@ -170,8 +168,7 @@
                     <td class="mai">
                         <input ng-model="device.count" type="text" id = "deviceCount" placeholder = "Search Count Sale" >
                     </td>
-                    <td class="mai">
-                        <input ng-model="device.summ" type="text" id = "deviceSumm" placeholder = "Search Total Summ" >
+                    <td>
                     </td>
                     <td class="mai">
                         <input type="text" name = "q" placeholder = "Search query" >
@@ -209,7 +206,7 @@
                         <input ng-model="eddevice.count" type="text" id = "eddeviceCount" placeholder = "Search Count Sale" >
                     </td>
                     <td>
-                        <input ng-model="eddevice.summ" type="text" id = "eddeviceSumm" placeholder = "Search Total Summ" >
+
                     </td>
                     <td>
                         <input type="text" name = "q" placeholder = "Search query" >

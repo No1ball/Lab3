@@ -15,8 +15,6 @@ public class clientsController {
     @Autowired
     private ClientsRepo clientsRepo;
 
-
-
     @PostMapping ("/add_clients")
     public String saveClient(@RequestBody ClientsSqlDao client){
          clientsRepo.save(client);
