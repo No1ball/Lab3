@@ -6,9 +6,10 @@
     <title>My app</title>
     <!-- Только CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-     <!-- Пакет JavaScript с Popper -->
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous">
+    </script> <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js"></script>
+
+
 </head>
 <script type="text/javascript">
 
@@ -53,21 +54,32 @@
             });
         }
         $scope.saveDevice = function(){
-            $http({
-                url:'/add_device',
-                method: 'POST',
-                data:{
-                    id: $scope.device.id,
-                    name: $scope.device.name,
-                    price: $scope.device.price,
-                    countSale: $scope.device.count,
-
-                    contract: null,
+            if($scope.device.name != null && $scope.device.name !="") {
+                if($scope.device.price!=null && $scope.device.price!=0){
+                    if($scope.device.count!= null && $scope.device.count!=0){
+                        $http({
+                            url: '/add_device',
+                            method: 'POST',
+                            data: {
+                                id: $scope.device.id,
+                                name: $scope.device.name,
+                                price: $scope.device.price,
+                                countSale: $scope.device.count,
+                                contract: null,
+                            }
+                        }).then(function (response) {
+                            console.log(response);
+                            $scope.getDevice();
+                        });
+                    }else{
+                        alert("Вы оставили важные поля пустыми!3");
+                    }
+                }else{
+                    alert("Вы оставили важные поля пустыми!2");
                 }
-            }).then(function(response){
-                console.log(response);
-                $scope.getDevice();
-            });
+            }else{
+                alert("Вы оставили важные поля пустыми!1");
+            }
         }
         $scope.s = function(devic){
             $scope.eddevid = devic.id;
@@ -94,22 +106,39 @@
 </script>
 <body ng-app="CREATE_DEVICE" ng-controller="CREATE_DEVICE_CTRL">
 <header>
-    <nav>
-        <span id="file">File</span>
-        <span id="edit">Edit</span>
-        <span id="view">View</span>
-        <span id="help">Help</span>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Navbar</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Function
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                            <li><button type="button" class="dropdown-item" ng-click="topCount()">Top count</button></li>
+                            <li><button type="button" class="dropdown-item" ng-click="topSumm()">Top summ</button></li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
+
+                    </li>
+                </ul>
+            </div>
+        </div>
         <span id = "nameList">Equipments</span>
+        <form class="d-flex" id="search">
+            <input ng-model="search" type="search" name = "q" placeholder = "Search query" class="form-control me-2" aria-label="readonly input example">
+            <button class="btn btn-primary me-4" type="submit" ng-click="searchDevice()"> Go! </button>
+        </form>
     </nav>
+
 </header>
 <main>
     <section class = "rightPanel" row="col-xl" >
-        <article class  = "search">
-            <form>
-                <input ng-model="search" type="search" name = "q" placeholder = "Search query" id="inpform">
-                <button type="button" ng-click="searchDevice()"> Go! </button>
-            </form>
-        </article>
+
         <article class = "list">
             <a href="../clients" id="cliets">Clients</a>
             <a href="../contracts" id="contracts">Contracts</a>
@@ -124,22 +153,24 @@
         </article>
     </section>
     <section class="table1">
-            <div class="table-responsive-lx">
+            <div class="d-flex justify-content-end">
             <table class="table">
             <thead class="thead-dark">
 
             <tr>
-                <th  >Name</th>
-                <th >Price</th>
-                <th  >CountSale</th>
-                <th  >TotalSumm</th>
+                <th>№</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>CountSale</th>
+                <th>TotalSumm</th>
                 <th>Contract</th>
-                <th  >Buttons</th>
+                <th>Buttons</th>
             </tr>
 
             </thead>
 
             <tr ng-repeat="devic in devices track by $index" >
+                <td>{{$index+1}}</td>
                 <td >{{devic.name}}</td>
                 <td >{{devic.price}}</td>
                 <td >{{devic.countSale}}</td>
@@ -156,9 +187,9 @@
             </tr>
 
             <tr>
-                <div class="row-lg">
+                <div class="row">
                 <form>
-
+                    <td></td>
                     <td class="mai">
                         <input ng-model="device.name" type="text" id = "deviceName" placeholder = "Search Name" >
                     </td>
@@ -215,7 +246,8 @@
                 </form>
                 </tr>
             </table>
-            <a href="#" class="close">Закрыть окно</a>
+            <a href="#" class="close"><button type="button" class="btn-close" aria-label="Close"></button></a>
+
             <button ng-click="edit()" type="button">
                 Редактировать
             </button>

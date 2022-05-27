@@ -6,7 +6,7 @@ header{
     position: static;
 }
 nav{
-    height: 35px;
+    height: 55px;
     width: 100%;
     padding: 10px 0px 0px 0px;
     background-color: aliceblue;
@@ -19,6 +19,7 @@ nav{
 }
 
 #file{
+    width: 50px;
     padding:0px 5px 0px 10px;
 }
 #edit{
@@ -38,7 +39,7 @@ nav{
     left: 50%;
     margin-right: -50%;
     transform: translate(-50%, -50%);
-    color: rgba(84, 54, 7, 0.91);
+    color: white;
     font-size: 22px;
     font-style: italic;
 }
@@ -51,13 +52,11 @@ main{
 
     display:inline-block;
     width: 210px;
-    height:690px;
-    background-color:lightgray;
+    height:670px;
+    background-color:rgba(43,40,43,0.17);
 }
-.search{
-    width: auto;
-    display:block;
-    text-align: center;
+#search{
+    padding-left: 45px;
 }
 #inpform{
     height: 30px;
@@ -108,11 +107,13 @@ main{
     width: 180px;
 }
 
+
 #save{
     display:inline;
     width: auto;
     text-align: center;
 }
+
 .table1{
     padding-top: 5px;
     display:inline-block;
@@ -121,7 +122,7 @@ main{
     border-collapse: collapse;
     /*убираем пустые промежутки между ячейками*/
 
-    width: 1100px;
+    width: 85%;
 
 }
 td{

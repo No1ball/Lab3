@@ -11,5 +11,4 @@ import java.util.List;
 public interface DevicesRepo extends CrudRepository<DevicesSqlDao, Integer> {
     List <DevicesSqlDao> findByNameIgnoreCaseOrderByName(String name);
     List <DevicesSqlDao> findAll();
-
 }

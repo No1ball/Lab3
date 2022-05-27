@@ -18,9 +18,6 @@ import java.util.List;
 @Controller
 public class MyAppController {
     @Autowired
-    private DevicesRepo devicesRepo;
-
-    @Autowired
     private ClientsRepo clientsRepo;
 
     @Autowired
@@ -39,12 +36,7 @@ public class MyAppController {
         return "start";
     }
 
-    @GetMapping("/equpments")
-    public String showEquipments(Model model) {
-        Iterable <DevicesSqlDao> devices = devicesRepo.findAll();
-        model.addAttribute("devices", devices);
-        return "equpments";
-    }
+
 
     @GetMapping("/contracts")
     public String showContracts(Model model) {

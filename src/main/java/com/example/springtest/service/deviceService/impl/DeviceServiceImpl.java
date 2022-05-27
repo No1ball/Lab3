@@ -11,10 +11,8 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
 import java.io.FileOutputStream;
 import java.util.List;
 
@@ -31,15 +29,19 @@ public class DeviceServiceImpl implements DeviceService<DevicesSqlDao>{
             Font font=new Font(bf,14,Font.NORMAL);
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("C:\\Users\\asus\\Desktop\\Отчеты\\lab7\\AddTableExample.pdf"));
             document.open();
-            PdfPTable table = new PdfPTable(4); // 3 columns.
+            PdfPTable table = new PdfPTable(5); // 5 columns.
             table.setWidthPercentage(100); //Width 100%
             table.setSpacingBefore(10f); //Space before table
             table.setSpacingAfter(10f); //Space after table
 
-            float[] columnWidths = {1f, 1f, 1f, 1f};
+            float[] columnWidths = {1f, 1f, 1f, 1f, 1f};
             table.setWidths(columnWidths);
-
+            PdfPCell cell0 = new PdfPCell(new Paragraph("№ "));
             PdfPCell cell1 = new PdfPCell(new Paragraph("Name"));
+
+            cell0.setPaddingLeft(10);
+            cell0.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell0.setVerticalAlignment(Element.ALIGN_MIDDLE);
 
             cell1.setPaddingLeft(10);
             cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -62,7 +64,7 @@ public class DeviceServiceImpl implements DeviceService<DevicesSqlDao>{
             cell4.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell4.setVerticalAlignment(Element.ALIGN_MIDDLE);
 
-
+            table.addCell(cell0);
             table.addCell(cell1);
             table.addCell(cell2);
             table.addCell(cell3);
@@ -72,11 +74,14 @@ public class DeviceServiceImpl implements DeviceService<DevicesSqlDao>{
             Iterable<DevicesSqlDao> dataset = devicesRepo.findAll();
 
             //Set Column widths
+            int i = 1;
             for (DevicesSqlDao record : dataset) {
+                table.addCell(String.valueOf(i));
                 table.addCell(new Paragraph(record.getName(),font));
                 table.addCell(String.valueOf(record.getPrice()));
                 table.addCell(String.valueOf(record.getCountSale()));
                 table.addCell(String.valueOf(record.getTotalSumm()));
+                i++;
             }
             document.add(table);
 
