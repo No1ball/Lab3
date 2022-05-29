@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class DeviceServiceImpl implements DeviceService<DevicesSqlDao>{
+public class DeviceServiceImpl implements DeviceService{
     @Autowired
     private DevicesRepo devicesRepo;
     public static final String FONT = "./src/main/resources/arialmt.ttf";
@@ -39,7 +39,6 @@ public class DeviceServiceImpl implements DeviceService<DevicesSqlDao>{
     @Override
     public DevicesSqlDao putDec(int id, DevicesSqlDao devices){
         DevicesSqlDao device = devicesRepo.findById(id).orElseThrow();
-        device.setId(devices.getId());
         device.setName(devices.getName());
         device.setPrice(devices.getPrice());
         device.setCountSale(devices.getCountSale());
