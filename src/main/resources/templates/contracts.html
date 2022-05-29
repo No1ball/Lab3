@@ -1,154 +1,310 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://thymeleaf.org">
+<html lang="en"  xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="../../css/styles.css" th:href="@{/css/styles.css}" type="text/css" media="all"  >
-    <title>My app's Contracts</title>
+    <title>My app</title>
+    <!-- Только CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <!-- Пакет JavaScript с Popper -->
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous">
+    </script> <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js"></script>
+
 
 </head>
-<script text="text/javascript">
-    function showDevice(){
-        $.get('/contracts', function(data){
+<script type="text/javascript">
 
-            console.log(data);
+    var app = angular.module("CREATE_DEVICE",[]);
+    app.controller("CREATE_DEVICE_CTRL", function($scope, $http){
+        console.log("check");
+        $scope.contracts = [];
+        $scope.edconid = 13;
+        $scope.edconcompName = "name";
+        $scope.edconprice = 13;
+        $scope.edconfdate = 13;
+        $scope.edconldate = 0;
+        $scope.edconrelev = "";
+        $scope.search = "";
 
-            let table = "<tr>";
-            for(let i = 0; i < data.length; i++){
-                table = table + "<td>" + data[i].id + "</td><td>" +data[i].compName + "</td><td>" + data[i].relevance + "</td><td>" + data[i].fDate+ "</td><td>" + data[i].lDate + "</td><td>" + data[i].price + "</td><td>";
+        $scope.s = function(edcontract){
+            $scope.edconid = edcontract.id;
+            $scope.edconcompName = edcontract.compName;
+            $scope.edconprice = edcontract.price;
+            $scope.edconfdate = edcontract.fdate;
+            $scope.edconldate = edcontract.ldate;
+            $scope.edconrelev = edcontract.relevance;
+        }
+        $scope.edit = function(){
+            $http
+            ({
+                url:"/contracts/ed/" + $scope.edconid,
+                method:'PUT',
+                data:{
+                    id: $scope.edconid,
+                    compName: $scope.edcontrac.compName,
+                    relevance: $scope.edcontrac.relev,
+                    fdate: $scope.edcontrac.fdate,
+                    ldate: $scope.edcontrac.ldate,
+                    price: $scope.edcontrac.price,
+                    equipments: null,
+                }
+            }).then(function (response) {
+                console.log(response.data);
+                $scope.getDevice();
+                $scope.edcontrac.compName = null;
+                $scope.edcontrac.price = null;
+                $scope.edcontrac.ldate = null;
+                $scope.edcontrac.fdate = null;
+            });
+        }
+        $scope.getDevice = function(){
+            $http({
+                url: '/newcontracts',
+                method: 'GET',
+            }).then(resp=>{
+                $scope.contracts = resp.data;
+                console.log(resp.data);
+            });
+        }
+        $scope.searchDevice = function(){
+            $http({
+                url: '/contracts1?name='+$scope.search,
+                method: 'GET',
+            }).then(resp=>{
+                let dd = resp.data;
+                if(dd.length == 0){
+                    alert("Ничего не нашлось");
+                }
+                else {$scope.contracts = resp.data;}
+                console.log(resp.data);
+                $scope.pdfState = 3;
+            });
+        }
+        $scope.getPdf = function(){
+            $http({
+                url: '/equpments/topdf?value='+$scope.pdfState+'&name='+$scope.search,
+                method: 'GET',
+            }).then(resp=>{
+
+            });
+        }
+
+        $scope.getDevice();
+
+        $scope.delete = function(contract){
+            $http.delete("/contracts/del/" + contract.id).then(contracts=>{
+                let ix = $scope.contracts.map(contract=>contract.id).indexOf(contract.id);
+                $scope.contracts.splice(ix,1);
+
+            });
+        }
+        $scope.Relev = function(){
+            $http.get("/contracts/relev").then(resp=>{
+                $scope.contracts = resp.data;
+            });
+        }
+        $scope.NotRelev = function(){
+            $http.get("/contracts/notRelev").then(resp=>{
+                $scope.contracts = resp.data;
+            });
+        }
+        $scope.saveDevice = function(){
+            if($scope.contrac.compName != null && $scope.contrac.compName !="") {
+                if($scope.contrac.relev!=null && $scope.contrac.relev!=""){
+                    if($scope.contrac.price!= null && isFinite($scope.contrac.price) !=false){
+                        $http({
+                            url: '/add_contracts',
+                            method: 'POST',
+                            data: {
+                                id: $scope.contrac.id,
+                                compName: $scope.contrac.compName,
+                                relevance: $scope.contrac.relev,
+                                fdate: $scope.contrac.fdate,
+                                ldate: $scope.contrac.ldate,
+                                price: $scope.contrac.price,
+                                equipments: null,
+                            }
+                        }).then(function (response) {
+                            console.log(response);
+                            $scope.getDevice();
+                            $scope.contrac.compName = null;
+                            $scope.contrac.relev = null;
+                            $scope.contrac.fdate = null;
+                            $scope.contrac.ldate = null;
+                            $scope.contrac.price = null;
+                        });
+                    }else{
+                        alert("Вы оставили важные поля пустыми!3");
+                    }
+                }else{
+                    alert("Вы оставили важные поля пустыми!2");
+                }
+            }else{
+                alert("Вы оставили важные поля пустыми!1");
             }
-            table = table + "</tr>";
+        }
 
-            $("newdata").html(table);
-        })
-    }
 
-    $(document).ready(function () {
-        showDevice();
     });
 
-
-    function send_device(){
-        $.ajax({
-            url: '/add_contracts',
-            dataType:'json',
-            type: 'POST',
-            cache: false,
-            contentType:'application/json',
-            data: JSON.stringify({
-                id:$("#contractsId").val(),
-                compName:$("#contractsName").val(),
-                relevance:$("#contractsRelevance").val(),
-                fdate: $("#contractsfdate").val(),
-                ldate: $("#contractsldate").val(),
-                price: $("#contractsPrice").val(),
-            }),
-            success: function (data){
-                if(data.status){
-                    showDevice();
-                }
-            }
-
-        })
-
-    }
 </script>
-<body>
-<header>
-    <nav>
-        <span id="file">File</span>
-        <span id="edit">Edit</span>
-        <span id="view">View</span>
-        <span id="help">Help</span>
+<body ng-app="CREATE_DEVICE" ng-controller="CREATE_DEVICE_CTRL">
+<header class="sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Navbar</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Function
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                            <li><button type="button" class="dropdown-item" ng-click="Relev()">Relevante</button></li>
+                            <li><button type="button" class="dropdown-item" ng-click="NotRelev()">Not relevante</button></li>
+                            <li><button type="button" class="dropdown-item" ng-click="ContractsCount()">Countract</button></li>
+                            <li><button type="button" class="dropdown-item" ng-click="Contracts()">Finance</button></li>
+                        </ul>
+
+                    </li>
+                </ul>
+            </div>
+        </div>
         <span id = "nameList">Contracts</span>
+        <form class="d-flex" id="search">
+            <input ng-model="search" type="search" name = "q" placeholder = "Search query" class="form-control me-2" aria-label="readonly input example">
+            <button class="btn btn-primary me-4" type="submit" ng-click="searchDevice()"> Go! </button>
+        </form>
     </nav>
+
 </header>
 <main>
-    <section class = "rightPanel">
-        <article class  = "search">
-            <form>
-                <input type="search" name = "q" placeholder = "Search query" id="inpform">
-            </form>
-        </article>
-        <article class = "list">
-            <a href="../clients" id="cliets">Clients</a>
-            <a href="../contracts" id="contracts">Contracts</a>
-            <a href="../equpments" id="equpments">Equipments</a>
-            <a href="../firstContacts" id="firstCon">First contacts</a>
+    <section class = "rightPanel" row="col-xl" >
+
+        <article class = "list ">
+            <a href="../clients" id="cliets" class="btn btn-outline-secondary text-white" role="button">Clients</a>
+            <a href="../contracts" id="contracts" class="btn btn-outline-secondary text-white" role="button">Contracts</a>
+            <a href="../equpments" id="equpments" class="btn btn-outline-secondary text-white" role="button">Equipments</a>
+            <a href="../firstContacts" id="firstCon" class="btn btn-outline-secondary text-white" role="button">First contacts</a>
 
             <article class="buttons">
                 <form>
-                    <button type="submit" id="load">Load data</button>
-                    <button type="submit" id="save">Save data</button>
+                    <button class="btn btn-outline-light" type="submit" id="save" ng-click="getPdf()">Save data</button>
                 </form>
             </article>
         </article>
+
     </section>
     <section class="table1">
+        <div class="d-flex justify-content-end">
+            <table class="table">
+                <thead class="thead-dark">
 
-        <table>
-            <tr>
-                <td>№</td>
-                <td>Name</td>
-                <td>Relevance</td>
-                <td>fDate</td>
-                <td>lDate</td>
-                <td>Price</td>
-                <td>Equipments</td>
-                <td>Button</td>
-            </tr>
-            <div th:each="contract :${contracts}">
-            <tr>
-                <td th:text="${contract.getId()}">1</td>
-                <td th:text="${contract.getCompName()}">Name</td>
-                <td th:text="${contract.getRelevance()}">Relevance</td>
-                <td th:text="${contract.getFDate()}">fDate</td>
-                <td th:text="${contract.getLDate()}">lDate</td>
-                <td th:text="${contract.getPrice()}">Price</td>
-                <td th:text="${contract.getEquipments()}">Equipments
-                <td>
-                    <button type="button">Удаление</button>
-                    <button type="button">Редактирование</button>
-                </td>
-            </tr>
+                <tr>
+                    <td>№</td>
+                    <td>Name</td>
+                    <td>Relevance</td>
+                    <td>fDate</td>
+                    <td>lDate</td>
+                    <td>Price</td>
+                    <td>Equipments</td>
+                    <td>Button</td>
+                </tr>
+
+                </thead>
+
+                <tr ng-repeat="contract in contracts track by $index" >
+                    <td>{{$index+1}}</td>
+                    <td>{{contract.compName}}</td>
+                    <td>{{contract.relevance}}</td>
+                    <td>{{contract.fdate}}</td>
+                    <td>{{contract.ldate}}</td>
+                    <td>{{contract.price}}</td>
+                    <td>Ы)</td>
+                    <td>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-primary btn-sm" ng-click="delete(contract)" type="button">
+                                Удалить
+                            </button>
+                            <a class="btn btn-outline-primary btn-sm" href="#zat" role="button" ng-click="s(contract)">Редактировать</a>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <div class="row">
+                        <form>
+                            <td></td>
+                            <td class="mai">
+                                <input class="form-control" ng-model="contrac.compName" type="text" id = "contractName" placeholder = "Input Name" >
+                            </td>
+                            <td class="mai">
+                                <input class="form-control" ng-model="contrac.relev" type="text" id = "contractRelev" placeholder = "Input Name" >
+                            </td>
+                            <td class="mai">
+                                <input class="form-control" ng-model="contrac.fdate" type="text" id = "contractfdate" placeholder = "Input Count Sale" >
+                            </td>
+                            <td class="mai">
+                                <input class="form-control" ng-model="contrac.ldate" type="text" id = "contractldate" placeholder = "Input Count Sale" >
+                            </td>
+                            <td class="mai">
+                                <input class="form-control" ng-model="contrac.price" type="text" id = "contractprice" placeholder = "Input Count Sale" >
+                            </td>
+                            <td class="mai">
+                                <input class="form-control" type="text" name = "q" placeholder = "Input cntrct id" >
+                            </td>
+                            <td class="mai">
+                                <button class="btn btn-primary" type="button" ng-click="saveDevice()">Добавить</button>
+                            </td>
+                        </form>
+                    </div>
+                </tr>
+
+            </table>
+        </div>
+
+        <div id="zat">
+            <div id="form">
+
+                <table class="table">
+                    <tr>
+                        <td>Name</td>
+                        <td>Relevance</td>
+                        <td>fDate</td>
+                        <td>lDate</td>
+                        <td>Price</td>
+                        <td>Equipments</td>
+                    </tr>
+                    <tr><form>
+
+                        <td class="mai">
+                            <input class="form-control" ng-model="edcontrac.compName" type="text" id = "edcontractName" placeholder = "Input Name" >
+                        </td>
+                        <td class="mai">
+                            <input class="form-control" ng-model="edcontrac.relev" type="text" id = "edcontractrelev" placeholder = "Input Name" >
+                        </td>
+                        <td class="mai">
+                            <input class="form-control" ng-model="edcontrac.fdate" type="text" id = "edcontractfdate" placeholder = "Input Count Sale" >
+                        </td>
+                        <td class="mai">
+                            <input class="form-control" ng-model="edcontrac.ldate" type="text" id = "edcontractldate" placeholder = "Input Count Sale" >
+                        </td>
+                        <td class="mai">
+                            <input class="form-control" ng-model="edcontrac.price" type="text" id = "edcontractprice" placeholder = "Input Count Sale" >
+                        </td>
+
+                    </form>
+                    </tr>
+                </table>
+                <a href="#"><button type="button" class="btn btn-primary" aria-label="Close">Закрыть</button></a>
+
+                <button class="btn btn-primary" ng-click="edit()" type="button">
+                    Редактировать
+                </button>
             </div>
-            <div id="newdata">
-
-            </div>
-            <tr>
-                <form>
-                    <td>
-                        <input type="text" id = "contractsId" placeholder = "Search id" >
-                    </td>
-                    <td>
-                        <input type="text" id = "contractsName" placeholder = "Search Name" >
-                    </td>
-                    <td>
-                        <input type="text" id = "contractsRelevance" placeholder = "Search Price" >
-                    </td>
-                    <td>
-                        <input type="text" id = "contractsfdate" placeholder = "Search Count Sale" >
-                    </td>
-                    <td>
-                        <input type="text" id = "contractsldate" placeholder = "Search Total Summ" >
-                    </td>
-                    <td>
-                        <input type="text" id = "contractsPrice" placeholder = "Search Total Summ" >
-                    </td>
-
-                    <td>
-                        <input type="text" name = "q" placeholder = "Search query" >
-                    </td>
-                    <td>
-                        <input type="button" onclick="send_device()" value="Добавить">
-                    </td>
-                </form>
-            </tr>
-        </table>
-
+        </div>
     </section>
 </main>
 </body>

@@ -3,7 +3,6 @@ package com.example.springtest.entity;
 
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,7 +24,7 @@ public class ContractsSqlDao {
     private int price;
     @ManyToMany(targetEntity = DevicesSqlDao.class)
     @JoinTable (name="equipments",
-            joinColumns=@JoinColumn (name="contractid"),
+            joinColumns=@JoinColumn (name="Id"),
             inverseJoinColumns=@JoinColumn(name="count"))
     private List<DevicesSqlDao> equipments;
     @ManyToOne
