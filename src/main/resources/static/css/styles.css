@@ -6,7 +6,7 @@ header{
     position: static;
 }
 nav{
-    height: 35px;
+    height: 55px;
     width: 100%;
     padding: 10px 0px 0px 0px;
     background-color: aliceblue;
@@ -19,6 +19,7 @@ nav{
 }
 
 #file{
+    width: 50px;
     padding:0px 5px 0px 10px;
 }
 #edit{
@@ -38,7 +39,7 @@ nav{
     left: 50%;
     margin-right: -50%;
     transform: translate(-50%, -50%);
-    color: rgba(84, 54, 7, 0.91);
+    color: white;
     font-size: 22px;
     font-style: italic;
 }
@@ -48,16 +49,16 @@ main{
 }
 .rightPanel{
     padding-top: 15px;
-
+    background-color:rgba(30,29,29,0.94);
     display:inline-block;
-    width: 200px;
-    height:665px;
-    background-color:lightgray;
+    width: 210px;
+    height:670px;
+
 }
-.search{
-    width: auto;
-    display:block;
-    text-align: center;
+
+
+#search{
+    padding-left: 45px;
 }
 #inpform{
     height: 30px;
@@ -70,76 +71,109 @@ main{
 #cliets{
     display: block;
     font-size: 20px;
-    height:70px;
+    height:80px;
     width:100%;
-    padding-top: 10px;
-    margin-top:10px;
+    padding-top:25px;
+    margin-top:35px;
 }
 #contracts{
     display: block;
     font-size: 20px;
-    height:70px;
+    height:80px;
     width:100%;
-    margin-top:10px;
-    padding-top: 10px;
+    margin-top:35px;
+    padding-top: 25px;
 }
 #firstCon{
     display: block;
     font-size: 20px;
-    height:70px;
+    height:80px;
     width:100%;
-    margin-top:10px;
-    padding-top: 10px;
+    margin-top:35px;
+    padding-top: 25px;
     padding-bottom: 10px;
 }
 #equpments{
     display: block;
     font-size: 20px;
-    height:70px;
+    height:80px;
     width:100%;
-    margin-top:10px;
-    padding-top: 10px;
+    margin-top:35px;
+    padding-top: 25px;
 }
 .buttons{
     position:absolute;
     padding-left: 10px;
     margin: 0 auto;
-    bottom:10px;
+    bottom: 10px;
     width: 180px;
 }
-#load{
-    display:inline;
-    width: 48%;
 
-}
+
 #save{
     display:inline;
-    width: 48%;
+    width: auto;
+    text-align: center;
 }
-.table{
+
+.table1{
     padding-top: 5px;
-    padding-left: 5px;
     display:inline-block;
     vertical-align: top;
     text-align: center;
     border-collapse: collapse;
     /*убираем пустые промежутки между ячейками*/
-    border: 1px solid grey;
-    width: 1300px;
+
+    width: 85%;
 
 }
 td{
     border-bottom: 1px solid grey;
     border-right: 1px solid grey;
     border-collapse: collapse;
-    width: 320px;
+
 }
-td:first-child{
-    width: 2%;
-}
+
 
 td:last-child{
     border-right: none;
 }
+#zat {
+    background: rgba(102, 102, 102, 0.5);
+    width: 750px;
+    height: 200px;
+    position: absolute;
+    top: 150px;
+    left: 150px;
+    display: none;
+}
+#zat:target {display: block;}
+#form{
+    width: 1300px;
+    text-align: center;
+    padding: 15px;
+    border: 3px solid rgba(30,29,29,0.94);
+    border-radius: 10px;
+    color: rgba(30,29,29,0.94);
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    background: #fff;
+}
 
 
+.close {
+    display: inline-block;
+    border: 1px solid #0000cc;
+    color: #0000cc;
+    padding: 0 12px;
+    margin: 10px;
+    text-decoration: none;
+    background: #f2f2f2;
+    font-size: 14pt;
+    cursor:pointer;
+}
+.close:hover {background: #e6e6ff;}

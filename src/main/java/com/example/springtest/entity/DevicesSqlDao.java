@@ -47,8 +47,8 @@ public class DevicesSqlDao {
         return true;
     }
 
-    public boolean setTotalSumm(int new_totalsumm){ //prototype
-        this.totalSumm = new_totalsumm;
+    public boolean setTotalSumm(){ //prototype
+        this.totalSumm = this.getPrice()*this.getCountSale();
         return true;
     }
 

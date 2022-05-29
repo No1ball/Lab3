@@ -13,7 +13,7 @@ public class ClientsSqlDao extends CompanySqlDAO {
     @Column(name = "totalSumm")
     private int totalSumm = 0;
     @Column(name="oldContractId")
-    @OneToMany (mappedBy="id", fetch=FetchType.LAZY)
+    @OneToMany (mappedBy="client", fetch=FetchType.LAZY)
     private List<ContractsSqlDao> oldContractID;
 
 

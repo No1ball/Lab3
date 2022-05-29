@@ -1,34 +1,58 @@
 package com.example.springtest.controllers;
 
 import com.example.springtest.entity.DevicesSqlDao;
-import com.example.springtest.repos.DevicesRepo;
+import com.example.springtest.service.deviceService.impl.DeviceServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 public class deviceController {
     @Autowired
-    private DevicesRepo devicesRepo;
-
-    @GetMapping("/equpments")
-    public List<DevicesSqlDao> showEquipments(Model model){
-        Iterable <DevicesSqlDao> devices = devicesRepo.findAll();
-        model.addAttribute("devices", devices);
-        List <DevicesSqlDao> deviceList= new ArrayList<>();
-        devicesRepo.findAll().forEach(deviceList::add);
-        return deviceList;
+    private DeviceServiceImpl deviceService;
+    public static final String FONT = "./src/main/resources/arialmt.ttf";
+    @GetMapping("/newequpments")
+    public ResponseEntity view(){
+        return ResponseEntity.ok(deviceService.getDevices());
     }
 
+    @GetMapping("/equpments")
+    public String showEquipments() {
+        deviceService.getDevices();
+        return "equpments";
+    }
+    @GetMapping("/equpments/topdf")
+    public String getPDF(@RequestParam("value") int value, @RequestParam("name") String name)  {
+        deviceService.getPDF(value, name);
+        return "equpments";
+    }
+    @GetMapping("/equpments1")
+    public ResponseEntity search(@RequestParam("name") String name){
+        return  ResponseEntity.ok(deviceService.search(name));
+    }
     @PostMapping("/add_device")
-    public void addDevice(@RequestBody DevicesSqlDao devices){
-        devicesRepo.save(devices);
+    public ResponseEntity addDevice(@RequestBody DevicesSqlDao devices){
+        return ResponseEntity.ok(deviceService.addDevice(devices));
+    }
+    @DeleteMapping("/equpments/del/{id}")
+    public String delDev(@PathVariable("id") int id){
+        deviceService.delDev(id);
+        return "equpments";
+    }
+    @PutMapping("/equpments/ed/{id}")
+    public ResponseEntity putDec(@PathVariable("id") int id, @RequestBody DevicesSqlDao devices){
+        return ResponseEntity.ok(deviceService.putDec(id,devices));
+    }
 
+    @GetMapping("/equpments/topSumm")
+    public ResponseEntity getTopSumm(@RequestParam("name") String name){
+        return ResponseEntity.ok(deviceService.sortByPrice(name));
+    }
+
+    @GetMapping("/equpments/topCount")
+    public ResponseEntity getTopCount(@RequestParam("name") String name){
+        return ResponseEntity.ok(deviceService.sortByCount(name));
     }
 }
