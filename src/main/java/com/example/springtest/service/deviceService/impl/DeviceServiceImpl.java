@@ -14,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.FileOutputStream;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DeviceServiceImpl implements DeviceService<DevicesSqlDao>{
@@ -22,7 +24,55 @@ public class DeviceServiceImpl implements DeviceService<DevicesSqlDao>{
     private DevicesRepo devicesRepo;
     public static final String FONT = "./src/main/resources/arialmt.ttf";
     @Override
-    public void getPDF(){
+    public List<DevicesSqlDao> search(String name){
+        return devicesRepo.findByNameContainingIgnoreCaseOrderByName(name);
+    }
+    @Override
+    public DevicesSqlDao addDevice(DevicesSqlDao devices){
+        devices.setTotalSumm();
+        return devicesRepo.save(devices);
+    }
+    @Override
+    public void delDev(int id){
+        devicesRepo.deleteById(id);
+    }
+    @Override
+    public DevicesSqlDao putDec(int id, DevicesSqlDao devices){
+        DevicesSqlDao device = devicesRepo.findById(id).orElseThrow();
+        device.setId(devices.getId());
+        device.setName(devices.getName());
+        device.setPrice(devices.getPrice());
+        device.setCountSale(devices.getCountSale());
+        device.setTotalSumm();
+        return devicesRepo.save(device);
+    }
+    @Override
+    public List<DevicesSqlDao> getDevices(){
+        return devicesRepo.findAll();
+    }
+
+    @Override
+    public List<DevicesSqlDao> sortByPrice(String name){
+        List<DevicesSqlDao> deviceList;
+        if(name.equals("")){
+            deviceList = devicesRepo.findAll();
+        }else{
+            deviceList = devicesRepo.findByNameContainingIgnoreCaseOrderByName(name);
+        }
+        return deviceList.stream().sorted(Comparator.comparingInt(DevicesSqlDao::getTotalSumm).reversed()).collect(Collectors.toList());
+    }
+    @Override
+    public List<DevicesSqlDao> sortByCount(String name){
+        List<DevicesSqlDao> deviceList;
+        if(name.equals("")){
+            deviceList = devicesRepo.findAll();
+        }else{
+            deviceList = devicesRepo.findByNameContainingIgnoreCaseOrderByName(name);
+        }
+        return deviceList.stream().sorted(Comparator.comparingInt(DevicesSqlDao::getCountSale).reversed()).collect(Collectors.toList());
+    }
+    @Override
+    public void getPDF(int value, String name){
         Document document = new Document();
         try{
             BaseFont bf=BaseFont.createFont(FONT, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
@@ -69,10 +119,28 @@ public class DeviceServiceImpl implements DeviceService<DevicesSqlDao>{
             table.addCell(cell2);
             table.addCell(cell3);
             table.addCell(cell4);
-
-
-            Iterable<DevicesSqlDao> dataset = devicesRepo.findAll();
-
+            List<DevicesSqlDao> dataset = devicesRepo.findAll();
+            switch (value){
+                case(1):
+                    dataset = dataset.stream().sorted(Comparator.comparingInt(DevicesSqlDao::getCountSale).reversed()).collect(Collectors.toList());
+                    break;
+                case(2):
+                    dataset = dataset.stream().sorted(Comparator.comparingInt(DevicesSqlDao::getTotalSumm).reversed()).collect(Collectors.toList());
+                    break;
+                case(3):
+                    dataset = devicesRepo.findByNameContainingIgnoreCaseOrderByName(name);
+                    break;
+                case(4):
+                    dataset = devicesRepo.findByNameContainingIgnoreCaseOrderByName(name);
+                    dataset = dataset.stream().sorted(Comparator.comparingInt(DevicesSqlDao::getCountSale).reversed()).collect(Collectors.toList());
+                    break;
+                case(5):
+                    dataset = devicesRepo.findByNameContainingIgnoreCaseOrderByName(name);
+                    dataset = dataset.stream().sorted(Comparator.comparingInt(DevicesSqlDao::getTotalSumm).reversed()).collect(Collectors.toList());
+                    break;
+                default:
+                    break;
+            }
             //Set Column widths
             int i = 1;
             for (DevicesSqlDao record : dataset) {
@@ -92,31 +160,5 @@ public class DeviceServiceImpl implements DeviceService<DevicesSqlDao>{
             e.printStackTrace();
         }
     }
-    @Override
-    public List<DevicesSqlDao> search(String name){
-        return devicesRepo.findByNameIgnoreCaseOrderByName(name);
-    }
-    @Override
-    public DevicesSqlDao addDevice(DevicesSqlDao devices){
-        devices.setTotalSumm();
-        return devicesRepo.save(devices);
-    }
-    @Override
-    public void delDev(int id){
-        devicesRepo.deleteById(id);
-    }
-    @Override
-    public DevicesSqlDao putDec(int id, DevicesSqlDao devices){
-        DevicesSqlDao device = devicesRepo.findById(id).orElseThrow();
-        device.setId(devices.getId());
-        device.setName(devices.getName());
-        device.setPrice(devices.getPrice());
-        device.setCountSale(devices.getCountSale());
-        device.setTotalSumm();
-        return devicesRepo.save(device);
-    }
-    @Override
-    public List<DevicesSqlDao> getDevices(){
-        return devicesRepo.findAll();
-    }
+
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 @Repository
 public interface DevicesRepo extends CrudRepository<DevicesSqlDao, Integer> {
-    List <DevicesSqlDao> findByNameIgnoreCaseOrderByName(String name);
+    List <DevicesSqlDao> findByNameContainingIgnoreCaseOrderByName(String name);
     List <DevicesSqlDao> findAll();
+
 }

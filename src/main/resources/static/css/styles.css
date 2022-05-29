@@ -49,12 +49,14 @@ main{
 }
 .rightPanel{
     padding-top: 15px;
-
+    background-color:rgba(30,29,29,0.94);
     display:inline-block;
     width: 210px;
     height:670px;
-    background-color:rgba(43,40,43,0.17);
+
 }
+
+
 #search{
     padding-left: 45px;
 }
@@ -69,35 +71,35 @@ main{
 #cliets{
     display: block;
     font-size: 20px;
-    height:70px;
+    height:80px;
     width:100%;
-    padding-top: 10px;
-    margin-top:10px;
+    padding-top:25px;
+    margin-top:35px;
 }
 #contracts{
     display: block;
     font-size: 20px;
-    height:70px;
+    height:80px;
     width:100%;
-    margin-top:10px;
-    padding-top: 10px;
+    margin-top:35px;
+    padding-top: 25px;
 }
 #firstCon{
     display: block;
     font-size: 20px;
-    height:70px;
+    height:80px;
     width:100%;
-    margin-top:10px;
-    padding-top: 10px;
+    margin-top:35px;
+    padding-top: 25px;
     padding-bottom: 10px;
 }
 #equpments{
     display: block;
     font-size: 20px;
-    height:70px;
+    height:80px;
     width:100%;
-    margin-top:10px;
-    padding-top: 10px;
+    margin-top:35px;
+    padding-top: 25px;
 }
 .buttons{
     position:absolute;
@@ -138,11 +140,11 @@ td:last-child{
 }
 #zat {
     background: rgba(102, 102, 102, 0.5);
-    width: 100%;
-    height: 100%;
+    width: 750px;
+    height: 200px;
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 150px;
+    left: 150px;
     display: none;
 }
 #zat:target {display: block;}
@@ -150,9 +152,9 @@ td:last-child{
     width: 1300px;
     text-align: center;
     padding: 15px;
-    border: 3px solid #0000cc;
+    border: 3px solid rgba(30,29,29,0.94);
     border-radius: 10px;
-    color: #0000cc;
+    color: rgba(30,29,29,0.94);
     position: absolute;
     top: 0;
     right: 0;

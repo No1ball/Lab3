@@ -5,7 +5,6 @@ import com.example.springtest.service.deviceService.impl.DeviceServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -25,8 +24,8 @@ public class deviceController {
         return "equpments";
     }
     @GetMapping("/equpments/topdf")
-    public String getPDF()  {
-        deviceService.getPDF();
+    public String getPDF(@RequestParam("value") int value, @RequestParam("name") String name)  {
+        deviceService.getPDF(value, name);
         return "equpments";
     }
     @GetMapping("/equpments1")
@@ -45,5 +44,15 @@ public class deviceController {
     @PutMapping("/equpments/ed/{id}")
     public ResponseEntity putDec(@PathVariable("id") int id, @RequestBody DevicesSqlDao devices){
         return ResponseEntity.ok(deviceService.putDec(id,devices));
+    }
+
+    @GetMapping("/equpments/topSumm")
+    public ResponseEntity getTopSumm(@RequestParam("name") String name){
+        return ResponseEntity.ok(deviceService.sortByPrice(name));
+    }
+
+    @GetMapping("/equpments/topCount")
+    public ResponseEntity getTopCount(@RequestParam("name") String name){
+        return ResponseEntity.ok(deviceService.sortByCount(name));
     }
 }
