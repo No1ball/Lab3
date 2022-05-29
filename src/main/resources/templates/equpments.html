@@ -57,6 +57,7 @@
         }
 
         $scope.getDevice();
+
         $scope.delete = function(devic){
             $http.delete("/equpments/del/" + devic.id).then(devices=>{
                 let ix = $scope.devices.map(devic=>devic.id).indexOf(devic.id);

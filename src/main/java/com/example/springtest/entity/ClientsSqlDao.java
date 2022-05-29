@@ -15,8 +15,13 @@ public class ClientsSqlDao extends CompanySqlDAO {
     @Column(name="oldContractId")
     @OneToMany (mappedBy="client", fetch=FetchType.LAZY)
     private List<ContractsSqlDao> oldContractID;
+    @Column(name = "contractNumber")
+    private int contractID;
 
-
+    public boolean setContractId(int new_summ){ //prototype
+        this.contractID = new_summ;
+        return true;
+    }
 
     public boolean setTotalSumm(int new_summ){ //prototype
         this.totalSumm = new_summ;
@@ -32,6 +37,9 @@ public class ClientsSqlDao extends CompanySqlDAO {
 
     public int getTotalSumm(){
         return this.totalSumm;
+    }
+    public int getContractId(){
+        return this.contractID;
     }
 
     public List <ContractsSqlDao> getOldCntrctID(){

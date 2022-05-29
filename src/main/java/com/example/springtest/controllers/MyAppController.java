@@ -33,12 +33,7 @@ public class MyAppController {
 
 
 
-    @GetMapping("/firstContacts")
-    public String showFirstContracts(Model model){
-        Iterable <ClientsSqlDao> clients = companyRepo.findAll();
-        model.addAttribute("clients", clients);
-        return "firstContacts";
-    }
+
 
     @GetMapping("/clients")
     public List <ClientsSqlDao> showClients(Model model){

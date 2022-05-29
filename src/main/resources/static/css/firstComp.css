@@ -1,0 +1,204 @@
+body{
+    margin: 0 auto;
+}
+
+header{
+    position: static;
+}
+nav{
+    height: 55px;
+    width: 100%;
+    padding: 10px 0px 0px 0px;
+    background-color: aliceblue;
+    margin :0;
+    font-size: 18px;
+    font-weight: revert;
+    position: relative;
+
+
+}
+
+#file{
+    width: 50px;
+    padding:0px 5px 0px 10px;
+}
+#edit{
+    padding:0px 5px 0px 5px;
+}
+#help{
+    padding:0px 15px 0px 5px;
+    border-right: 1px solid;
+}
+#view{
+    padding:0px 5px 0px 5px;
+
+}
+#nameList{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 22px;
+    font-style: italic;
+}
+main{
+    height: 100%;
+    width: 100%;
+}
+.rightPanel{
+    padding-top: 15px;
+    background-color:rgba(30,29,29,0.94);
+    display:inline-block;
+    width: 210px;
+    height:670px;
+
+}
+
+
+#search{
+    padding-left: 45px;
+}
+#inpform{
+    height: 30px;
+}
+.list{
+    display:block;
+
+    text-align: center;
+}
+#cliets{
+    display: block;
+    font-size: 20px;
+    height:80px;
+    width:100%;
+    padding-top:25px;
+    margin-top:35px;
+}
+#contracts{
+    display: block;
+    font-size: 20px;
+    height:80px;
+    width:100%;
+    margin-top:35px;
+    padding-top: 25px;
+}
+#firstCon{
+    display: block;
+    font-size: 20px;
+    height:80px;
+    width:100%;
+    margin-top:35px;
+    padding-top: 25px;
+    padding-bottom: 10px;
+}
+#equpments{
+    display: block;
+    font-size: 20px;
+    height:80px;
+    width:100%;
+    margin-top:35px;
+    padding-top: 25px;
+}
+.buttons{
+    position:absolute;
+    padding-left: 10px;
+    margin: 0 auto;
+    bottom: 10px;
+    width: 180px;
+}
+
+
+#save{
+    display:inline;
+    width: auto;
+    text-align: center;
+}
+
+.table1{
+    padding-top: 5px;
+    display:inline-block;
+    vertical-align: top;
+    text-align: center;
+    border-collapse: collapse;
+    /*убираем пустые промежутки между ячейками*/
+
+    width: 85%;
+
+}
+td{
+    border-bottom: 1px solid grey;
+    border-right: 1px solid grey;
+    border-collapse: collapse;
+
+}
+
+
+td:last-child{
+    border-right: none;
+}
+#zat {
+    background: rgba(102, 102, 102, 0.5);
+    width: 750px;
+    height: 200px;
+    position: absolute;
+    top: 150px;
+    left: 150px;
+    display: none;
+}
+#zat:target {display: block;}
+#form{
+    width: 1300px;
+    text-align: center;
+    padding: 15px;
+    border: 3px solid rgba(30,29,29,0.94);
+    border-radius: 10px;
+    color: rgba(30,29,29,0.94);
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    background: #fff;
+}
+
+#zat1 {
+    background: rgba(102, 102, 102, 0.5);
+    width: 750px;
+    height: 200px;
+    position: absolute;
+    top: 150px;
+    left: 150px;
+    display: none;
+}
+#zat1:target {display: block;}
+#form1{
+    width: 1300px;
+    text-align: center;
+    padding: 15px;
+    border: 3px solid rgba(30,29,29,0.94);
+    border-radius: 10px;
+    color: rgba(30,29,29,0.94);
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    background: #fff;
+}
+
+.close {
+    display: inline-block;
+    border: 1px solid #0000cc;
+    color: #0000cc;
+    padding: 0 12px;
+    margin: 10px;
+    text-decoration: none;
+    background: #f2f2f2;
+    font-size: 14pt;
+    cursor:pointer;
+}
+.close:hover {background: #e6e6ff;}
