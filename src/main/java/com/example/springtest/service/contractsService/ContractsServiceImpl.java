@@ -20,6 +20,7 @@ public class ContractsServiceImpl  implements  ContractsService{
     }
     @Override
     public ContractsSqlDao addDevice(ContractsSqlDao devices){
+        devices.setRelevance();
         return contractsRepo.save(devices);
     }
     @Override
@@ -30,11 +31,11 @@ public class ContractsServiceImpl  implements  ContractsService{
     public ContractsSqlDao putDec(int id, ContractsSqlDao devices){
         ContractsSqlDao contract = contractsRepo.findById(id).orElseThrow();
         contract.setCompName(devices.getCompName());
-        contract.setRelevance(devices.getRelevance());
         contract.setPrice(devices.getPrice());
-        contract.setFDate(devices.getFDate());
-        contract.setLDate(devices.getLDate());
+        contract.setLDate(devices.getDateLDate());
+        contract.setFDate(devices.getDateFDate());
         contract.setPrice(devices.getPrice());
+        contract.setRelevance();
         return contractsRepo.save(contract);
     }
     @Override
@@ -59,7 +60,7 @@ public class ContractsServiceImpl  implements  ContractsService{
     @Override
     public List<ContractsSqlDao> getNotRelev(){
         List <ContractsSqlDao> relList, contractsList;
-        contractsList = contractsRepo.findAll();;
+        contractsList = contractsRepo.findAll();
         relList = contractsList.stream().filter(element-> ((element.getRelevance() == false))).collect(Collectors.toList());
         return relList;
     }
