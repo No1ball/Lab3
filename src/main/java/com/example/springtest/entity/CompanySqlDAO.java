@@ -6,8 +6,8 @@ import javax.persistence.*;
 public abstract class CompanySqlDAO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "contractNumber")
-    protected int contractId;
+    @Column(name = "id")
+    protected int id;
     @Column(name = "name")
     protected String name;
     @Column(name = "contact")
@@ -18,8 +18,8 @@ public abstract class CompanySqlDAO {
         return true;
     }
 
-    public boolean setContractID(int newID){ //prototype
-        this.contractId = newID;
+    public boolean setId(int newId){ //prototype
+        this.id = newId;
         return true;
     }
 
@@ -32,8 +32,8 @@ public abstract class CompanySqlDAO {
         return this.name;
     }
 
-    public int getContractID(){
-        return this.contractId;
+    public int getId(){
+        return this.id;
     }
 
     public String getContact(){

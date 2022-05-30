@@ -3,6 +3,8 @@ package com.example.springtest.entity;
 
 
 import javax.persistence.*;
+
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -17,41 +19,37 @@ public class ContractsSqlDao {
     @Column(name = "relevance")
     private boolean relevance;
     @Column(name = "f_date")
-    private String fdate;
+    private Date fdate;
     @Column(name = "l_date")
-    private String ldate;
+    private Date ldate;
     @Column(name = "price")
     private int price;
+
     @ManyToMany(targetEntity = DevicesSqlDao.class)
     @JoinTable (name="equipments",
             joinColumns=@JoinColumn (name="Id"),
             inverseJoinColumns=@JoinColumn(name="count"))
     private List<DevicesSqlDao> equipments;
-    @ManyToOne
+    @ManyToOne()
     private ClientsSqlDao client;
 
-
-    public boolean setID(int new_id){ //prototype
-        this.id = new_id;
-        return true;
-    }
 
     public boolean setCompName(String new_CompName){ //prototype
         this.compName = new_CompName;
         return true;
     }
 
-    public boolean setRelevance(boolean new_relevance){ //prototype
-        this.relevance = new_relevance;
+    public boolean setRelevance(){ //prototype
+        this.relevance = this.getDateLDate().after(new Date());
         return true;
     }
 
-    public boolean setFDate(String new_fDate){ //prototype
+    public boolean setFDate(Date new_fDate){ //prototype
         this.fdate = new_fDate;
         return true;
     }
 
-    public boolean setLDate(String new_lDate){ //prototype
+    public boolean setLDate(Date new_lDate){ //prototype
         this.ldate = new_lDate;
         return true;
     }
@@ -81,13 +79,17 @@ public class ContractsSqlDao {
     public boolean getRelevance(){
         return this.relevance;
     }
-
-    public String getLDate(){
+    public Date getDateLDate(){
         return this.ldate;
     }
-
-    public String getFDate(){
+    public String getLDate(){
+        return this.ldate.toString().substring(0,10);
+    }
+    public Date getDateFDate(){
         return this.fdate;
+    }
+    public String getFDate(){
+        return  this.fdate.toString().substring(0,10);
     }
 
     public int getPrice(){

@@ -109,7 +109,7 @@
         }
         $scope.saveDevice = function(){
             if($scope.contrac.compName != null && $scope.contrac.compName !="") {
-                if($scope.contrac.relev!=null && $scope.contrac.relev!=""){
+
                     if($scope.contrac.price!= null && isFinite($scope.contrac.price) !=false){
                         $http({
                             url: '/add_contracts',
@@ -135,9 +135,6 @@
                     }else{
                         alert("Вы оставили важные поля пустыми!3");
                     }
-                }else{
-                    alert("Вы оставили важные поля пустыми!2");
-                }
             }else{
                 alert("Вы оставили важные поля пустыми!1");
             }
@@ -241,7 +238,6 @@
                                 <input class="form-control" ng-model="contrac.compName" type="text" id = "contractName" placeholder = "Input Name" >
                             </td>
                             <td class="mai">
-                                <input class="form-control" ng-model="contrac.relev" type="text" id = "contractRelev" placeholder = "Input Name" >
                             </td>
                             <td class="mai">
                                 <input class="form-control" ng-model="contrac.fdate" type="text" id = "contractfdate" placeholder = "Input Count Sale" >
@@ -283,7 +279,6 @@
                             <input class="form-control" ng-model="edcontrac.compName" type="text" id = "edcontractName" placeholder = "Input Name" >
                         </td>
                         <td class="mai">
-                            <input class="form-control" ng-model="edcontrac.relev" type="text" id = "edcontractrelev" placeholder = "Input Name" >
                         </td>
                         <td class="mai">
                             <input class="form-control" ng-model="edcontrac.fdate" type="text" id = "edcontractfdate" placeholder = "Input Count Sale" >
