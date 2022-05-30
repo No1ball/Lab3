@@ -1,131 +1,287 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://thymeleaf.org">
+<html lang="en"  xmlns:th="http://thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="../../css/styles.css" th:href="@{/css/styles.css}" type="text/css" media="all"  >
   <title>My app</title>
+  <!-- Только CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-  <!-- Пакет JavaScript с Popper -->
-  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous">
+  </script> <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js"></script>
+
 
 </head>
 <script type="text/javascript">
 
+  var app = angular.module("CREATE_DEVICE",[]);
+  app.controller("CREATE_DEVICE_CTRL", function($scope, $http){
+    console.log("check");
+    $scope.fcontacts = [];
+    $scope.edcontid = 13;
+    $scope.edcontname = "name";
+    $scope.edcontcontact = 13;
+    $scope.pdfState = 0;
+    $scope.search = "";
+    $scope.getDevice = function(){
+      $http({
+        url: '/client',
+        method: 'GET',
+      }).then(resp=>{
+        $scope.fcontacts = resp.data;
+        console.log(resp.data);
+      });
+    }
+    $scope.searchDevice = function(){
+      $http({
+        url: '/client1?name='+$scope.search,
+        method: 'GET',
+      }).then(resp=>{
+        let dd = resp.data;
+        if(dd.length == 0){
+          alert("Ничего не нашлось");
+        }
+        else {$scope.fcontacts = resp.data;}
+        console.log(resp.data);
+        $scope.pdfState = 3;
+      });
+    }
 
+    $scope.getPdf = function(){
+      $http({
+        url: '/equpments/topdf?value='+$scope.pdfState+'&name='+$scope.search,
+        method: 'GET',
+      }).then(resp=>{
 
+      });
+    }
 
-  $(document).ready(function () {
+    $scope.getDevice();
 
+    $scope.delete = function(fcont){
+      console.log(fcont.id);
+      $http.delete("/client/del/" + fcont.id).then(fcontacts=>{
+        let ix = $scope.fcontacts.map(fcont=>fcont.id).indexOf(fcont.id);
+        $scope.fcontacts.splice(ix,1);
+
+      });
+    }
+    $scope.topSumm = function (){
+      $http.get("/client/topSumm").then(resp=>{
+        console.log(resp.data);
+        $scope.fcontacts = resp.data;
+      });
+    }
+
+    $scope.saveDevice = function(){
+      if($scope.cont.name != null && $scope.cont.name !="") {
+        if($scope.cont.contact != null && $scope.cont.contact !="") {
+          $http({
+            url: '/add_clients',
+            method: 'POST',
+            data: {
+              id: $scope.cont.id,
+              name: $scope.cont.name,
+              contact: $scope.cont.contact,
+              totalSumm: $scope.cont.totalSumm,
+              contractId: $scope.cont.contract,
+              oldContractID: null,
+            }
+          }).then(function (response) {
+            console.log(response);
+            $scope.getDevice();
+            $scope.cont.name = null;
+            $scope.cont.contact = null;
+            $scope.cont.totalSumm = null;
+            $scope.cont.contract = null;
+          });
+        }else{
+          alert("Вы оставили важные поля пустыми!2");
+        }
+      }else{
+        alert("Вы оставили важные поля пустыми!1");
+      }
+    }
+    $scope.s = function(devic){
+      $scope.edcontid = devic.id;
+      $scope.edcontname = devic.name;
+      $scope.edcontcontact = devic.contact;
+
+    }
+    $scope.edit = function(){
+      $http
+      ({
+        url:"/client/ed/" + $scope.edcontid,
+        method:'PUT',
+        data:{
+          id: $scope.edcontid,
+          name: $scope.edcont.name,
+          contact: $scope.edcont.contact,
+          totalSumm: $scope.edcont.totalSumm,
+          contractId: $scope.edcont.contract,
+          oldContractID: null,
+        }
+      }).then(function (response) {
+        console.log(response.data);
+        $scope.getDevice();
+        $scope.edcont.name = null;
+        $scope.edcont.contact = null;
+      });
+    }
   });
 
-
-  function send_device(){
-    $.ajax({
-      url: '/add_clients',
-      dataType:'json',
-      type: 'POST',
-      cache: false,
-      contentType:'application/json',
-      data: JSON.stringify({
-        contractId:$("#clientContract").val(),
-        name:$("#clientName").val(),
-        contact:$("#clientContact").val(),
-        totalSumm: $("#clientTotalSumm").val(),
-        oldContractID: null,
-      }),
-      success: function (data){
-        if(data.status){
-          console.log(data)
-        }
-      }
-
-
-    })
-
-  }
 </script>
-<body>
-<header>
-  <nav>
-    <span id="file">File</span>
-    <span id="edit">Edit</span>
-    <span id="view">View</span>
-    <span id="help">Help</span>
+<body ng-app="CREATE_DEVICE" ng-controller="CREATE_DEVICE_CTRL">
+<header class="sticky-top">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Navbar</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
+        <ul class="navbar-nav">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Function
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+              <li><button type="button" class="dropdown-item" ng-click="topCount()">Top count</button></li>
+              <li><button type="button" class="dropdown-item" ng-click="topSumm()">Top summ</button></li>
+            </ul>
+
+          </li>
+        </ul>
+      </div>
+    </div>
     <span id = "nameList">Clients</span>
+    <form class="d-flex" id="search">
+      <input ng-model="search" type="search" name = "q" placeholder = "Search query" class="form-control me-2" aria-label="readonly input example">
+      <button class="btn btn-primary me-4" type="submit" ng-click="searchDevice()"> Go! </button>
+    </form>
   </nav>
+
 </header>
 <main>
-  <section class = "rightPanel">
-    <article class  = "search">
-      <form>
-        <input type="search" name = "q" placeholder = "Search query" id="inpform">
-      </form>
-    </article>
-    <article class = "list">
-      <a href="../clients" id="cliets">Clients</a>
-      <a href="../contracts" id="contracts">Contracts</a>
-      <a href="../equpments" id="equpments">Equipments</a>
-      <a href="../firstContacts" id="firstCon">First contacts</a>
+  <section class = "rightPanel" row="col-xl" >
+
+    <article class = "list ">
+      <a href="../clients" id="cliets" class="btn btn-outline-secondary text-white" role="button">Clients</a>
+      <a href="../contracts" id="contracts" class="btn btn-outline-secondary text-white" role="button">Contracts</a>
+      <a href="../equpments" id="equpments" class="btn btn-outline-secondary text-white" role="button">Equipments</a>
+      <a href="../firstContacts" id="firstCon" class="btn btn-outline-secondary text-white" role="button">First contacts</a>
 
       <article class="buttons">
         <form>
-          <button type="submit" id="load">Load data</button>
-          <button type="submit" id="save">Save data</button>
+          <button class="btn btn-outline-light" type="submit" id="save" ng-click="getPdf()">Save data</button>
         </form>
       </article>
     </article>
-  </section>
 
+  </section>
   <section class="table1">
-    <table>
-      <tr>
-        <td>Name</td>
-        <td>Contact</td>
-        <td>ContractID</td>
-        <td>OldCntrctID</td>
-        <td>Total Summ</td>
-        <td>Button</td>
-      </tr>
-      <div th:each="client :${clients}">
+    <div class="d-flex justify-content-end">
+      <table class="table">
+        <thead class="thead-dark">
+
         <tr>
-          <td th:text="${client.getName()}">Name</td>
-          <td th:text="${client.getContact()}">Contact</td>
-          <td th:text="${client.getContractID()}">Relevance</td>
-          <td th:text="${client.getOldCntrctID()}">fDate</td>
-          <td th:text="${client.getTotalSumm()}">lDate
+          <th>№</th>
+          <td>Name</td>
+          <td>Contact</td>
+          <td>ContractID</td>
+          <td>OldCntrctID</td>
+          <td>Total Summ</td>
+          <td>Button</td>
+        </tr>
+
+        </thead>
+
+        <tr ng-repeat="client in fcontacts track by $index" >
+          <td>{{$index+1}}</td>
+          <td >{{client.name}}</td>
+          <td >{{client.contact}}</td>
+          <td >{{client.contractId}}</td>
+          <td >{{client.OldCntrctID}}</td>
+          <td >{{client.totalSumm}}</td>
           <td>
-            <button type="button">Удаление</button>
-            <button type="button">Редактирование</button>
+            <div class="d-grid gap-2">
+              <button class="btn btn-outline-primary btn-sm" ng-click="delete(client)" type="button">
+                Удалить
+              </button>
+              <a class="btn btn-outline-primary btn-sm" href="#zat" role="button" ng-click="s(client)">Редактировать</a>
+            </div>
           </td>
         </tr>
+
+        <tr>
+          <div class="row">
+            <form>
+              <td></td>
+              <td class="mai">
+                <input class="form-control" ng-model="cont.name" type="text" id = "deviceName" placeholder = "Input Name" >
+              </td>
+              <td class="mai">
+                <input class="form-control" ng-model="cont.contact" type="text" id = "devicePrice" placeholder = "Input Price" >
+              </td >
+              <td>
+                <input class="form-control" ng-model="cont.contract" type="text" id = "devame" placeholder = "Search Name" >
+              </td>
+              <td>
+                <input class="form-control" ng-model="cont.oldcontract" type="text" id = "oddevName" placeholder = "Search Name" >
+              </td>
+              <td>
+                <input class="form-control" ng-model="cont.totalSumm" type="text" id = "oldeve" placeholder = "Search Name" >
+              </td>
+
+              <td class="mai">
+                <button class="btn btn-primary" type="button" ng-click="saveDevice()">Добавить</button>
+              </td>
+            </form>
+          </div>
+        </tr>
+
+      </table>
+    </div>
+
+
+    <div id="zat">
+      <div id="form">
+
+        <table class="table">
+          <tr>
+            <td>Name</td>
+            <td>Contact</td>
+            <td>ContractID</td>
+            <td>OldCntrctID</td>
+            <td>Total Summ</td>
+          </tr>
+          <tr><form>
+            <td>
+              <input class="form-control" ng-model="edcont.name" type="text" id = "eddeviceName" placeholder = "Search Name" >
+            </td>
+            <td>
+              <input class="form-control" ng-model="edcont.contact" type="text" id = "eddevicePrice" placeholder = "Search Price" >
+            </td>
+            <td>
+              <input class="form-control" ng-model="edcont.contract" type="text" id = "devName" placeholder = "Search Name" >
+            </td>
+            <td>
+              <input class="form-control" ng-model="edcont.oldcontract" type="text" id = "olddevName" placeholder = "Search Name" >
+            </td>
+            <td>
+            <input class="form-control" ng-model="edcont.totalSumm" type="text" id = "olddeve" placeholder = "Search Name" >
+          </td>
+          </form>
+          </tr>
+        </table>
+        <a href="#"><button type="button" class="btn btn-primary" aria-label="Close">Закрыть</button></a>
+
+        <button class="btn btn-primary" ng-click="edit()" type="button">
+          Редактировать
+        </button>
       </div>
-
-      <tr>
-        <form>
-          <td>
-            <input type="text" id = "clientName" placeholder = "Search Name" >
-          </td>
-          <td>
-            <input  type="text" id = "clientContact" placeholder = "Search Price" >
-          </td>
-          <td>
-            <input  type="text" id = "clientContract" placeholder = "Search Count Sale" >
-          </td>
-          <td>
-            <input  type="text" id = "clientOldContract" placeholder = "Search Total Summ" >
-          </td>
-          <td>
-            <input  type="text" id = "clientTotalSumm" placeholder = "Search query" >
-          </td>
-          <td>
-            <input onclick="send_device()" type="button" value="Сохранить">
-          </td>
-        </form>
-      </tr>
-    </table>
-
+    </div>
   </section>
 </main>
 </body>
 </html>
+

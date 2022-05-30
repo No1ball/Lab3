@@ -43,7 +43,8 @@ public class CompanyServiceImpl implements CompanyService{
     }
     @Override
     public List<ClientsSqlDao> searchCompany(String name){
-        return companyRepo.findByNameContainsIgnoreCaseOrderByName(name);
+        List<ClientsSqlDao> fullList = companyRepo.findByNameContainsIgnoreCaseOrderByName(name);
+        return fullList.stream().filter(element->(element.getContractId()==0)).collect(Collectors.toList());
     }
     @Override
     public void toPdf(String name){
