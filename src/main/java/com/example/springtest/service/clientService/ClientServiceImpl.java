@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 
 import javax.swing.*;
 import java.io.FileOutputStream;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,8 +45,18 @@ public class ClientServiceImpl implements ClientService{
         return clientsRepo.save(comp);
     }
     @Override
-    public ClientsSqlDao addCompany(ClientsSqlDao company){
-        return clientsRepo.save(company);
+    public Iterable<ClientsSqlDao> addCompany(ClientsSqlDao company){
+        ContractsSqlDao contract = new ContractsSqlDao();
+        contract.setId(company.getNum());
+        contract.setCompName(company.getName());
+        contract.setLDate(new Date());
+        contract.setFDate(new Date());
+        contract.setPrice(company.getTotalSumm());
+        contractsRepo.save(contract);
+        company.setContractId(contract);
+        contract.setClient(company);
+        List<ClientsSqlDao> clie = Arrays.asList(company);
+        return clientsRepo.saveAll(clie);
     }
 
     @Override

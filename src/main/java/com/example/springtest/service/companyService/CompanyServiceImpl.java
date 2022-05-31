@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import java.util.stream.Collectors;
@@ -44,12 +45,22 @@ public class CompanyServiceImpl implements CompanyService{
     public Iterable<ClientsSqlDao> toClient(int id, ClientsSqlDao client){
         ClientsSqlDao clien = companyRepo.findById(id).orElseThrow();
         ContractsSqlDao contract;
-        contract = contractsRepo.findById(client.getNum()).orElseThrow();
+        try{
+            contract = contractsRepo.findById(client.getNum()).orElseThrow();
+            contract.setClient(client);
+            contract.setCompName(clien.getName());
+        }catch (Exception ex){
+            contract = new ContractsSqlDao();
+            contract.setId(client.getNum());
+            contract.setCompName(client.getName());
+            contract.setLDate(new Date());
+            contract.setFDate(new Date());
+            contract.setPrice(client.getTotalSumm());
+            contractsRepo.save(contract);
+        }
         clien.setContractId(contract);
         clien.setTotalSumm(client.getTotalSumm());
         clien.setNum(clien.getContractId().getId());
-        contract.setClient(client);
-        contract.setCompName(clien.getName());
         List<ClientsSqlDao> clie = Arrays.asList(clien);
         return companyRepo.saveAll(clie);
     }
