@@ -2,6 +2,8 @@ package com.example.springtest.entity;
 
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 
 import java.util.Date;
@@ -11,7 +13,6 @@ import java.util.List;
 @Table(name="contracts")
 public class ContractsSqlDao {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
     private int id;
     @Column(name="name")
@@ -30,7 +31,8 @@ public class ContractsSqlDao {
             joinColumns=@JoinColumn (name="Id"),
             inverseJoinColumns=@JoinColumn(name="count"))
     private List<DevicesSqlDao> equipments;
-    @ManyToOne()
+    @OneToOne(mappedBy = "contractID", cascade = CascadeType.REFRESH)
+    @JsonBackReference
     private ClientsSqlDao client;
 
 
@@ -38,7 +40,10 @@ public class ContractsSqlDao {
         this.compName = new_CompName;
         return true;
     }
-
+    public boolean setId(int new_CompName){ //prototype
+        this.id = new_CompName;
+        return true;
+    }
     public boolean setRelevance(){ //prototype
         this.relevance = this.getDateLDate().after(new Date());
         return true;
@@ -104,4 +109,3 @@ public class ContractsSqlDao {
         return this.client;
     }
 }
-

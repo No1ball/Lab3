@@ -1,5 +1,7 @@
 package com.example.springtest.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 
 import java.util.List;
@@ -11,16 +13,20 @@ import java.util.List;
 public class ClientsSqlDao extends CompanySqlDAO {
 
     @Column(name = "totalSumm")
-    private int totalSumm = 0;
-
-    @OneToMany ()
-    @JoinColumn(name="client")
-    private List<ContractsSqlDao> oldContractID;
-
-    @Column(name = "contractNumber")
-    private int contractID;
-
-    public boolean setContractId(int new_summ){ //prototype
+    private int totalSumm = -1;
+    @OneToOne(cascade = CascadeType.REFRESH)
+    @JoinColumn(name = "contractNumber")
+    @JsonManagedReference
+    private ContractsSqlDao contractID;
+    private int num;
+    public boolean setNum(int new_summ){ //prototype
+        this.num = new_summ;
+        return true;
+    }
+    public int getNum(){
+        return this.num;
+    }
+    public boolean setContractId(ContractsSqlDao new_summ){ //prototype
         this.contractID = new_summ;
         return true;
     }
@@ -30,22 +36,13 @@ public class ClientsSqlDao extends CompanySqlDAO {
         return true;
     }
 
-    public boolean setOldContractID(List<ContractsSqlDao> new_oldcntrid){ //prototype
-        this.oldContractID = new_oldcntrid;
-        return true;
-    }
-
 
 
     public int getTotalSumm(){
         return this.totalSumm;
     }
-    public int getContractId(){
+    public ContractsSqlDao getContractId(){
         return this.contractID;
-    }
-
-    public List <ContractsSqlDao> getOldCntrctID(){
-        return this.oldContractID;
     }
 
 

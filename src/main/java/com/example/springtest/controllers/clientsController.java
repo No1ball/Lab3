@@ -18,8 +18,9 @@ public class clientsController {
 
     @PostMapping ("/add_clients")
     public ResponseEntity saveClient(@RequestBody ClientsSqlDao client){
-         return ResponseEntity.ok(clientsService.addCompany(client));
+        return ResponseEntity.ok(clientsService.addCompany(client));
     }
+
     @GetMapping("/client")
     public ResponseEntity getClient(){
         return ResponseEntity.ok(clientsService.getCompany());

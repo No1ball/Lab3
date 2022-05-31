@@ -1,8 +1,10 @@
 package com.example.springtest.service.clientService;
 
 import com.example.springtest.entity.ClientsSqlDao;
+import com.example.springtest.entity.ContractsSqlDao;
 import com.example.springtest.entity.DevicesSqlDao;
 import com.example.springtest.repos.ClientsRepo;
+import com.example.springtest.repos.ContractsRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +19,12 @@ import java.util.stream.Collectors;
 public class ClientServiceImpl implements ClientService{
     @Autowired
     private ClientsRepo clientsRepo;
+    @Autowired
+    private ContractsRepo contractsRepo;
     @Override
     public List<ClientsSqlDao> getCompany(){
         List<ClientsSqlDao> fullList = clientsRepo.findAll();
-        List<ClientsSqlDao> listComp = fullList.stream().filter(element->(element.getContractId()>0)).collect(Collectors.toList());
+        List<ClientsSqlDao> listComp = fullList.stream().filter(element->(element.getTotalSumm()>0)).collect(Collectors.toList());
         return listComp;
     }
     @Override
@@ -30,9 +34,11 @@ public class ClientServiceImpl implements ClientService{
     @Override
     public ClientsSqlDao putCompany(int id, ClientsSqlDao company){
         ClientsSqlDao comp = clientsRepo.findById(id).orElseThrow();
+        ContractsSqlDao contract;
+        contract = contractsRepo.findById(company.getNum()).orElseThrow();
         comp.setName(company.getName());
         comp.setContact(company.getContact());
-        comp.setContractId(company.getContractId());
+        company.setContractId(contract);
         comp.setTotalSumm(company.getTotalSumm());
         return clientsRepo.save(comp);
     }
@@ -40,16 +46,17 @@ public class ClientServiceImpl implements ClientService{
     public ClientsSqlDao addCompany(ClientsSqlDao company){
         return clientsRepo.save(company);
     }
+
     @Override
     public List<ClientsSqlDao> topClient(){
         List<ClientsSqlDao> client = clientsRepo.findAll();
-        List<ClientsSqlDao> listComp = client.stream().filter(element->(element.getContractId()>0)).collect(Collectors.toList());
+        List<ClientsSqlDao> listComp = client.stream().filter(element->(element.getTotalSumm()>0)).collect(Collectors.toList());
         return listComp.stream().sorted(Comparator.comparingInt(ClientsSqlDao::getTotalSumm).reversed()).collect(Collectors.toList());
     }
     @Override
     public List<ClientsSqlDao> searchCompany(String name){
         List<ClientsSqlDao> client = clientsRepo.findByNameContainsIgnoreCaseOrderByName(name);
-        return client.stream().filter(element->(element.getContractId()>0)).collect(Collectors.toList());
+        return client.stream().filter(element->(element.getTotalSumm()>0)).collect(Collectors.toList());
 
     }
     @Override

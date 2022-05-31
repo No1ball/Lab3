@@ -10,6 +10,7 @@ public interface ClientService {
     void delCompany(int id);
     ClientsSqlDao putCompany(int id, ClientsSqlDao company);
     ClientsSqlDao addCompany(ClientsSqlDao company);
+
     List<ClientsSqlDao> topClient();
     List <ClientsSqlDao> searchCompany(String name);
     void toPdf(String name);

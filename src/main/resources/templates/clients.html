@@ -71,10 +71,32 @@
         $scope.fcontacts = resp.data;
       });
     }
+    $scope.saveContract = function(){
+      $http({
+        url: '/add_contracts',
+        method: 'POST',
+        data: {
+              id: $scope.cont.contractId,
+              compName: $scope.cont.name,
+              relevance: null,
+              fdate: "2022-05-30",
+              ldate: "2022-05-31",
+              price: 0,
+              equipments: null,
+              client: null,
+            }
+          }).then(function (response) {
+            console.log(response);
+
+          });
+    }
+
+
 
     $scope.saveDevice = function(){
       if($scope.cont.name != null && $scope.cont.name !="") {
         if($scope.cont.contact != null && $scope.cont.contact !="") {
+          //$scope.saveContract()
           $http({
             url: '/add_clients',
             method: 'POST',
@@ -82,11 +104,14 @@
               id: $scope.cont.id,
               name: $scope.cont.name,
               contact: $scope.cont.contact,
-              totalSumm: $scope.cont.totalSumm,
-              contractId: $scope.cont.contract,
-              oldContractID: null,
+              totalSumm: null,
+              //totalSumm: $scope.cont.totalSumm,
+              num: null,
+              //num: $scope.cont.contractId,
+              contractId : null,
             }
           }).then(function (response) {
+
             console.log(response);
             $scope.getDevice();
             $scope.cont.name = null;
@@ -106,7 +131,9 @@
       $scope.edcontname = devic.name;
       $scope.edcontcontact = devic.contact;
 
+
     }
+
     $scope.edit = function(){
       $http
       ({
@@ -117,8 +144,8 @@
           name: $scope.edcont.name,
           contact: $scope.edcont.contact,
           totalSumm: $scope.edcont.totalSumm,
-          contractId: $scope.edcont.contract,
-          oldContractID: null,
+          contractId: null,
+          num: $scope.edcont.contract,
         }
       }).then(function (response) {
         console.log(response.data);
@@ -199,8 +226,8 @@
           <td>{{$index+1}}</td>
           <td >{{client.name}}</td>
           <td >{{client.contact}}</td>
-          <td >{{client.contractId}}</td>
-          <td >{{client.OldCntrctID}}</td>
+          <td >{{client.num}}</td>
+          <td></td>
           <td >{{client.totalSumm}}</td>
           <td>
             <div class="d-grid gap-2">
@@ -223,7 +250,7 @@
                 <input class="form-control" ng-model="cont.contact" type="text" id = "devicePrice" placeholder = "Input Price" >
               </td >
               <td>
-                <input class="form-control" ng-model="cont.contract" type="text" id = "devame" placeholder = "Search Name" >
+                <input class="form-control" ng-model="cont.contractId" type="text" id = "devame" placeholder = "Search Name" >
               </td>
               <td>
                 <input class="form-control" ng-model="cont.oldcontract" type="text" id = "oddevName" placeholder = "Search Name" >
@@ -268,8 +295,8 @@
               <input class="form-control" ng-model="edcont.oldcontract" type="text" id = "olddevName" placeholder = "Search Name" >
             </td>
             <td>
-            <input class="form-control" ng-model="edcont.totalSumm" type="text" id = "olddeve" placeholder = "Search Name" >
-          </td>
+              <input class="form-control" ng-model="edcont.totalSumm" type="text" id = "olddeve" placeholder = "Search Name" >
+            </td>
           </form>
           </tr>
         </table>
@@ -284,4 +311,3 @@
 </main>
 </body>
 </html>
-

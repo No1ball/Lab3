@@ -46,6 +46,7 @@
                     ldate: $scope.edcontrac.ldate,
                     price: $scope.edcontrac.price,
                     equipments: null,
+                    client: null,
                 }
             }).then(function (response) {
                 console.log(response.data);
@@ -115,13 +116,14 @@
                             url: '/add_contracts',
                             method: 'POST',
                             data: {
-                                id: $scope.contrac.id,
+                                id: $scope.contrac.Id,
                                 compName: $scope.contrac.compName,
                                 relevance: $scope.contrac.relev,
                                 fdate: $scope.contrac.fdate,
                                 ldate: $scope.contrac.ldate,
                                 price: $scope.contrac.price,
                                 equipments: null,
+                                client: null,
                             }
                         }).then(function (response) {
                             console.log(response);
@@ -233,7 +235,9 @@
                 <tr>
                     <div class="row">
                         <form>
-                            <td></td>
+                            <td>
+                                <input class="form-control" ng-model="contrac.Id" type="text" id = "contrme" placeholder = "Input Name" >
+                            </td>
                             <td class="mai">
                                 <input class="form-control" ng-model="contrac.compName" type="text" id = "contractName" placeholder = "Input Name" >
                             </td>
