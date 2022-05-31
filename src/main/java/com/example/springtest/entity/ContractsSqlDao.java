@@ -31,7 +31,7 @@ public class ContractsSqlDao {
             joinColumns=@JoinColumn (name="Id"),
             inverseJoinColumns=@JoinColumn(name="count"))
     private List<DevicesSqlDao> equipments;
-    @OneToOne(mappedBy = "contractID", cascade = CascadeType.REFRESH)
+    @OneToOne(mappedBy = "contractID", cascade = {CascadeType.REFRESH, CascadeType.REMOVE, CascadeType.DETACH})
     @JsonBackReference
     private ClientsSqlDao client;
 

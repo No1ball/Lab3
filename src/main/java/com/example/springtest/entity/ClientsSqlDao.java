@@ -14,10 +14,11 @@ public class ClientsSqlDao extends CompanySqlDAO {
 
     @Column(name = "totalSumm")
     private int totalSumm = -1;
-    @OneToOne(cascade = CascadeType.REFRESH)
+    @OneToOne(cascade = {CascadeType.REFRESH, CascadeType.REMOVE,CascadeType.DETACH})
     @JoinColumn(name = "contractNumber")
     @JsonManagedReference
     private ContractsSqlDao contractID;
+
     private int num;
     public boolean setNum(int new_summ){ //prototype
         this.num = new_summ;

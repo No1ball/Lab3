@@ -34,7 +34,6 @@ public class CompanyServiceImpl implements CompanyService{
         ClientsSqlDao comp = companyRepo.findById(id).orElseThrow();
         comp.setName(company.getName());
         comp.setContact(company.getContact());
-        comp.setTotalSumm(company.getTotalSumm());
         return companyRepo.save(comp);
     }
     @Override
@@ -50,6 +49,7 @@ public class CompanyServiceImpl implements CompanyService{
         clien.setTotalSumm(client.getTotalSumm());
         clien.setNum(clien.getContractId().getId());
         contract.setClient(client);
+        contract.setCompName(clien.getName());
         List<ClientsSqlDao> clie = Arrays.asList(clien);
         return companyRepo.saveAll(clie);
     }
