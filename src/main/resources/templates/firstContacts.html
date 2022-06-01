@@ -77,6 +77,8 @@
                     totalSumm: $scope.client.totalSumm,
                     contractId: null,
                     num:$scope.client.contract,
+                    tempStr: null,
+                    oldContracts: null,
                 }
             }).then(function (response) {
                 console.log(response.data);
@@ -98,7 +100,8 @@
                             contact: $scope.cont.contact,
                             totalSumm: -1,
                             contractId: null,
-                            oldContractID: null,
+                            tempStr: null,
+                            oldContracts: null,
                         }
                     }).then(function (response) {
                         console.log(response);
@@ -129,9 +132,9 @@
                     id: $scope.edcontid,
                     name: $scope.edcont.name,
                     contact: $scope.edcont.contact,
-                    totalSumm: $scope.client.totalSumm,
+                    totalSumm: null,
                     contractId: null,
-                    num:$scope.client.contract,
+                    num:null,
                 }
             }).then(function (response) {
                 console.log(response.data);

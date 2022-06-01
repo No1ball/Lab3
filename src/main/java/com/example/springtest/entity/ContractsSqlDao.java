@@ -36,9 +36,17 @@ public class ContractsSqlDao {
     @OneToOne(mappedBy = "contractID", cascade = {CascadeType.REFRESH, CascadeType.REMOVE, CascadeType.DETACH})
     @JsonBackReference(value="client")
     private ClientsSqlDao client;
+    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.REMOVE,CascadeType.DETACH})
+    @JsonBackReference(value="oldContracts")
+    private ClientsSqlDao oldClient;
 
-
-
+    public boolean setOldClient(ClientsSqlDao lient){
+        this.oldClient = lient;
+        return true;
+    }
+    public ClientsSqlDao getOldClient(){
+        return this.oldClient;
+    }
     public boolean setCompName(String new_CompName){ //prototype
         this.compName = new_CompName;
         return true;

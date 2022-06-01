@@ -106,7 +106,9 @@
               contact: $scope.cont.contact,
               totalSumm: $scope.cont.totalSumm,
               num: $scope.cont.contractId,
+              tempStr: $scope.cont.oldcontract,
               contractId : null,
+              oldContracts: null,
             }
           }).then(function (response) {
 
@@ -225,7 +227,11 @@
           <td >{{client.name}}</td>
           <td >{{client.contact}}</td>
           <td >{{client.num}}</td>
-          <td></td>
+          <td>
+              <a href="/contracts" ng-repeat="old in client.oldContracts">
+                {{old.id}}
+              </a>
+          </td>
           <td >{{client.totalSumm}}</td>
           <td>
             <div class="d-grid gap-2">

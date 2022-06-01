@@ -11,10 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.swing.*;
 import java.io.FileOutputStream;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,6 +51,20 @@ public class ClientServiceImpl implements ClientService{
         contract.setPrice();
         contractsRepo.save(contract);
         company.setContractId(contract);
+        String[] array = company.getTempStr().split(",");
+        List <Integer> intsList = new ArrayList<Integer>(array.length);
+        for (int i = 0; i < array.length; i++){
+            intsList.add(i, Integer.parseInt(array[i]));
+        }
+        System.out.println(intsList);
+        Iterable<ContractsSqlDao> cont = contractsRepo.findAllById(intsList);
+        List<ContractsSqlDao> target = new ArrayList<>();
+        cont.forEach(target::add);
+        company.setOldContracts(target);
+        for(int i = 0; i < target.size(); i++){
+            ContractsSqlDao tem = target.get(i);
+            tem.setOldClient(company);
+        }
         contract.setClient(company);
         company.setTotalSumm(contract.getPrice());
         List<ClientsSqlDao> clie = Arrays.asList(company);

@@ -40,6 +40,7 @@ public class DeviceServiceImpl implements DeviceService{
         for (int i = 0; i < array.length; i++){
             intsList.add(i, Integer.parseInt(array[i]));
         }
+
         Iterable<ContractsSqlDao> cont = contractsRepo.findAllById(intsList);
         List<ContractsSqlDao> target = new ArrayList<>();
         cont.forEach(target::add);

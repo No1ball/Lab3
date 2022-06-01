@@ -207,7 +207,7 @@
                     <td>Relevance</td>
                     <td>fDate</td>
                     <td>lDate</td>
-                    <td>Price</td>
+                    <td>id</td>
                     <td>Equipments</td>
                     <td>Button</td>
                 </tr>
@@ -220,8 +220,12 @@
                     <td>{{contract.relevance}}</td>
                     <td>{{contract.fdate}}</td>
                     <td>{{contract.ldate}}</td>
-                    <td>{{contract.price}}</td>
-                    <td>{{contract.equipments}}</td>
+                    <td>{{contract.id}}</td>
+                    <td>
+                        <a href="/equpments" ng-repeat="old in contract.equipments">
+                            {{old.name}}
+                        </a>
+                    </td>
                     <td>
                         <div class="d-grid gap-2">
                             <button class="btn btn-outline-primary btn-sm" ng-click="delete(contract)" type="button">
