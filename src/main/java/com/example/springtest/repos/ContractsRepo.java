@@ -11,5 +11,5 @@ public interface ContractsRepo extends CrudRepository<ContractsSqlDao, Integer> 
     List<ContractsSqlDao> findByCompNameContainingIgnoreCaseOrderByCompName(String name);
 
     List <ContractsSqlDao> findAll();
-    //написать прямой запрос в бд
+
 }

@@ -16,7 +16,7 @@ public class ClientsSqlDao extends CompanySqlDAO {
     private int totalSumm = -1;
     @OneToOne(cascade = {CascadeType.REFRESH, CascadeType.REMOVE,CascadeType.DETACH})
     @JoinColumn(name = "contractNumber")
-    @JsonManagedReference
+    @JsonManagedReference(value="client")
     private ContractsSqlDao contractID;
 
     private int num;

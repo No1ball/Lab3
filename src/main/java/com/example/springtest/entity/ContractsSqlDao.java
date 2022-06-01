@@ -3,6 +3,8 @@ package com.example.springtest.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.apache.logging.log4j.message.StringFormattedMessage;
 
 import javax.persistence.*;
 
@@ -26,14 +28,16 @@ public class ContractsSqlDao {
     @Column(name = "price")
     private int price;
 
-    @ManyToMany(targetEntity = DevicesSqlDao.class)
+    @ManyToMany(targetEntity = DevicesSqlDao.class, fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.REMOVE, CascadeType.DETACH})
     @JoinTable (name="equipments",
             joinColumns=@JoinColumn (name="Id"),
-            inverseJoinColumns=@JoinColumn(name="count"))
+            inverseJoinColumns={@JoinColumn(name="count")})
     private List<DevicesSqlDao> equipments;
     @OneToOne(mappedBy = "contractID", cascade = {CascadeType.REFRESH, CascadeType.REMOVE, CascadeType.DETACH})
-    @JsonBackReference
+    @JsonBackReference(value="client")
     private ClientsSqlDao client;
+
+
 
 
     public boolean setCompName(String new_CompName){ //prototype
@@ -107,5 +111,9 @@ public class ContractsSqlDao {
 
     public ClientsSqlDao getClient(){
         return this.client;
+    }
+    public boolean setOneEquip(DevicesSqlDao one){
+        this.equipments.add(one);
+        return true;
     }
 }
