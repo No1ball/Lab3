@@ -31,10 +31,9 @@ public class ContractsServiceImpl  implements  ContractsService{
     public ContractsSqlDao putDec(int id, ContractsSqlDao devices){
         ContractsSqlDao contract = contractsRepo.findById(id).orElseThrow();
         contract.setCompName(devices.getCompName());
-        contract.setPrice(devices.getPrice());
         contract.setLDate(devices.getDateLDate());
         contract.setFDate(devices.getDateFDate());
-        contract.setPrice(devices.getPrice());
+        contract.setPrice();
         contract.setRelevance();
         return contractsRepo.save(contract);
     }

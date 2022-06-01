@@ -55,7 +55,7 @@ public class CompanyServiceImpl implements CompanyService{
             contract.setCompName(client.getName());
             contract.setLDate(new Date());
             contract.setFDate(new Date());
-            contract.setPrice(client.getTotalSumm());
+            contract.setPrice();
             contractsRepo.save(contract);
         }
         clien.setContractId(contract);

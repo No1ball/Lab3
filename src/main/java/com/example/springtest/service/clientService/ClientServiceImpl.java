@@ -26,7 +26,7 @@ public class ClientServiceImpl implements ClientService{
     @Override
     public List<ClientsSqlDao> getCompany(){
         List<ClientsSqlDao> fullList = clientsRepo.findAll();
-        List<ClientsSqlDao> listComp = fullList.stream().filter(element->(element.getTotalSumm()>0)).collect(Collectors.toList());
+        List<ClientsSqlDao> listComp = fullList.stream().filter(element->(element.getTotalSumm()>=0)).collect(Collectors.toList());
         return listComp;
     }
     @Override
@@ -51,10 +51,11 @@ public class ClientServiceImpl implements ClientService{
         contract.setCompName(company.getName());
         contract.setLDate(new Date());
         contract.setFDate(new Date());
-        contract.setPrice(company.getTotalSumm());
+        contract.setPrice();
         contractsRepo.save(contract);
         company.setContractId(contract);
         contract.setClient(company);
+        company.setTotalSumm(contract.getPrice());
         List<ClientsSqlDao> clie = Arrays.asList(company);
         return clientsRepo.saveAll(clie);
     }
@@ -62,13 +63,13 @@ public class ClientServiceImpl implements ClientService{
     @Override
     public List<ClientsSqlDao> topClient(){
         List<ClientsSqlDao> client = clientsRepo.findAll();
-        List<ClientsSqlDao> listComp = client.stream().filter(element->(element.getTotalSumm()>0)).collect(Collectors.toList());
+        List<ClientsSqlDao> listComp = client.stream().filter(element->(element.getTotalSumm()>=0)).collect(Collectors.toList());
         return listComp.stream().sorted(Comparator.comparingInt(ClientsSqlDao::getTotalSumm).reversed()).collect(Collectors.toList());
     }
     @Override
     public List<ClientsSqlDao> searchCompany(String name){
         List<ClientsSqlDao> client = clientsRepo.findByNameContainsIgnoreCaseOrderByName(name);
-        return client.stream().filter(element->(element.getTotalSumm()>0)).collect(Collectors.toList());
+        return client.stream().filter(element->(element.getTotalSumm()>=0)).collect(Collectors.toList());
 
     }
     @Override

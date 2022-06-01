@@ -26,7 +26,7 @@ public class ContractsSqlDao {
     @Column(name = "l_date")
     private Date ldate;
     @Column(name = "price")
-    private int price;
+    private int price = 0;
 
     @ManyToMany(targetEntity = DevicesSqlDao.class, fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.REMOVE, CascadeType.DETACH})
     @JoinTable (name="equipments",
@@ -36,7 +36,6 @@ public class ContractsSqlDao {
     @OneToOne(mappedBy = "contractID", cascade = {CascadeType.REFRESH, CascadeType.REMOVE, CascadeType.DETACH})
     @JsonBackReference(value="client")
     private ClientsSqlDao client;
-
 
 
 
@@ -63,8 +62,15 @@ public class ContractsSqlDao {
         return true;
     }
 
-    public boolean setPrice(int new_price){ //prototype
-        this.price = new_price;
+    public boolean setPrice(){ //prototype
+        int temp = 0;
+        if(this.equipments!=null){
+            for (int i = 0; i < this.equipments.size();i++){
+                DevicesSqlDao t = this.equipments.get(i);
+                temp += t.getTotalSumm();
+            }
+        }
+        this.price = temp;
         return true;
     }
 

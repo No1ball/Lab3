@@ -47,6 +47,7 @@ public class DeviceServiceImpl implements DeviceService{
         for(int i = 0; i < target.size(); i++){
             ContractsSqlDao tem= target.get(i);
             tem.setOneEquip(devices);
+            tem.setPrice();
         }
         List<DevicesSqlDao>dev = Arrays.asList(devices);
         return devicesRepo.saveAll(dev);
