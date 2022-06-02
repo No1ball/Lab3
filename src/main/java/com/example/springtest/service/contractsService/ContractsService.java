@@ -15,7 +15,7 @@ public interface ContractsService<T> {
     void delDev(int id);
 
     T putDec(int id, ContractsSqlDao devices);
-
+    T viewId(int id);
     T getDevices();
 
     List<ContractsSqlDao> getRelev();

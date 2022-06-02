@@ -20,8 +20,10 @@
     $scope.edcontid = 13;
     $scope.edcontname = "name";
     $scope.edcontcontact = 13;
+    $scope.edcontcontractId = 0;
     $scope.pdfState = 0;
     $scope.search = "";
+    $scope.oldCntr = [];
     $scope.getDevice = function(){
       $http({
         url: '/client',
@@ -58,7 +60,6 @@
     $scope.getDevice();
 
     $scope.delete = function(fcont){
-      console.log(fcont.id);
       $http.delete("/client/del/" + fcont.id).then(fcontacts=>{
         let ix = $scope.fcontacts.map(fcont=>fcont.id).indexOf(fcont.id);
         $scope.fcontacts.splice(ix,1);
@@ -71,32 +72,14 @@
         $scope.fcontacts = resp.data;
       });
     }
-    $scope.saveContract = function(){
-      $http({
-        url: '/add_contracts',
-        method: 'POST',
-        data: {
-              id: $scope.cont.contractId,
-              compName: $scope.cont.name,
-              relevance: null,
-              fdate: "2022-05-30",
-              ldate: "2022-05-31",
-              price: 0,
-              equipments: null,
-              client: null,
-            }
-          }).then(function (response) {
-            console.log(response);
-
-          });
+    $scope.editContra = function(edcontcontractId){
+      $http.delete("/client/del/onlyContractId/" + edcontcontractId).then(function (response) {
+        $scope.getDevice();
+      });
     }
-
-
-
     $scope.saveDevice = function(){
       if($scope.cont.name != null && $scope.cont.name !="") {
         if($scope.cont.contact != null && $scope.cont.contact !="") {
-          //$scope.saveContract()
           $http({
             url: '/add_clients',
             method: 'POST',
@@ -104,9 +87,9 @@
               id: $scope.cont.id,
               name: $scope.cont.name,
               contact: $scope.cont.contact,
-              totalSumm: $scope.cont.totalSumm,
+              totalSumm: null,
               num: $scope.cont.contractId,
-              tempStr: $scope.cont.oldcontract,
+              tempStr: null,
               contractId : null,
               oldContracts: null,
             }
@@ -126,15 +109,43 @@
         alert("Вы оставили важные поля пустыми!1");
       }
     }
+    $scope.toOldContract = function (id){
+      $http.put("/client/toOld/"+id).then(function (response) {
+        console.log(response.data);
+        $scope.getDevice();
+      });
+    }
+
+    $scope.delOldCntr = function(contract){
+      $http.delete("/contracts/del/" + contract).then(oldCntr=>{
+        let ix = $scope.oldCntr.map(contract=>contract).indexOf(contract);
+        $scope.oldCntr.splice(ix,1);
+      });
+    }
+    $scope.delNowCntr = function(contract){
+      $http.delete("/contracts/del/" + contract).then(function (response) {
+        console.log(response.data);
+        $scope.getDevice();
+      });
+    }
     $scope.s = function(devic){
       $scope.edcontid = devic.id;
       $scope.edcontname = devic.name;
       $scope.edcontcontact = devic.contact;
-
-
+      $scope.edcontcontractId = devic.num;
+      $scope.oldCntr = devic.oldContracts;
     }
-
     $scope.edit = function(){
+      if($scope.edcont.name == "" || $scope.edcont.name == null){
+        $scope.edcont.name = $scope.edcontname;
+      }
+      if($scope.edcont.contact == "" || $scope.edcont.contact==null){
+        $scope.edcont.contact = $scope.edcontcontact;
+      }
+      if($scope.edcont.contract == 0 || $scope.edcont.contract==null){
+        $scope.edcont.contract =  $scope.edcontcontractId;
+      }
+      console.log($scope.edcont.name, $scope.edcont.contact, $scope.edcont.contract);
       $http
       ({
         url:"/client/ed/" + $scope.edcontid,
@@ -143,9 +154,11 @@
           id: $scope.edcontid,
           name: $scope.edcont.name,
           contact: $scope.edcont.contact,
-          totalSumm: $scope.edcont.totalSumm,
-          contractId: null,
           num: $scope.edcont.contract,
+          totalSumm: null,
+          contractId: null,
+          oldContracts: null,
+          tempStr: null,
         }
       }).then(function (response) {
         console.log(response.data);
@@ -215,6 +228,7 @@
           <td>Name</td>
           <td>Contact</td>
           <td>ContractID</td>
+          <td>Supper button</td>
           <td>OldCntrctID</td>
           <td>Total Summ</td>
           <td>Button</td>
@@ -226,18 +240,27 @@
           <td>{{$index+1}}</td>
           <td >{{client.name}}</td>
           <td >{{client.contact}}</td>
-          <td >{{client.num}}</td>
+          <td ><a href="/contracts/view/{{client.num}}" >{{client.num}}</a></td>
           <td>
-              <a href="/contracts" ng-repeat="old in client.oldContracts">
-                {{old.id}}
-              </a>
+            <form>
+              <button class="btn btn-primary btn-sm" type="button" ng-click="toOldContract(client.id)">Перевести в старые</button>
+            </form>
+          </td>
+          <td>
+              <span  ng-repeat="old in client.oldContracts">
+                  <a href="/contracts/view/{{old.id}}" >{{old.id}}</a>
+              </span>
           </td>
           <td >{{client.totalSumm}}</td>
           <td>
-            <div class="d-grid gap-2">
+            <div class="d-grid gap-2 d-md-block">
+              <button class="btn btn-outline-primary btn-sm" ng-click="delNowCntr(client.num)" type="button">
+                Удалить текущий контракт
+              </button>
               <button class="btn btn-outline-primary btn-sm" ng-click="delete(client)" type="button">
                 Удалить
               </button>
+              <a class="btn btn-outline-primary btn-sm" href="#zat1" role="button" ng-click="s(client)">Старые контракты</a>
               <a class="btn btn-outline-primary btn-sm" href="#zat" role="button" ng-click="s(client)">Редактировать</a>
             </div>
           </td>
@@ -256,13 +279,11 @@
               <td>
                 <input class="form-control" ng-model="cont.contractId" type="text" id = "devame" placeholder = "Search Name" >
               </td>
+              <td></td>
               <td>
-                <input class="form-control" ng-model="cont.oldcontract" type="text" id = "oddevName" placeholder = "Search Name" >
               </td>
               <td>
-                <input class="form-control" ng-model="cont.totalSumm" type="text" id = "oldeve" placeholder = "Search Name" >
               </td>
-
               <td class="mai">
                 <button class="btn btn-primary" type="button" ng-click="saveDevice()">Добавить</button>
               </td>
@@ -272,7 +293,31 @@
 
       </table>
     </div>
+    <div id="zat1">
+      <div id="form1">
 
+        <table class="table">
+          <thead>
+            <tr>
+              <td>№</td>
+              <td>ContractId</td>
+              <td>Button</td>
+            </tr>
+          </thead>
+          <tr ng-repeat="client in oldCntr track by $index">
+            <td>{{$index + 1}}</td>
+            <td>{{client.id}}</td>
+            <td>
+              <form>
+                <button class="btn btn-primary" type="button" ng-click="delNowCntr($scope.edcontcontractId)">Удалить</button>
+              </form>
+            </td>
+          </tr>
+        </table>
+        <a href="#"><button type="button" class="btn btn-primary" aria-label="Close">Закрыть</button></a>
+
+      </div>
+    </div>
 
     <div id="zat">
       <div id="form">
@@ -282,8 +327,6 @@
             <td>Name</td>
             <td>Contact</td>
             <td>ContractID</td>
-            <td>OldCntrctID</td>
-            <td>Total Summ</td>
           </tr>
           <tr><form>
             <td>
@@ -295,19 +338,15 @@
             <td>
               <input class="form-control" ng-model="edcont.contract" type="text" id = "devName" placeholder = "Search Name" >
             </td>
-            <td>
-              <input class="form-control" ng-model="edcont.oldcontract" type="text" id = "olddevName" placeholder = "Search Name" >
-            </td>
-            <td>
-              <input class="form-control" ng-model="edcont.totalSumm" type="text" id = "olddeve" placeholder = "Search Name" >
-            </td>
           </form>
           </tr>
         </table>
         <a href="#"><button type="button" class="btn btn-primary" aria-label="Close">Закрыть</button></a>
-
+        <button class="btn btn-primary" ng-click="editContra(edcontid)" type="button">
+          Отвязать текущий контракт от клиента
+        </button>
         <button class="btn btn-primary" ng-click="edit()" type="button">
-          Редактировать
+          Сохранить изменения
         </button>
       </div>
     </div>

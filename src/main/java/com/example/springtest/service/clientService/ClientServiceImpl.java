@@ -34,39 +34,62 @@ public class ClientServiceImpl implements ClientService{
     public ClientsSqlDao putCompany(int id, ClientsSqlDao company){
         ClientsSqlDao comp = clientsRepo.findById(id).orElseThrow();
         ContractsSqlDao contract;
-        contract = contractsRepo.findById(company.getNum()).orElseThrow();
         comp.setName(company.getName());
         comp.setContact(company.getContact());
-        company.setContractId(contract);
-        comp.setTotalSumm(company.getTotalSumm());
+        if(company.getNum()!= 0){
+            if(comp.getNum() != 0){
+                contract = contractsRepo.findById(comp.getNum()).orElseThrow();
+                contract.setClient(null);
+            }
+            contract = contractsRepo.findById(company.getNum()).orElseThrow();
+            contract.setClient(comp);
+            comp.setContractId(contract);
+            comp.setNum(contract.getId());
+            contract.setCompName(comp.getName());
+            comp.setTotalSumm(comp.getTotalSumm()+contract.getPrice());
+        }
+
         return clientsRepo.save(comp);
+    }
+    @Override
+    public Iterable<ClientsSqlDao> toOld(int id){
+        ClientsSqlDao company = clientsRepo.findById(id).orElseThrow();
+        company.addOldContract(company.getContractId());
+        ContractsSqlDao cont = contractsRepo.findById(company.getContractId().getId()).orElseThrow();
+        cont.setClient(null);
+        cont.setOldClient(company);
+        company.setContractId(null);
+        company.setNum(0);
+        List<ClientsSqlDao> clie = Arrays.asList(company);
+        return clientsRepo.saveAll(clie);
+    }
+
+    @Override
+    public Iterable<ClientsSqlDao> noContractId(int id){
+        ClientsSqlDao clie = clientsRepo.findById(id).orElseThrow();
+        ContractsSqlDao contr = clie.getContractId();
+        clie.setTotalSumm(clie.getTotalSumm()-contr.getPrice());
+        contr.setClient(null);
+        clie.setContractId(null);
+        clie.setNum(0);
+        return clientsRepo.saveAll(Arrays.asList(clie));
     }
     @Override
     public Iterable<ClientsSqlDao> addCompany(ClientsSqlDao company){
         ContractsSqlDao contract = new ContractsSqlDao();
-        contract.setId(company.getNum());
-        contract.setCompName(company.getName());
-        contract.setLDate(new Date());
-        contract.setFDate(new Date());
-        contract.setPrice();
-        contractsRepo.save(contract);
-        company.setContractId(contract);
-        String[] array = company.getTempStr().split(",");
-        List <Integer> intsList = new ArrayList<Integer>(array.length);
-        for (int i = 0; i < array.length; i++){
-            intsList.add(i, Integer.parseInt(array[i]));
+        if(company.getNum() != 0){
+            contract.setId(company.getNum());
+            contract.setCompName(company.getName());
+            contract.setLDate(new Date());
+            contract.setFDate(new Date());
+            contract.setPrice();
+            contractsRepo.save(contract);
+            company.setContractId(contract);
+            contract.setClient(company);
+            company.setTotalSumm(contract.getPrice());
+        }else{
+            company.setTotalSumm(0);
         }
-        System.out.println(intsList);
-        Iterable<ContractsSqlDao> cont = contractsRepo.findAllById(intsList);
-        List<ContractsSqlDao> target = new ArrayList<>();
-        cont.forEach(target::add);
-        company.setOldContracts(target);
-        for(int i = 0; i < target.size(); i++){
-            ContractsSqlDao tem = target.get(i);
-            tem.setOldClient(company);
-        }
-        contract.setClient(company);
-        company.setTotalSumm(contract.getPrice());
         List<ClientsSqlDao> clie = Arrays.asList(company);
         return clientsRepo.saveAll(clie);
     }
@@ -81,7 +104,6 @@ public class ClientServiceImpl implements ClientService{
     public List<ClientsSqlDao> searchCompany(String name){
         List<ClientsSqlDao> client = clientsRepo.findByNameContainsIgnoreCaseOrderByName(name);
         return client.stream().filter(element->(element.getTotalSumm()>=0)).collect(Collectors.toList());
-
     }
     @Override
     public void toPdf(String name){

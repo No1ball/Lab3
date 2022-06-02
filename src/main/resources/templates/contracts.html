@@ -64,6 +64,7 @@
             }).then(resp=>{
                 $scope.contracts = resp.data;
                 console.log(resp.data);
+                console.log(window.location.href);
             });
         }
         $scope.searchDevice = function(){
@@ -110,7 +111,6 @@
         }
         $scope.saveDevice = function(){
             if($scope.contrac.compName != null && $scope.contrac.compName !="") {
-
                     if($scope.contrac.price!= null && isFinite($scope.contrac.price) !=false){
                         $http({
                             url: '/add_contracts',
@@ -200,7 +200,6 @@
         <div class="d-flex justify-content-end">
             <table class="table">
                 <thead class="thead-dark">
-
                 <tr>
                     <td>№</td>
                     <td>Name</td>
@@ -211,9 +210,7 @@
                     <td>Equipments</td>
                     <td>Button</td>
                 </tr>
-
                 </thead>
-
                 <tr ng-repeat="contract in contracts track by $index" >
                     <td>{{$index+1}}</td>
                     <td>{{contract.compName}}</td>
@@ -223,7 +220,7 @@
                     <td>{{contract.id}}</td>
                     <td>
                         <a href="/equpments" ng-repeat="old in contract.equipments">
-                            {{old.name}}
+                            {{old.name}} x{{old.countSale}}
                         </a>
                     </td>
                     <td>
@@ -240,7 +237,6 @@
                     <div class="row">
                         <form>
                             <td>
-                                <input class="form-control" ng-model="contrac.Id" type="text" id = "contrme" placeholder = "Input Name" >
                             </td>
                             <td class="mai">
                                 <input class="form-control" ng-model="contrac.compName" type="text" id = "contractName" placeholder = "Input Name" >
@@ -254,7 +250,7 @@
                                 <input class="form-control" ng-model="contrac.ldate" type="text" id = "contractldate" placeholder = "Input Count Sale" >
                             </td>
                             <td class="mai">
-                                <input class="form-control" ng-model="contrac.price" type="text" id = "contractprice" placeholder = "Input Count Sale" >
+                                <input class="form-control" ng-model="contrac.Id" type="text" id = "contractprice" placeholder = "Input Count Sale" >
                             </td>
                             <td class="mai">
                                 <input class="form-control" type="text" name = "q" placeholder = "Input cntrct id" >

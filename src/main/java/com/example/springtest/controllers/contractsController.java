@@ -39,7 +39,17 @@ public class contractsController {
     public ResponseEntity search(@RequestParam("name") String name){
         return  ResponseEntity.ok(contractsService.searchCompName(name));
     }
-
+    @GetMapping("/contracts/view/{id}")
+    public String find(@PathVariable("id") int id){
+        if(id == 0){
+            return "clients";
+        }else{
+        return "contracts/{id}";}
+    }
+    @GetMapping("/contracts/ht/{id}")
+    public ResponseEntity findId(@PathVariable("id") int id){
+        return ResponseEntity.ok(contractsService.viewId(id));
+    }
     @GetMapping("/contracts/relev")
     public ResponseEntity getRelev(){
         return ResponseEntity.ok(contractsService.getRelev());

@@ -27,6 +27,11 @@ public class ClientsSqlDao extends CompanySqlDAO {
         this.tempStr= new_CompName;
         return true;
     }
+
+    public boolean addOldContract(ContractsSqlDao old){
+        this.oldContracts.add(old);
+        return true;
+    }
     public String getTempStr(){
         return this.tempStr;
     }

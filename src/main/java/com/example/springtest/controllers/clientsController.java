@@ -20,7 +20,14 @@ public class clientsController {
     public ResponseEntity saveClient(@RequestBody ClientsSqlDao client){
         return ResponseEntity.ok(clientsService.addCompany(client));
     }
-
+    @DeleteMapping("/client/del/onlyContractId/{id}")
+    public ResponseEntity on1(@PathVariable("id") int id){
+        return ResponseEntity.ok(clientsService.noContractId(id));
+    }
+    @PutMapping("/client/toOld/{id}")
+    public ResponseEntity toOld(@PathVariable("id") int id){
+        return ResponseEntity.ok(clientsService.toOld(id));
+    }
     @GetMapping("/client")
     public ResponseEntity getClient(){
         return ResponseEntity.ok(clientsService.getCompany());

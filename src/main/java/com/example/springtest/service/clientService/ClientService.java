@@ -10,7 +10,8 @@ public interface ClientService<T> {
     void delCompany(int id);
     T putCompany(int id, ClientsSqlDao company);
     T addCompany(ClientsSqlDao company);
-
+    T toOld(int id);
+    T noContractId(int id);
     T topClient();
     T searchCompany(String name);
     void toPdf(String name);
