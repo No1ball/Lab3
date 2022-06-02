@@ -1,6 +1,9 @@
 package com.example.springtest.service.deviceService.impl;
 
+import com.example.springtest.entity.ClientsSqlDao;
+import com.example.springtest.entity.ContractsSqlDao;
 import com.example.springtest.entity.DevicesSqlDao;
+import com.example.springtest.repos.ContractsRepo;
 import com.example.springtest.repos.DevicesRepo;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
@@ -14,23 +17,41 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.FileOutputStream;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Service
 public class DeviceServiceImpl implements DeviceService{
     @Autowired
     private DevicesRepo devicesRepo;
+    @Autowired
+    private ContractsRepo contractsRepo;
     public static final String FONT = "./src/main/resources/arialmt.ttf";
     @Override
     public List<DevicesSqlDao> search(String name){
         return devicesRepo.findByNameContainingIgnoreCaseOrderByName(name);
     }
     @Override
-    public DevicesSqlDao addDevice(DevicesSqlDao devices){
+    public Iterable<DevicesSqlDao> addDevice(DevicesSqlDao devices){
         devices.setTotalSumm();
-        return devicesRepo.save(devices);
+        String[] array = devices.getTempStr().split(",");
+        List <Integer> intsList = new ArrayList<Integer>(array.length);
+        for (int i = 0; i < array.length; i++){
+            intsList.add(i, Integer.parseInt(array[i]));
+        }
+
+        Iterable<ContractsSqlDao> cont = contractsRepo.findAllById(intsList);
+        List<ContractsSqlDao> target = new ArrayList<>();
+        cont.forEach(target::add);
+        devices.setContract(target);
+        for(int i = 0; i < target.size(); i++){
+            ContractsSqlDao tem= target.get(i);
+            tem.setOneEquip(devices);
+            tem.setPrice();
+        }
+        List<DevicesSqlDao>dev = Arrays.asList(devices);
+        return devicesRepo.saveAll(dev);
     }
     @Override
     public void delDev(int id){

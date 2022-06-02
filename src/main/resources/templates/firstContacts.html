@@ -75,8 +75,10 @@
                     name: $scope.edcontname,
                     contact: $scope.edcontcontact,
                     totalSumm: $scope.client.totalSumm,
-                    contractId: $scope.client.contract,
-                    oldContractID: null,
+                    contractId: null,
+                    num:$scope.client.contract,
+                    tempStr: null,
+                    oldContracts: null,
                 }
             }).then(function (response) {
                 console.log(response.data);
@@ -96,9 +98,10 @@
                             id: $scope.cont.id,
                             name: $scope.cont.name,
                             contact: $scope.cont.contact,
-                            totalSumm: null,
+                            totalSumm: -1,
                             contractId: null,
-                            oldContractID: null,
+                            tempStr: null,
+                            oldContracts: null,
                         }
                     }).then(function (response) {
                         console.log(response);
@@ -131,7 +134,7 @@
                     contact: $scope.edcont.contact,
                     totalSumm: null,
                     contractId: null,
-                    oldContractID: null,
+                    num:null,
                 }
             }).then(function (response) {
                 console.log(response.data);

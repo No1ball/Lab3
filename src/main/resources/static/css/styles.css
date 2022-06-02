@@ -164,7 +164,40 @@ td:last-child{
     background: #fff;
 }
 
-
+#zat {
+    background: rgba(102, 102, 102, 0.5);
+    width: 750px;
+    height: 200px;
+    position: absolute;
+    top: 150px;
+    left: 150px;
+    display: none;
+}
+#zat1:target {display: block;}
+#form1{
+    width: 1300px;
+    text-align: center;
+    padding: 15px;
+    border: 3px solid rgba(30,29,29,0.94);
+    border-radius: 10px;
+    color: rgba(30,29,29,0.94);
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    background: #fff;
+}
+#zat1 {
+    background: rgba(102, 102, 102, 0.5);
+    width: 750px;
+    height: 50%;
+    position: absolute;
+    top: 150px;
+    left: 150px;
+    display: none;
+}
 .close {
     display: inline-block;
     border: 1px solid #0000cc;

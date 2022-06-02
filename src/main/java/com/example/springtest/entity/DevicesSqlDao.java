@@ -1,5 +1,8 @@
 package com.example.springtest.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -21,8 +24,18 @@ public class DevicesSqlDao {
 
 
     @ManyToMany(mappedBy = "equipments")
+    @JsonBackReference(value="test")
     private List<ContractsSqlDao> contract;
 
+    private String tempStr;
+
+    public boolean setTempStr(String newname){
+        this.tempStr = newname;
+        return true;
+    }
+    public String getTempStr(){
+        return this.tempStr;
+    }
     public boolean setId(int new_id) {
         this.id = new_id;
         return true;

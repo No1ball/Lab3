@@ -17,6 +17,7 @@
     app.controller("CREATE_DEVICE_CTRL", function($scope, $http){
         console.log("check");
         $scope.devices = [];
+        $scope.contracts = [];
         $scope.eddevid = 13;
         $scope.eddevname = "name";
         $scope.eddevprice = 13;
@@ -96,6 +97,7 @@
             if($scope.device.name != null && $scope.device.name !="") {
                 if($scope.device.price!=null && $scope.device.price!=0 && isFinite($scope.device.price)!=false){
                     if($scope.device.count!= null && isFinite($scope.device.count) !=false){
+                        $scope.contracts = $scope.device.contract;
                         $http({
                             url: '/add_device',
                             method: 'POST',
@@ -105,13 +107,15 @@
                                 price: $scope.device.price,
                                 countSale: $scope.device.count,
                                 contract: null,
+                                tempStr: $scope.contracts,
                             }
                         }).then(function (response) {
                             console.log(response);
                             $scope.getDevice();
                             $scope.device.name = null;
                             $scope.device.price = null;
-                            $scope.device.count = null
+                            $scope.device.count = null;
+                            console.log($scope.contracts);
                         });
                     }else{
                         alert("Вы оставили важные поля пустыми!3");
@@ -239,7 +243,7 @@
                 <td >{{devic.price}}</td>
                 <td >{{devic.countSale}}</td>
                 <td >{{devic.totalSumm}}</td>
-                <td>{{devic.contracts}}</td>
+                <td>{{devic.tempStr}}</td>
                 <td>
                     <div class="d-grid gap-2">
                     <button class="btn btn-outline-primary btn-sm" ng-click="delete(devic)" type="button">
@@ -266,7 +270,7 @@
                     <td>
                     </td>
                     <td class="mai">
-                        <input class="form-control" type="text" name = "q" placeholder = "Input cntrct id" >
+                        <input ng-model="device.contract" class="form-control" type="text" name = "q" placeholder = "Input cntrct id" >
                     </td>
                     <td class="mai">
                         <button class="btn btn-primary" type="button" ng-click="saveDevice()">Добавить</button>

@@ -4,19 +4,19 @@ import com.example.springtest.entity.ContractsSqlDao;
 
 import java.util.List;
 
-public interface ContractsService {
+public interface ContractsService<T> {
 
     void getPDF(int value, String name);
 
-    List<ContractsSqlDao> searchCompName(String name);
+    T searchCompName(String name);
 
-    ContractsSqlDao addDevice(ContractsSqlDao devices);
+    T addDevice(ContractsSqlDao devices);
 
     void delDev(int id);
 
-    ContractsSqlDao putDec(int id, ContractsSqlDao devices);
-
-    List<ContractsSqlDao> getDevices();
+    T putDec(int id, ContractsSqlDao devices);
+    T viewId(int id);
+    T getDevices();
 
     List<ContractsSqlDao> getRelev();
     List<ContractsSqlDao> getNotRelev();

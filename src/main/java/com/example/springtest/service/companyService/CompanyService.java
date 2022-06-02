@@ -4,12 +4,12 @@ import com.example.springtest.entity.ClientsSqlDao;
 
 import java.util.List;
 
-public interface CompanyService {
-    List <ClientsSqlDao> getCompany();
+public interface CompanyService<T> {
+    T getCompany();
     void delCompany(int id);
-    ClientsSqlDao putCompany(int id, ClientsSqlDao company);
-    ClientsSqlDao addCompany(ClientsSqlDao company);
-    ClientsSqlDao toClient(int id, ClientsSqlDao client);
-    List <ClientsSqlDao> searchCompany(String name);
+    T putCompany(int id, ClientsSqlDao company);
+    T addCompany(ClientsSqlDao company);
+    T toClient(int id, ClientsSqlDao client);
+    T searchCompany(String name);
     void toPdf(String name);
 }

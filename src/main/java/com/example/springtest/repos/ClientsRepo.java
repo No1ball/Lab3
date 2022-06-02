@@ -12,8 +12,9 @@ import java.util.List;
 
 // This will be AUTO IMPLEMENTED by Spring into a Bean called userRepository
 // CRUD refers Create, Read, Update, Delete
-
+@Repository
 public interface ClientsRepo extends CrudRepository<ClientsSqlDao, Integer>  {
     List<ClientsSqlDao> findAll();
     List<ClientsSqlDao> findByNameContainsIgnoreCaseOrderByName(String name);
+
 }
