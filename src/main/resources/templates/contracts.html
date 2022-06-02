@@ -111,7 +111,7 @@
         }
         $scope.saveDevice = function(){
             if($scope.contrac.compName != null && $scope.contrac.compName !="") {
-                    if($scope.contrac.price!= null && isFinite($scope.contrac.price) !=false){
+
                         $http({
                             url: '/add_contracts',
                             method: 'POST',
@@ -122,6 +122,7 @@
                                 fdate: $scope.contrac.fdate,
                                 ldate: $scope.contrac.ldate,
                                 price: $scope.contrac.price,
+                                tempStr: $scope.contrac.equip,
                                 equipments: null,
                                 client: null,
                             }
@@ -134,9 +135,7 @@
                             $scope.contrac.ldate = null;
                             $scope.contrac.price = null;
                         });
-                    }else{
-                        alert("Вы оставили важные поля пустыми!3");
-                    }
+
             }else{
                 alert("Вы оставили важные поля пустыми!1");
             }
@@ -253,7 +252,7 @@
                                 <input class="form-control" ng-model="contrac.Id" type="text" id = "contractprice" placeholder = "Input Count Sale" >
                             </td>
                             <td class="mai">
-                                <input class="form-control" type="text" name = "q" placeholder = "Input cntrct id" >
+                                <input class="form-control" ng-model="contrac.equip" type="text" name = "q" placeholder = "Input cntrct id" >
                             </td>
                             <td class="mai">
                                 <button class="btn btn-primary" type="button" ng-click="saveDevice()">Добавить</button>

@@ -2,11 +2,14 @@ package com.example.springtest.service.contractsService;
 
 import com.example.springtest.entity.ClientsSqlDao;
 import com.example.springtest.entity.ContractsSqlDao;
+import com.example.springtest.entity.DevicesSqlDao;
 import com.example.springtest.repos.ClientsRepo;
 import com.example.springtest.repos.ContractsRepo;
+import com.example.springtest.repos.DevicesRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,6 +20,8 @@ public class ContractsServiceImpl  implements  ContractsService{
     private ContractsRepo contractsRepo;
     @Autowired
     private ClientsRepo clientsRepo;
+    @Autowired
+    private DevicesRepo devicesRepo;
     public static final String FONT = "./src/main/resources/arialmt.ttf";
     @Override
     public List<ContractsSqlDao> searchCompName(String name){
@@ -25,6 +30,22 @@ public class ContractsServiceImpl  implements  ContractsService{
     @Override
     public ContractsSqlDao addDevice(ContractsSqlDao devices){
         devices.setRelevance();
+        String[] array = devices.getTempStr().split(",");
+        List <Integer> intsList = new ArrayList<Integer>(array.length);
+        for (int i = 0; i < array.length; i++){
+            intsList.add(i, Integer.parseInt(array[i]));
+        }
+
+        Iterable<DevicesSqlDao> cont = devicesRepo.findAllById(intsList);
+        List<DevicesSqlDao> target = new ArrayList<>();
+        cont.forEach(target::add);
+        devices.setEquipments(target);
+        for(int i = 0; i < target.size(); i++){
+            DevicesSqlDao tem = target.get(i);
+            tem.setOneContract(devices);
+        }
+        devices.setPrice();
+        List<ContractsSqlDao>dev = Arrays.asList(devices);
         return contractsRepo.save(devices);
     }
     @Override

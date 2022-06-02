@@ -243,7 +243,12 @@
                 <td >{{devic.price}}</td>
                 <td >{{devic.countSale}}</td>
                 <td >{{devic.totalSumm}}</td>
-                <td>{{devic.tempStr}}</td>
+                <td>
+                    <a href="/contracts/view/{{old}}" ng-repeat="old in devic.tempStr">
+                        {{old}}
+                    </a>
+
+                </td>
                 <td>
                     <div class="d-grid gap-2">
                     <button class="btn btn-outline-primary btn-sm" ng-click="delete(devic)" type="button">
