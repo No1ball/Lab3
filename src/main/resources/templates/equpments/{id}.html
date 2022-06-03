@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../../css/styles.css" th:href="@{/css/styles.css}" type="text/css" media="all"  >
+    <title>My app</title>
+    <!-- Только CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous">
+    </script> <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js"></script>
+
+
+</head>
+<script type="text/javascript">
+
+    var app = angular.module("CREATE_DEVICE",[]);
+    app.controller("CREATE_DEVICE_CTRL", function($scope, $http){
+        console.log("check");
+        $scope.devic = [];
+        $scope.contracts = [];
+        $scope.eddevid = 13;
+        $scope.eddevname = "name";
+        $scope.eddevprice = 13;
+        $scope.eddevcount = 13;
+        $scope.pdfState = 0;
+        $scope.search = "";
+        $scope.id = window.location.pathname.split("/")[3];
+        $scope.getDevice = function(){
+            $http({
+                url: "/equpments/ht/"+$scope.id,
+                method: 'GET',
+            }).then(resp=>{
+                $scope.devic = resp.data;
+                console.log(resp.data);
+            });
+        }
+        $scope.searchDevice = function(){
+            $http({
+                url: '/equpments1?name='+$scope.search,
+                method: 'GET',
+            }).then(resp=>{
+                let dd = resp.data;
+                if(dd.length == 0){
+                    alert("Ничего не нашлось");
+                }
+                else {$scope.devices = resp.data;}
+                console.log(resp.data);
+                $scope.pdfState = 3;
+            });
+        }
+
+        $scope.getPdf = function(){
+            $http({
+                url: '/equpments/topdf?value='+$scope.pdfState+'&name='+$scope.search,
+                method: 'GET',
+            }).then(resp=>{
+
+            });
+        }
+
+        $scope.getDevice();
+
+        $scope.delete = function(devic){
+            $http.delete("/equpments/del/" + devic.id).then(devices=>{
+                let ix = $scope.devices.map(devic=>devic.id).indexOf(devic.id);
+                $scope.devices.splice(ix,1);
+
+            });
+        }
+
+        $scope.topCount = function(){
+            $http.get("/equpments/topCount?name="+$scope.search).then(resp=>{
+
+                console.log(resp.data);
+                if($scope.pdfState==3 || $scope.pdfState == 4 || $scope.pdfState == 5){
+                    $scope.pdfState = 4;
+                }else{
+                    $scope.pdfState = 1;
+                    $scope.search = '';
+                }
+                $scope.devices = resp.data;
+            });
+        }
+
+        $scope.topSumm = function (){
+            $http.get("/equpments/topSumm?name="+$scope.search).then(resp=>{
+                console.log(resp.data);
+                if($scope.pdfState == 3 || $scope.pdfState == 5 || $scope.pdfState == 4){
+                    $scope.pdfState = 5;
+                }else {
+                    $scope.pdfState = 2;
+                    $scope.search = '';
+                }
+                $scope.devices = resp.data;
+            });
+        }
+        $scope.saveDevice = function(){
+            if($scope.device.name != null && $scope.device.name !="") {
+                if($scope.device.price!=null && $scope.device.price!=0 && isFinite($scope.device.price)!=false){
+                    if($scope.device.count!= null && isFinite($scope.device.count) !=false){
+                        $scope.contracts = $scope.device.contract;
+                        $http({
+                            url: '/add_device',
+                            method: 'POST',
+                            data: {
+                                id: $scope.device.id,
+                                name: $scope.device.name,
+                                price: $scope.device.price,
+                                countSale: $scope.device.count,
+                                contract: null,
+                                tempStr: $scope.contracts,
+                            }
+                        }).then(function (response) {
+                            console.log(response);
+                            $scope.getDevice();
+                            $scope.device.name = null;
+                            $scope.device.price = null;
+                            $scope.device.count = null;
+                            console.log($scope.contracts);
+                        });
+                    }else{
+                        alert("Вы оставили важные поля пустыми!3");
+                    }
+                }else{
+                    alert("Вы оставили важные поля пустыми!2");
+                }
+            }else{
+                alert("Вы оставили важные поля пустыми!1");
+            }
+        }
+        $scope.s = function(devic){
+            $scope.eddevid = devic.id;
+            $scope.eddevname = devic.name;
+            $scope.eddevprice = devic.price;
+            $scope.eddevcount = devic.countSale;
+        }
+        $scope.edit = function(){
+            let k1 = $scope.eddevice.price;
+            let k2 = $scope.eddevice.count;
+            if($scope.eddevice.name == null || $scope.eddevice.name == ''){
+                $scope.eddevice.name = $scope.eddevname;
+            }
+            if($scope.eddevice.price == null || $scope.eddevice.price == 0 || isFinite($scope.eddevice.price)==false){
+                $scope.eddevice.price = $scope.eddevprice;
+            }
+            if($scope.eddevice.count == null || isFinite($scope.eddevice.count)==false){
+                $scope.eddevice.count = $scope.eddevcount;
+            }
+            if(isFinite(k1)==false) {
+                alert("Count не может быть строкой");
+            }else if(isFinite(k2)==false){
+                alert("Count не может быть строкой");
+            }
+            $http
+            ({
+                url:"/equpments/ed/" + $scope.eddevid,
+                method:'PUT',
+                data:{
+                    id: $scope.eddevid,
+                    name: $scope.eddevice.name,
+                    price: $scope.eddevice.price,
+                    countSale: $scope.eddevice.count,
+                    contract: null,
+                }
+            }).then(function (response) {
+                console.log(response.data);
+                $scope.getDevice();
+                $scope.eddevice.name = null;
+                $scope.eddevice.price = null;
+                $scope.eddevice.count = null;
+            });
+        }
+    });
+
+</script>
+<body ng-app="CREATE_DEVICE" ng-controller="CREATE_DEVICE_CTRL">
+<header class="sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Navbar</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Function
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                            <li><button type="button" class="dropdown-item" ng-click="topCount()">Top count</button></li>
+                            <li><button type="button" class="dropdown-item" ng-click="topSumm()">Top summ</button></li>
+                        </ul>
+
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <span id = "nameList">Equipments</span>
+        <form class="d-flex" id="search">
+            <input ng-model="search" type="search" name = "q" placeholder = "Search query" class="form-control me-2" aria-label="readonly input example">
+            <button class="btn btn-primary me-4" type="submit" ng-click="searchDevice()"> Go! </button>
+        </form>
+    </nav>
+
+</header>
+<main>
+    <section class = "rightPanel" row="col-xl" >
+
+        <article class = "list ">
+            <a href="../../clients" id="cliets" class="btn btn-outline-secondary text-white" role="button">Clients</a>
+            <a href="../../contracts" id="contracts" class="btn btn-outline-secondary text-white" role="button">Contracts</a>
+            <a href="../../equpments" id="equpments" class="btn btn-outline-secondary text-white" role="button">Equipments</a>
+            <a href="../../firstContacts" id="firstCon" class="btn btn-outline-secondary text-white" role="button">First contacts</a>
+
+            <article class="buttons">
+                <form>
+                    <button class="btn btn-outline-light" type="submit" id="save" ng-click="getPdf()">Save data</button>
+                </form>
+            </article>
+        </article>
+
+    </section>
+    <section class="table1">
+        <div class="d-flex justify-content-end">
+            <table class="table">
+                <thead class="thead-dark">
+
+                <tr>
+                    <th>№</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>CountSale</th>
+                    <th>TotalSumm</th>
+                    <th>Contract</th>
+                    <th>Buttons</th>
+                </tr>
+
+                </thead>
+
+                <tr >
+                    <td>1</td>
+                    <td >{{devic.name}}</td>
+                    <td >{{devic.price}}</td>
+                    <td >{{devic.countSale}}</td>
+                    <td >{{devic.totalSumm}}</td>
+                    <td>
+                        <a href="/contracts/view/{{old}}" ng-repeat="old in devic.tempStr">
+                            {{old}}
+                        </a>
+
+                    </td>
+                    <td>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-primary btn-sm" ng-click="delete(devic)" type="button">
+                                Удалить
+                            </button>
+                            <a class="btn btn-outline-primary btn-sm" href="#zat" role="button" ng-click="s(devic)">Редактировать</a>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <div class="row">
+                        <form>
+                            <td></td>
+                            <td class="mai">
+                                <input class="form-control" ng-model="device.name" type="text" id = "deviceName" placeholder = "Input Name" >
+                            </td>
+                            <td class="mai">
+                                <input class="form-control" ng-model="device.price" type="text" id = "devicePrice" placeholder = "Input Price" >
+                            </td >
+                            <td class="mai">
+                                <input class="form-control" ng-model="device.count" type="text" id = "deviceCount" placeholder = "Input Count Sale" >
+                            </td>
+                            <td>
+                            </td>
+                            <td class="mai">
+                                <input ng-model="device.contract" class="form-control" type="text" name = "q" placeholder = "Input cntrct id" >
+                            </td>
+                            <td class="mai">
+                                <button class="btn btn-primary" type="button" ng-click="saveDevice()">Добавить</button>
+                            </td>
+                        </form>
+                    </div>
+                </tr>
+
+            </table>
+        </div>
+
+        <div id="zat">
+            <div id="form">
+
+                <table class="table">
+                    <tr>
+                        <td >Name</td>
+                        <td >Price</td>
+                        <td >CountSale</td>
+                        <td >Contract</td>
+                    </tr>
+                    <tr><form>
+
+                        <td>
+                            <input class="form-control" ng-model="eddevice.name" type="text" id = "eddeviceName" placeholder = "Search Name" >
+                        </td>
+                        <td>
+                            <input class="form-control" ng-model="eddevice.price" type="text" id = "eddevicePrice" placeholder = "Search Price" >
+                        </td>
+                        <td>
+                            <input class="form-control" ng-model="eddevice.count" type="text" id = "eddeviceCount" placeholder = "Search Count Sale" >
+                        </td>
+                        <td>
+                            <input class="form-control" type="text" name = "q" placeholder = "Search query" >
+                        </td>
+
+                    </form>
+                    </tr>
+                </table>
+                <a href="#"><button type="button" class="btn btn-primary" aria-label="Close">Закрыть</button></a>
+
+                <button class="btn btn-primary" ng-click="edit()" type="button">
+                    Редактировать
+                </button>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

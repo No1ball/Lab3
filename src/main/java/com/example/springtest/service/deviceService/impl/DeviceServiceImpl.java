@@ -61,6 +61,10 @@ public class DeviceServiceImpl implements DeviceService{
         return devicesRepo.saveAll(Arrays.asList(clie));
     }
     @Override
+    public DevicesSqlDao viewId(int id){
+        return devicesRepo.findById(id).orElseThrow();
+    }
+    @Override
     public void delDev(int id){
         DevicesSqlDao contracts = devicesRepo.findById(id).orElseThrow();
         if(contracts.getContract()!=null){

@@ -117,10 +117,24 @@ public class ContractsServiceImpl  implements  ContractsService{
                 Iterable<DevicesSqlDao> cont = devicesRepo.findAllById(intsList);
                 List<DevicesSqlDao> target = new ArrayList<>();
                 cont.forEach(target::add);
+                for (DevicesSqlDao temp: target) {
+                    contract.setOneEquip(temp);
+                }
                 contract.setPrice();
-                contract.setEquipments(target);
-                contract.setTempStr(devices.getTempStr());
+                if(devices.getTempStr()!=null) {
+                    contract.setTempStr(devices.getTempStr());
+                }
                 devicesRepo.saveAll(target);
+                for (DevicesSqlDao temp: target) {
+                    List<ContractsSqlDao> contr = temp.getContract();
+                    String newStr = "";
+                    for (ContractsSqlDao cntrc: contr) {
+                        newStr.concat(String.valueOf(cntrc.getId()));
+                        //newStr.concat(" ");
+                    }
+                    System.out.print(newStr);
+                    temp.setTempStr(newStr);
+                }
             }
             if (contract.getClient() != null) {
                 contract.getClient().setTotalSumm(nowprice+contract.getPrice());

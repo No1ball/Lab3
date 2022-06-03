@@ -16,70 +16,56 @@
     var app = angular.module("CREATE_DEVICE",[]);
     app.controller("CREATE_DEVICE_CTRL", function($scope, $http){
         console.log("check");
+        $scope.id = window.location.pathname.split("/")[3];
+        console.log($scope.id);
         $scope.contracts = [];
         $scope.edconid = 13;
         $scope.edconcompName = "name";
-        $scope.edconTempStr = "";
+        $scope.edconprice = 13;
         $scope.edconfdate = 13;
         $scope.edconldate = 0;
         $scope.edconrelev = "";
         $scope.search = "";
-        $scope.oldCntr = [];
 
         $scope.s = function(edcontract){
             $scope.edconid = edcontract.id;
             $scope.edconcompName = edcontract.compName;
+            $scope.edconprice = edcontract.price;
             $scope.edconfdate = edcontract.fdate;
             $scope.edconldate = edcontract.ldate;
-            $scope.edconTempStr = edcontract.tempStr;
+            $scope.edconrelev = edcontract.relevance;
         }
         $scope.edit = function(){
-            if($scope.edcontrac.compName == null || $scope.edcontrac.compName == ""){
-                $scope.edcontrac.compName = $scope.edconcompName;
-            }
-            if($scope.edcontrac.fdate == null || $scope.edcontrac.fdate == ""){
-                $scope.edcontrac.fdate = $scope.edconfdate;
-            }
-            if($scope.edcontrac.ldate == null || $scope.edcontrac.ldate == ""){
-                $scope.edcontrac.ldate =$scope.edconldate;
-            }
-            if($scope.edcontrac.tempStr == null || $scope.edcontrac.tempStr == ""){
-                $scope.edcontrac.tempStr = $scope.edconTempStr;
-            }
-            if($scope.old==null) {
-                $http
-                ({
-                    url: "/contracts/ed/" + $scope.edconid,
-                    method: 'PUT',
-                    data: {
-                        id: $scope.edconid,
-                        compName: $scope.edcontrac.compName,
-                        fdate: $scope.edcontrac.fdate,
-                        ldate: $scope.edcontrac.ldate,
-                        tempStr: $scope.edcontrac.tempStr,
-                        relevance: null,
-                        price: null,
-                        equipments: null,
-                        client: null,
-                    }
-                }).then(function (response) {
-                    console.log(response.data);
-                    $scope.getDevice();
-                    $scope.edcontrac.compName = null;
-                    $scope.edcontrac.tempStr = null;
-                    $scope.edcontrac.ldate = null;
-                    $scope.edcontrac.fdate = null;
-                });
-            }else{alert("Невозможно редактировать старый контракт");}
+            $http
+            ({
+                url:"/contracts/ed/" + $scope.edconid,
+                method:'PUT',
+                data:{
+                    id: $scope.edconid,
+                    compName: $scope.edcontrac.compName,
+                    relevance: $scope.edcontrac.relev,
+                    fdate: $scope.edcontrac.fdate,
+                    ldate: $scope.edcontrac.ldate,
+                    price: $scope.edcontrac.price,
+                    equipments: null,
+                    client: null,
+                }
+            }).then(function (response) {
+                console.log(response.data);
+                $scope.getDevice();
+                $scope.edcontrac.compName = null;
+                $scope.edcontrac.price = null;
+                $scope.edcontrac.ldate = null;
+                $scope.edcontrac.fdate = null;
+            });
         }
         $scope.getDevice = function(){
             $http({
-                url: '/newcontracts',
+                url: "/contracts/ht/"+$scope.id,
                 method: 'GET',
             }).then(resp=>{
                 $scope.contracts = resp.data;
                 console.log(resp.data);
-                console.log(window.location.href);
             });
         }
         $scope.searchDevice = function(){
@@ -126,69 +112,39 @@
         }
         $scope.saveDevice = function(){
             if($scope.contrac.compName != null && $scope.contrac.compName !="") {
-                if($scope.contrac.Id != null && $scope.contrac.Id != 0) {
-                    if($scope.contrac.ldate != null && $scope.contrac.ldate != "") {
-                        if($scope.contrac.fdate != null && $scope.contrac.fdate != "") {
-                            $http({
-                                url: '/add_contracts',
-                                method: 'POST',
-                                data: {
-                                    id: $scope.contrac.Id,
-                                    compName: $scope.contrac.compName,
-                                    relevance: null,
-                                    fdate: $scope.contrac.fdate,
-                                    ldate: $scope.contrac.ldate,
-                                    price: null,
-                                    tempStr: $scope.contrac.equip,
-                                    equipments: null,
-                                    client: null,
-                                }
-                            }).then(function (response) {
-                                console.log(response);
-                                $scope.getDevice();
-                                $scope.contrac.compName = null;
-                                $scope.contrac.Id = null;
-                                $scope.contrac.fdate = null;
-                                $scope.contrac.ldate = null;
-                                $scope.contrac.equip = null;
-                            });
-                        }else{
-                            alert("Вы оставили важные поля пустыми! Финальная дата");
+
+                if($scope.contrac.price!= null && isFinite($scope.contrac.price) !=false){
+                    $http({
+                        url: '/add_contracts',
+                        method: 'POST',
+                        data: {
+                            id: $scope.contrac.Id,
+                            compName: $scope.contrac.compName,
+                            relevance: $scope.contrac.relev,
+                            fdate: $scope.contrac.fdate,
+                            ldate: $scope.contrac.ldate,
+                            price: $scope.contrac.price,
+                            equipments: null,
+                            client: null,
                         }
-                    }else{
-                        alert("Вы оставили важные поля пустыми! Первая дата");
-                    }
+                    }).then(function (response) {
+                        console.log(response);
+                        $scope.getDevice();
+                        $scope.contrac.compName = null;
+                        $scope.contrac.relev = null;
+                        $scope.contrac.fdate = null;
+                        $scope.contrac.ldate = null;
+                        $scope.contrac.price = null;
+                    });
                 }else{
-                    alert("Вы оставили важные поля пустыми! ID");
+                    alert("Вы оставили важные поля пустыми!3");
                 }
             }else{
-                alert("Вы оставили важные поля пустыми!Name");
+                alert("Вы оставили важные поля пустыми!1");
             }
         }
 
-        $scope.delNowCntr = function(qid){
-            console.log(qid.iddevice);
-            console.log( $scope.edconid);
-            $http
-            ({
-                url: "/contracts/edir/" + $scope.edconid,
-                method: 'PUT',
-                data: {
-                    id: $scope.edconid,
-                    compName: "test",
-                    relevance: null,
-                    fdate: "2022-01-12",
-                    ldate: "2022-01-12",
-                    price: null,
-                    tempStr: qid.id,
-                    equipments: null,
-                    client: null,
-                }
-            }).then(function (response) {
-                console.log(response.data);
-                $scope.getDevice();
-            });
-        }
+
     });
 
 </script>
@@ -229,10 +185,10 @@
     <section class = "rightPanel" row="col-xl" >
 
         <article class = "list ">
-            <a href="../clients" id="cliets" class="btn btn-outline-secondary text-white" role="button">Clients</a>
-            <a href="../contracts" id="contracts" class="btn btn-outline-secondary text-white" role="button">Contracts</a>
-            <a href="../equpments" id="equpments" class="btn btn-outline-secondary text-white" role="button">Equipments</a>
-            <a href="../firstContacts" id="firstCon" class="btn btn-outline-secondary text-white" role="button">First contacts</a>
+            <a href="../../clients" id="cliets" class="btn btn-outline-secondary text-white" role="button">Clients</a>
+            <a href="../../contracts" id="contracts" class="btn btn-outline-secondary text-white" role="button">Contracts</a>
+            <a href="../../equpments" id="equpments" class="btn btn-outline-secondary text-white" role="button">Equipments</a>
+            <a href="../../firstContacts" id="firstCon" class="btn btn-outline-secondary text-white" role="button">First contacts</a>
 
             <article class="buttons">
                 <form>
@@ -257,25 +213,24 @@
                     <td>Button</td>
                 </tr>
                 </thead>
-                <tr ng-repeat="contract in contracts track by $index" >
-                    <td>{{$index+1}}</td>
-                    <td>{{contract.compName}}</td>
-                    <td>{{contract.relevance}}</td>
-                    <td>{{contract.fdate}}</td>
-                    <td>{{contract.ldate}}</td>
-                    <td>{{contract.id}}</td>
+                <tr >
+                    <td>{{1}}</td>
+                    <td>{{contracts.compName}}</td>
+                    <td>{{contracts.relevance}}</td>
+                    <td>{{contracts.fdate}}</td>
+                    <td>{{contracts.ldate}}</td>
+                    <td>{{contracts.id}}</td>
                     <td>
-                        <span  ng-repeat="old in contract.equipments">
-                            <a href="/equpments/view/{{old.id}}" >{{old.name}} x{{old.countSale}}</a>
-                        </span>
+                        <a href="/equpments" ng-repeat="old in contracts.equipments">
+                            {{old.name}}
+                        </a>
                     </td>
                     <td>
                         <div class="d-grid gap-2">
-                            <button class="btn btn-outline-primary btn-sm" ng-click="delete(contract)" type="button">
+                            <button class="btn btn-outline-primary btn-sm" ng-click="delete(contracts)" type="button">
                                 Удалить
                             </button>
-                            <a class="btn btn-outline-primary btn-sm" href="#zat1" role="button" ng-click="s(contract)">Девайсы</a>
-                            <a class="btn btn-outline-primary btn-sm" href="#zat" role="button" ng-click="s(contract)">Редактировать</a>
+                            <a class="btn btn-outline-primary btn-sm" href="#zat" role="button" ng-click="s(contracts)">Редактировать</a>
                         </div>
                     </td>
                 </tr>
@@ -284,6 +239,7 @@
                     <div class="row">
                         <form>
                             <td>
+                                <input class="form-control" ng-model="contrac.Id" type="text" id = "contrme" placeholder = "Input Name" >
                             </td>
                             <td class="mai">
                                 <input class="form-control" ng-model="contrac.compName" type="text" id = "contractName" placeholder = "Input Name" >
@@ -297,10 +253,10 @@
                                 <input class="form-control" ng-model="contrac.ldate" type="text" id = "contractldate" placeholder = "Input Count Sale" >
                             </td>
                             <td class="mai">
-                                <input class="form-control" ng-model="contrac.Id" type="text" id = "contractprice" placeholder = "Input Count Sale" >
+                                <input class="form-control" ng-model="contrac.price" type="text" id = "contractprice" placeholder = "Input Count Sale" >
                             </td>
                             <td class="mai">
-                                <input class="form-control" ng-model="contrac.equip" type="text" name = "q" placeholder = "Input cntrct id" >
+                                <input class="form-control" type="text" name = "q" placeholder = "Input cntrct id" >
                             </td>
                             <td class="mai">
                                 <button class="btn btn-primary" type="button" ng-click="saveDevice()">Добавить</button>
@@ -311,36 +267,7 @@
 
             </table>
         </div>
-        <div id="zat1">
-            <div id="form1">
 
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <td>№</td>
-                        <td>ContractId</td>
-                        <td>FFDS</td>
-                    </tr>
-                    </thead>
-                    <tr ng-repeat="contract in contracts track by $index" >
-                        <td>{{$index+1}}</td>
-                        <td>
-                            <td ng-repeat="old in contract.equipments">
-                                {{old.name}}
-                            <form>
-                                <button class="btn btn-primary" type="button" ng-click="delNowCntr(old)">Удалить из списка</button>
-                            </form>
-                        </td>
-                        </td>
-
-                    </tr>
-
-
-                </table>
-                <a href="#"><button type="button" class="btn btn-primary" aria-label="Close">Закрыть</button></a>
-
-            </div>
-        </div>
         <div id="zat">
             <div id="form">
 
@@ -350,6 +277,7 @@
                         <td>Relevance</td>
                         <td>fDate</td>
                         <td>lDate</td>
+                        <td>Price</td>
                         <td>Equipments</td>
                     </tr>
                     <tr><form>
@@ -365,13 +293,12 @@
                         <td class="mai">
                             <input class="form-control" ng-model="edcontrac.ldate" type="text" id = "edcontractldate" placeholder = "Input Count Sale" >
                         </td>
-
                         <td class="mai">
-                            <input class="form-control" ng-model="edcontrac.tempStr" type="text" id = "edcon" placeholder = "Input Name" >
+                            <input class="form-control" ng-model="edcontrac.price" type="text" id = "edcontractprice" placeholder = "Input Count Sale" >
                         </td>
+
                     </form>
                     </tr>
-
                 </table>
                 <a href="#"><button type="button" class="btn btn-primary" aria-label="Close">Закрыть</button></a>
 
