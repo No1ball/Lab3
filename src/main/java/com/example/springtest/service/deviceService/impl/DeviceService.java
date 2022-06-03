@@ -11,7 +11,7 @@ public interface DeviceService<T> {
     void delDev(int id);
     T putDec(int id, DevicesSqlDao devices);
     T getDevices();
-
+    T noContractId(int id);
     List<DevicesSqlDao> sortByPrice(String name);
     List<DevicesSqlDao> sortByCount(String name);
 }

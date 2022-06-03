@@ -88,6 +88,10 @@ public class DevicesSqlDao {
     public int getId() {
         return this.id;
     }
+    public boolean delOneCntr(ContractsSqlDao one){
+        this.contract.remove(one);
+        return true;
+    }
 }
 
 

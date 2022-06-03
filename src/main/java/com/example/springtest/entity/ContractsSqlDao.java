@@ -138,4 +138,8 @@ public class ContractsSqlDao {
         this.equipments.add(one);
         return true;
     }
+    public boolean delOneEquip(DevicesSqlDao one){
+        this.equipments.remove(one);
+        return true;
+    }
 }

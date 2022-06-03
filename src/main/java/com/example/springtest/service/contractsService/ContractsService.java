@@ -1,6 +1,7 @@
 package com.example.springtest.service.contractsService;
 
 import com.example.springtest.entity.ContractsSqlDao;
+import com.example.springtest.entity.DevicesSqlDao;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public interface ContractsService<T> {
     T addDevice(ContractsSqlDao devices);
 
     void delDev(int id);
-
+    T noContractId(int idc, int idd);
     T putDec(int id, ContractsSqlDao devices);
     T viewId(int id);
     T getDevices();

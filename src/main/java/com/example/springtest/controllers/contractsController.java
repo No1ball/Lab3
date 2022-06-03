@@ -1,5 +1,6 @@
 package com.example.springtest.controllers;
 
+import com.example.springtest.entity.ClientsSqlDao;
 import com.example.springtest.entity.ContractsSqlDao;
 import com.example.springtest.service.contractsService.ContractsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,12 @@ public class contractsController {
         contractsService.delDev(id);
         return "contracts";
     }
-
+    @PutMapping("/contracts/edir/{id}")
+    public ResponseEntity tem(@PathVariable("id") int id, @RequestBody ContractsSqlDao dd){
+        System.out.println(id);
+        System.out.println(dd.getTempStr());
+        return ResponseEntity.ok(contractsService.noContractId(id, Integer.parseInt(dd.getTempStr())));
+    }
     @GetMapping("/contracts1")
     public ResponseEntity search(@RequestParam("name") String name){
         return  ResponseEntity.ok(contractsService.searchCompName(name));

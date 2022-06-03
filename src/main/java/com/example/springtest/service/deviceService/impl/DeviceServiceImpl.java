@@ -54,7 +54,32 @@ public class DeviceServiceImpl implements DeviceService{
         return devicesRepo.saveAll(dev);
     }
     @Override
+    public Iterable<DevicesSqlDao> noContractId(int id){
+        DevicesSqlDao clie = devicesRepo.findById(id).orElseThrow();
+        List<ContractsSqlDao> contr = clie.getContract();
+
+        return devicesRepo.saveAll(Arrays.asList(clie));
+    }
+    @Override
     public void delDev(int id){
+        DevicesSqlDao contracts = devicesRepo.findById(id).orElseThrow();
+        if(contracts.getContract()!=null){
+            List<ContractsSqlDao> client = contracts.getContract();
+            for(int i = 0; i < client.size(); i++){
+                ContractsSqlDao tem= client.get(i);
+                tem.delOneEquip(contracts);
+                tem.setPrice();
+                if(tem.getPrice() !=0 && tem.getClient()!=null){
+                    tem.getClient().setTotalSumm(tem.getPrice());
+                }else if(tem.getPrice() ==0 && tem.getClient()!=null){
+                    tem.getClient().setTotalSumm(0);
+                }
+
+            }
+            contracts.setContract(null);
+            //client.setTotalSumm(client.getTotalSumm()-contracts.getPrice());
+            contractsRepo.saveAll(client);
+        }
         devicesRepo.deleteById(id);
     }
     @Override
