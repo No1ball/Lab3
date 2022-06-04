@@ -79,8 +79,18 @@ public class ContractsServiceImpl  implements  ContractsService{
             ClientsSqlDao client = contracts.getOldClient();
             List<ContractsSqlDao> clientsCntr = client.getOldContracts();
             clientsCntr.remove(contracts);
-            //client.setTotalSumm(client.getTotalSumm()-contracts.getPrice());
+            client.setTotalSumm(client.getTotalSumm()-contracts.getPrice());
+            if(contracts.getEquipments()!=null){
+                List<DevicesSqlDao> dev = contracts.getEquipments();
+                for(int i = 0; i < dev.size(); i++){
+                    DevicesSqlDao tem= dev.get(i);
+                    tem.delOneCntr(contracts);
+                    contracts.setPrice();
+                }
+                contracts.setEquipments(null);
+            }
             contracts.setOldClient(null);
+
             clientsRepo.saveAll(Arrays.asList(client));
         }else if(contracts.getClient()== null && contracts.getOldClient()==null){
             if(contracts.getEquipments()!=null){
@@ -103,7 +113,7 @@ public class ContractsServiceImpl  implements  ContractsService{
         Date fDate = new Date(one);
         Date lDate = new Date(two);
         System.out.println(fDate);
-        List<ContractsSqlDao> cont = allContracts.stream().filter(e->(((e.getDateFDate()).after(fDate)) && ((e.getDateLDate()).before(lDate)))).collect(Collectors.toList());
+        List<ContractsSqlDao> cont = allContracts.stream().filter(e->(( ((e.getDateLDate()).before(lDate))))).collect(Collectors.toList());
         return cont;
     }
     @Override

@@ -217,9 +217,9 @@ td:last-child{
 #zat2 {
     background: rgba(102, 102, 102, 0.5);
     width: 750px;
-    height: 150px;
+    height: 200px;
     position: absolute;
-    top: 250px;
+    top: 200px;
     left: 150px;
     display: none;
 }

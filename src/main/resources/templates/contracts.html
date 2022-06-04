@@ -26,6 +26,7 @@
         $scope.edconldate = 0;
         $scope.edconrelev = "";
         $scope.search = "";
+        $scope.Count = 0;
         $scope.oldCntr = [];
 
         $scope.s = function(edcontract){
@@ -33,7 +34,7 @@
             $scope.edconcompName = edcontract.compName;
             $scope.edconfdate = edcontract.fdate;
             $scope.edconldate = edcontract.ldate;
-            $scope.edconTempStr = edcontract.tempStr;
+            $scope.oldCntr = edcontract.equipments;
         }
         $scope.edit = function(){
             if($scope.edcontrac.compName == null || $scope.edcontrac.compName == ""){
@@ -169,9 +170,9 @@
         }
 
         $scope.ContractsCount = function(){
-
-            $scope.f = (new Date($scope.firstDate+"T15:35:58.000Z").getTime());
-            $scope.l = (new Date($scope.secondDate+"T15:35:58.000Z").getTime());
+            console.log($scope.firstDate);
+            $scope.f = ($scope.firstDate).getTime();
+            $scope.l = ($scope.secondDate).getTime();
             console.log($scope.f);
             console.log($scope.l);
             $http
@@ -180,11 +181,8 @@
                 method: 'GET',
             }).then(resp=>{
                 $scope.contracts = resp.data;
-                $scope.firstDate = " ";
-                $scope.firstDate = null;
-                $scope.secondDate = " ";
-                $scope.secondDate = null;
                 console.log(resp.data);
+                $scope.Count = resp.data.length;
             });
         }
         $scope.delNowCntr = function(qid){
@@ -206,6 +204,7 @@
             }).then(function (response) {
                 console.log(response.data);
                 $scope.getDevice();
+                alert("Удаение произошло успешно! Закройте таблицу девайсов");
             });
         }
     });
@@ -310,10 +309,10 @@
                             <td class="mai">
                             </td>
                             <td class="mai">
-                                <input class="form-control" ng-model="contrac.fdate" type="text" id = "contractfdate" placeholder = "Input Count Sale" >
+                                <input class="form-control" ng-model="contrac.fdate" type="date" id = "contractfdate" placeholder = "Input Count Sale" >
                             </td>
                             <td class="mai">
-                                <input class="form-control" ng-model="contrac.ldate" type="text" id = "contractldate" placeholder = "Input Count Sale" >
+                                <input class="form-control" ng-model="contrac.ldate" type="date" id = "contractldate" placeholder = "Input Count Sale" >
                             </td>
                             <td class="mai">
                                 <input class="form-control" ng-model="contrac.Id" type="text" id = "contractprice" placeholder = "Input Count Sale" >
@@ -335,14 +334,14 @@
             <table class="table">
                 <tr class="mai">
                     <td>
-                    <input class="form-control" ng-model="firstDate" type="text" placeholder = "Input First date" >
+                    <input class="form-control" ng-model="firstDate" type="date" placeholder = "Input First date" >
                     </td>
                 <td class="mai">
-                    <input class="form-control" ng-model="secondDate" type="text" placeholder = "Input Last date" >
+                    <input class="form-control" ng-model="secondDate" type="date" placeholder = "Input Last date" >
                 </td>
                 </tr>
                 </table>
-
+                    <p>Количество контрактов: {{Count}}</p>
                     <td class="mai">
                         <button class="btn btn-primary" type="button" ng-click="ContractsCount()">Показать контракты</button>
                     </td>
@@ -363,17 +362,17 @@
                         <td>FFDS</td>
                     </tr>
                     </thead>
-                    <tr ng-repeat="contract in contracts track by $index" >
-                        <td>{{$index+1}}</td>
-                        <td>
-                            <td ng-repeat="old in contract.equipments">
+                        <tr ng-repeat="old in oldCntr track by $index">
+                            <td>{{$index+1}}</td>
+                            <td>
                                 {{old.name}}
+                            </td>
+                            <td>
                             <form>
                                 <button class="btn btn-primary" type="button" ng-click="delNowCntr(old)">Удалить из списка</button>
                             </form>
-                        </td>
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
                 </table>
                 <a href="#"><button type="button" class="btn btn-primary" aria-label="Close">Закрыть</button></a>
             </div>

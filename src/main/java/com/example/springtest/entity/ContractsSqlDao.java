@@ -59,6 +59,9 @@ public class ContractsSqlDao {
         this.compName = new_CompName;
         return true;
     }
+    public void setNewCompName(String new_CompName){
+        this.compName = new_CompName;
+    }
     public boolean setId(int new_CompName){ //prototype
         this.id = new_CompName;
         return true;

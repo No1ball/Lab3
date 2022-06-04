@@ -48,7 +48,11 @@ public class ClientServiceImpl implements ClientService{
             contract.setCompName(comp.getName());
             comp.setTotalSumm(comp.getTotalSumm()+contract.getPrice());
         }
-
+        if(comp.getOldContracts()!=null){
+            List<ContractsSqlDao> oldContr = comp.getOldContracts();
+            String neName = company.getName();
+            oldContr.forEach(e->e.setNewCompName(neName));
+        }
         return clientsRepo.save(comp);
     }
     @Override
