@@ -23,6 +23,17 @@ public class deviceController {
         deviceService.getDevices();
         return "equpments";
     }
+    @GetMapping("/equpments/view/{id}")
+    public String findq(@PathVariable("id") int id){
+        if(id == 0){
+            return "equpments";
+        }else{
+            return "equpments/{id}";}
+    }
+    @GetMapping("/equpments/ht/{id}")
+    public ResponseEntity findIdq(@PathVariable("id") int id){
+        return ResponseEntity.ok(deviceService.viewId(id));
+    }
     @GetMapping("/equpments/topdf")
     public String getPDF(@RequestParam("value") int value, @RequestParam("name") String name)  {
         deviceService.getPDF(value, name);

@@ -74,6 +74,8 @@ public class ClientServiceImpl implements ClientService{
         clie.setNum(0);
         return clientsRepo.saveAll(Arrays.asList(clie));
     }
+
+
     @Override
     public Iterable<ClientsSqlDao> addCompany(ClientsSqlDao company){
         ContractsSqlDao contract = new ContractsSqlDao();

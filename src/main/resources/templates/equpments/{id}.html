@@ -16,7 +16,7 @@
     var app = angular.module("CREATE_DEVICE",[]);
     app.controller("CREATE_DEVICE_CTRL", function($scope, $http){
         console.log("check");
-        $scope.devices = [];
+        $scope.devic = [];
         $scope.contracts = [];
         $scope.eddevid = 13;
         $scope.eddevname = "name";
@@ -24,12 +24,13 @@
         $scope.eddevcount = 13;
         $scope.pdfState = 0;
         $scope.search = "";
+        $scope.id = window.location.pathname.split("/")[3];
         $scope.getDevice = function(){
             $http({
-                url: '/newequpments',
+                url: "/equpments/ht/"+$scope.id,
                 method: 'GET',
             }).then(resp=>{
-                $scope.devices = resp.data;
+                $scope.devic = resp.data;
                 console.log(resp.data);
             });
         }
@@ -207,10 +208,10 @@
     <section class = "rightPanel" row="col-xl" >
 
         <article class = "list ">
-            <a href="../clients" id="cliets" class="btn btn-outline-secondary text-white" role="button">Clients</a>
-            <a href="../contracts" id="contracts" class="btn btn-outline-secondary text-white" role="button">Contracts</a>
-            <a href="../equpments" id="equpments" class="btn btn-outline-secondary text-white" role="button">Equipments</a>
-            <a href="../firstContacts" id="firstCon" class="btn btn-outline-secondary text-white" role="button">First contacts</a>
+            <a href="../../clients" id="cliets" class="btn btn-outline-secondary text-white" role="button">Clients</a>
+            <a href="../../contracts" id="contracts" class="btn btn-outline-secondary text-white" role="button">Contracts</a>
+            <a href="../../equpments" id="equpments" class="btn btn-outline-secondary text-white" role="button">Equipments</a>
+            <a href="../../firstContacts" id="firstCon" class="btn btn-outline-secondary text-white" role="button">First contacts</a>
 
             <article class="buttons">
                 <form>
@@ -221,106 +222,106 @@
 
     </section>
     <section class="table1">
-            <div class="d-flex justify-content-end">
+        <div class="d-flex justify-content-end">
             <table class="table">
-            <thead class="thead-dark">
+                <thead class="thead-dark">
 
-            <tr>
-                <th>№</th>
-                <th>Name</th>
-                <th>Price</th>
-                <th>CountSale</th>
-                <th>TotalSumm</th>
-                <th>Contract</th>
-                <th>Buttons</th>
-            </tr>
+                <tr>
+                    <th>№</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>CountSale</th>
+                    <th>TotalSumm</th>
+                    <th>Contract</th>
+                    <th>Buttons</th>
+                </tr>
 
-            </thead>
+                </thead>
 
-            <tr ng-repeat="devic in devices track by $index" >
-                <td>{{$index+1}}</td>
-                <td >{{devic.name}}</td>
-                <td >{{devic.price}}</td>
-                <td >{{devic.countSale}}</td>
-                <td >{{devic.totalSumm}}</td>
-                <td>
-                    <a href="/contracts/view/{{old}}" ng-repeat="old in devic.tempStr">
-                        {{old}}
-                    </a>
+                <tr >
+                    <td>1</td>
+                    <td >{{devic.name}}</td>
+                    <td >{{devic.price}}</td>
+                    <td >{{devic.countSale}}</td>
+                    <td >{{devic.totalSumm}}</td>
+                    <td>
+                        <a href="/contracts/view/{{old}}" ng-repeat="old in devic.tempStr">
+                            {{old}}
+                        </a>
 
-                </td>
-                <td>
-                    <div class="d-grid gap-2">
-                    <button class="btn btn-outline-primary btn-sm" ng-click="delete(devic)" type="button">
-                        Удалить
-                    </button>
-                        <a class="btn btn-outline-primary btn-sm" href="#zat" role="button" ng-click="s(devic)">Редактировать</a>
-                    </div>
-                </td>
-            </tr>
-
-            <tr>
-                <div class="row">
-                <form>
-                    <td></td>
-                    <td class="mai">
-                        <input class="form-control" ng-model="device.name" type="text" id = "deviceName" placeholder = "Input Name" >
-                    </td>
-                    <td class="mai">
-                        <input class="form-control" ng-model="device.price" type="text" id = "devicePrice" placeholder = "Input Price" >
-                    </td >
-                    <td class="mai">
-                        <input class="form-control" ng-model="device.count" type="text" id = "deviceCount" placeholder = "Input Count Sale" >
                     </td>
                     <td>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-primary btn-sm" ng-click="delete(devic)" type="button">
+                                Удалить
+                            </button>
+                            <a class="btn btn-outline-primary btn-sm" href="#zat" role="button" ng-click="s(devic)">Редактировать</a>
+                        </div>
                     </td>
-                    <td class="mai">
-                        <input ng-model="device.contract" class="form-control" type="text" name = "q" placeholder = "Input cntrct id" >
-                    </td>
-                    <td class="mai">
-                        <button class="btn btn-primary" type="button" ng-click="saveDevice()">Добавить</button>
-                    </td>
-                </form>
-                </div>
-            </tr>
+                </tr>
 
-        </table>
-            </div>
+                <tr>
+                    <div class="row">
+                        <form>
+                            <td></td>
+                            <td class="mai">
+                                <input class="form-control" ng-model="device.name" type="text" id = "deviceName" placeholder = "Input Name" >
+                            </td>
+                            <td class="mai">
+                                <input class="form-control" ng-model="device.price" type="text" id = "devicePrice" placeholder = "Input Price" >
+                            </td >
+                            <td class="mai">
+                                <input class="form-control" ng-model="device.count" type="text" id = "deviceCount" placeholder = "Input Count Sale" >
+                            </td>
+                            <td>
+                            </td>
+                            <td class="mai">
+                                <input ng-model="device.contract" class="form-control" type="text" name = "q" placeholder = "Input cntrct id" >
+                            </td>
+                            <td class="mai">
+                                <button class="btn btn-primary" type="button" ng-click="saveDevice()">Добавить</button>
+                            </td>
+                        </form>
+                    </div>
+                </tr>
+
+            </table>
+        </div>
 
         <div id="zat">
-        <div id="form">
+            <div id="form">
 
-            <table class="table">
-                <tr>
-                    <td >Name</td>
-                    <td >Price</td>
-                    <td >CountSale</td>
-                    <td >Contract</td>
-                </tr>
-                <tr><form>
+                <table class="table">
+                    <tr>
+                        <td >Name</td>
+                        <td >Price</td>
+                        <td >CountSale</td>
+                        <td >Contract</td>
+                    </tr>
+                    <tr><form>
 
-                    <td>
-                        <input class="form-control" ng-model="eddevice.name" type="text" id = "eddeviceName" placeholder = "Search Name" >
-                    </td>
-                    <td>
-                        <input class="form-control" ng-model="eddevice.price" type="text" id = "eddevicePrice" placeholder = "Search Price" >
-                    </td>
-                    <td>
-                        <input class="form-control" ng-model="eddevice.count" type="text" id = "eddeviceCount" placeholder = "Search Count Sale" >
-                    </td>
-                    <td>
-                        <input class="form-control" type="text" name = "q" placeholder = "Search query" >
-                    </td>
+                        <td>
+                            <input class="form-control" ng-model="eddevice.name" type="text" id = "eddeviceName" placeholder = "Search Name" >
+                        </td>
+                        <td>
+                            <input class="form-control" ng-model="eddevice.price" type="text" id = "eddevicePrice" placeholder = "Search Price" >
+                        </td>
+                        <td>
+                            <input class="form-control" ng-model="eddevice.count" type="text" id = "eddeviceCount" placeholder = "Search Count Sale" >
+                        </td>
+                        <td>
+                            <input class="form-control" type="text" name = "q" placeholder = "Search query" >
+                        </td>
 
-                </form>
-                </tr>
-            </table>
-            <a href="#"><button type="button" class="btn btn-primary" aria-label="Close">Закрыть</button></a>
+                    </form>
+                    </tr>
+                </table>
+                <a href="#"><button type="button" class="btn btn-primary" aria-label="Close">Закрыть</button></a>
 
-            <button class="btn btn-primary" ng-click="edit()" type="button">
-                Редактировать
-            </button>
-        </div>
+                <button class="btn btn-primary" ng-click="edit()" type="button">
+                    Редактировать
+                </button>
+            </div>
         </div>
     </section>
 </main>

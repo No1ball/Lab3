@@ -21,14 +21,14 @@ public class DevicesSqlDao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "iddevice")
     private int id;
-
-
     @ManyToMany(mappedBy = "equipments")
     @JsonBackReference(value="test")
     private List<ContractsSqlDao> contract;
-
     private String tempStr;
-
+    public boolean setOneContract(ContractsSqlDao one){
+        this.contract.add(one);
+        return true;
+    }
     public boolean setTempStr(String newname){
         this.tempStr = newname;
         return true;
@@ -87,6 +87,10 @@ public class DevicesSqlDao {
 
     public int getId() {
         return this.id;
+    }
+    public boolean delOneCntr(ContractsSqlDao one){
+        this.contract.remove(one);
+        return true;
     }
 }
 

@@ -39,7 +39,15 @@ public class ContractsSqlDao {
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.REMOVE,CascadeType.DETACH})
     @JsonBackReference(value="oldContracts")
     private ClientsSqlDao oldClient;
+    private String tempStr;
 
+    public boolean setTempStr(String newname){
+        this.tempStr = newname;
+        return true;
+    }
+    public String getTempStr(){
+        return this.tempStr;
+    }
     public boolean setOldClient(ClientsSqlDao lient){
         this.oldClient = lient;
         return true;
@@ -128,6 +136,10 @@ public class ContractsSqlDao {
     }
     public boolean setOneEquip(DevicesSqlDao one){
         this.equipments.add(one);
+        return true;
+    }
+    public boolean delOneEquip(DevicesSqlDao one){
+        this.equipments.remove(one);
         return true;
     }
 }
