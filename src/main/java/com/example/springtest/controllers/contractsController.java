@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+
 @Controller
 public class contractsController {
     @Autowired
@@ -51,6 +53,10 @@ public class contractsController {
             return "clients";
         }else{
         return "contracts/{id}";}
+    }
+    @GetMapping("/contracts/searchContracts")
+    public ResponseEntity searchContracts(@RequestParam("name1") String fDate, @RequestParam("name2") String lDate){
+        return ResponseEntity.ok(contractsService.searchContracts(fDate, lDate));
     }
     @GetMapping("/contracts/ht/{id}")
     public ResponseEntity findId(@PathVariable("id") int id){

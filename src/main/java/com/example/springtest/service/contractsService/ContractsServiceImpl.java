@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -95,6 +96,17 @@ public class ContractsServiceImpl  implements  ContractsService{
         contractsRepo.deleteById(id);
     }
     @Override
+    public List<ContractsSqlDao> searchContracts(String fdate, String ldate){
+        List<ContractsSqlDao> allContracts = contractsRepo.findAll();
+        Long one = Long.parseLong(fdate);
+        Long two = Long.parseLong(ldate);
+        Date fDate = new Date(one);
+        Date lDate = new Date(two);
+        System.out.println(fDate);
+        List<ContractsSqlDao> cont = allContracts.stream().filter(e->(((e.getDateFDate()).after(fDate)) && ((e.getDateLDate()).before(lDate)))).collect(Collectors.toList());
+        return cont;
+    }
+    @Override
     public Iterable<ContractsSqlDao> putDec(int id, ContractsSqlDao devices){
         ContractsSqlDao contract = contractsRepo.findById(id).orElseThrow();
         if(contract.getOldClient()==null) {
@@ -103,41 +115,43 @@ public class ContractsServiceImpl  implements  ContractsService{
             contract.setFDate(devices.getDateFDate());
             contract.setRelevance();
             int nowprice;
-            if(contract.getClient()!= null){
-                nowprice=contract.getClient().getTotalSumm()-contract.getPrice();
-            }else{
+            if (contract.getClient() != null) {
+                nowprice = contract.getClient().getTotalSumm() - contract.getPrice();
+            } else {
                 nowprice = 0;
             }
-            if (!devices.getTempStr().equals(contract.getTempStr())) {
-                String[] array = devices.getTempStr().split(",");
-                List<Integer> intsList = new ArrayList<Integer>(array.length);
-                for (int i = 0; i < array.length; i++) {
-                    intsList.add(i, Integer.parseInt(array[i]));
-                }
-                Iterable<DevicesSqlDao> cont = devicesRepo.findAllById(intsList);
-                List<DevicesSqlDao> target = new ArrayList<>();
-                cont.forEach(target::add);
-                for (DevicesSqlDao temp: target) {
-                    contract.setOneEquip(temp);
-                }
-                contract.setPrice();
-                if(devices.getTempStr()!=null) {
-                    contract.setTempStr(devices.getTempStr());
-                }
-                devicesRepo.saveAll(target);
-                for (DevicesSqlDao temp: target) {
-                    List<ContractsSqlDao> contr = temp.getContract();
-                    String newStr = "";
-                    for (ContractsSqlDao cntrc: contr) {
-                        newStr.concat(String.valueOf(cntrc.getId()));
-                        //newStr.concat(" ");
+            if (devices.getTempStr() != null) {
+                if (!devices.getTempStr().equals(contract.getTempStr())) {
+                    String[] array = devices.getTempStr().split(",");
+                    List<Integer> intsList = new ArrayList<Integer>(array.length);
+                    for (int i = 0; i < array.length; i++) {
+                        intsList.add(i, Integer.parseInt(array[i]));
                     }
-                    System.out.print(newStr);
-                    temp.setTempStr(newStr);
+                    Iterable<DevicesSqlDao> cont = devicesRepo.findAllById(intsList);
+                    List<DevicesSqlDao> target = new ArrayList<>();
+                    cont.forEach(target::add);
+                    for (DevicesSqlDao temp : target) {
+                        contract.setOneEquip(temp);
+                    }
+                    contract.setPrice();
+                    if (devices.getTempStr() != null) {
+                        contract.setTempStr(devices.getTempStr());
+                    }
+                    devicesRepo.saveAll(target);
+                    for (DevicesSqlDao temp : target) {
+                        List<ContractsSqlDao> contr = temp.getContract();
+                        String newStr = "";
+                        for (ContractsSqlDao cntrc : contr) {
+                            newStr.concat(String.valueOf(cntrc.getId()));
+                            //newStr.concat(" ");
+                        }
+                        System.out.print(newStr);
+                        temp.setTempStr(newStr);
+                    }
                 }
-            }
-            if (contract.getClient() != null) {
-                contract.getClient().setTotalSumm(nowprice+contract.getPrice());
+                if (contract.getClient() != null) {
+                    contract.getClient().setTotalSumm(nowprice + contract.getPrice());
+                }
             }
         }
         return contractsRepo.saveAll(Arrays.asList(contract));

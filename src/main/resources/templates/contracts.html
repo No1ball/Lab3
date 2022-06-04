@@ -16,6 +16,8 @@
     var app = angular.module("CREATE_DEVICE",[]);
     app.controller("CREATE_DEVICE_CTRL", function($scope, $http){
         console.log("check");
+        $scope.firstDate = "";
+        $scope.secondDate ="";
         $scope.contracts = [];
         $scope.edconid = 13;
         $scope.edconcompName = "name";
@@ -101,7 +103,7 @@
                 url: '/equpments/topdf?value='+$scope.pdfState+'&name='+$scope.search,
                 method: 'GET',
             }).then(resp=>{
-
+                $scope.contracts = resp.data;
             });
         }
 
@@ -166,9 +168,26 @@
             }
         }
 
+        $scope.ContractsCount = function(){
+
+            $scope.f = (new Date($scope.firstDate+"T15:35:58.000Z").getTime());
+            $scope.l = (new Date($scope.secondDate+"T15:35:58.000Z").getTime());
+            console.log($scope.f);
+            console.log($scope.l);
+            $http
+            ({
+                url: "/contracts/searchContracts?name1=" + $scope.f + '&name2='+$scope.l,
+                method: 'GET',
+            }).then(resp=>{
+                $scope.contracts = resp.data;
+                $scope.firstDate = " ";
+                $scope.firstDate = null;
+                $scope.secondDate = " ";
+                $scope.secondDate = null;
+                console.log(resp.data);
+            });
+        }
         $scope.delNowCntr = function(qid){
-            console.log(qid.iddevice);
-            console.log( $scope.edconid);
             $http
             ({
                 url: "/contracts/edir/" + $scope.edconid,
@@ -209,7 +228,7 @@
                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
                             <li><button type="button" class="dropdown-item" ng-click="Relev()">Relevante</button></li>
                             <li><button type="button" class="dropdown-item" ng-click="NotRelev()">Not relevante</button></li>
-                            <li><button type="button" class="dropdown-item" ng-click="ContractsCount()">Countract</button></li>
+                            <li><a href="#zat2" type="button" class="dropdown-item" ng-click="ContractsCount()" role="button">Countract</a></li>
                             <li><button type="button" class="dropdown-item" ng-click="Contracts()">Finance</button></li>
                         </ul>
 
@@ -311,6 +330,28 @@
 
             </table>
         </div>
+        <div id="zat2">
+            <div id="form2">
+            <table class="table">
+                <tr class="mai">
+                    <td>
+                    <input class="form-control" ng-model="firstDate" type="text" placeholder = "Input First date" >
+                    </td>
+                <td class="mai">
+                    <input class="form-control" ng-model="secondDate" type="text" placeholder = "Input Last date" >
+                </td>
+                </tr>
+                </table>
+
+                    <td class="mai">
+                        <button class="btn btn-primary" type="button" ng-click="ContractsCount()">Показать контракты</button>
+                    </td>
+                    <td class="mai">
+                        <a href="#"><button type="button" class="btn btn-primary" aria-label="Close">Закрыть</button></a>
+                    </td>
+
+            </div>
+        </div>
         <div id="zat1">
             <div id="form1">
 
@@ -332,13 +373,9 @@
                             </form>
                         </td>
                         </td>
-
                     </tr>
-
-
                 </table>
                 <a href="#"><button type="button" class="btn btn-primary" aria-label="Close">Закрыть</button></a>
-
             </div>
         </div>
         <div id="zat">

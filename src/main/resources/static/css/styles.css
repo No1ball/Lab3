@@ -198,6 +198,31 @@ td:last-child{
     left: 150px;
     display: none;
 }
+#zat2:target {display: block;}
+#form2{
+    width: 1300px;
+    text-align: center;
+    padding: 15px;
+    border: 3px solid rgba(30,29,29,0.94);
+    border-radius: 10px;
+    color: rgba(30,29,29,0.94);
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    background: #fff;
+}
+#zat2 {
+    background: rgba(102, 102, 102, 0.5);
+    width: 750px;
+    height: 150px;
+    position: absolute;
+    top: 250px;
+    left: 150px;
+    display: none;
+}
 .close {
     display: inline-block;
     border: 1px solid #0000cc;
