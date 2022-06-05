@@ -176,3 +176,6 @@ td:last-child{
     cursor:pointer;
 }
 .close:hover {background: #e6e6ff;}
+#date{
+    margin-left: 20px;
+}

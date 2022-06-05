@@ -22,7 +22,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class ContractsServiceImpl  implements  ContractsService{
+public class ContractsServiceImpl implements ContractsService{
     @Autowired
     private ContractsRepo contractsRepo;
     @Autowired
@@ -116,14 +116,14 @@ public class ContractsServiceImpl  implements  ContractsService{
         contractsRepo.deleteById(id);
     }
     @Override
-    public List<ContractsSqlDao> searchContracts(String fdate, String ldate){
-        List<ContractsSqlDao> allContracts = contractsRepo.findAll();
+    public List<ContractsSqlDao> searchContracts(String fdate, String ldate, String name){
+        List<ContractsSqlDao> allContracts = contractsRepo.findByCompNameContainingIgnoreCaseOrderByCompName(name);
         Long one = Long.parseLong(fdate);
         Long two = Long.parseLong(ldate);
         Date fDate = new Date(one);
         Date lDate = new Date(two);
         System.out.println(fDate);
-        List<ContractsSqlDao> cont = allContracts.stream().filter(e->(( ((e.getDateLDate()).before(lDate))))).collect(Collectors.toList());
+        List<ContractsSqlDao> cont = allContracts.stream().filter(e->(( ((e.getDateLDate()).before(lDate))) )).collect(Collectors.toList());
         return cont;
     }
     @Override
@@ -142,26 +142,27 @@ public class ContractsServiceImpl  implements  ContractsService{
             }
             if (devices.getTempStr() != null) {
                 if (!devices.getTempStr().equals(contract.getTempStr())) {
-                    String[] array = devices.getTempStr().split(",");
-                    List<Integer> intsList = new ArrayList<Integer>(array.length);
-                    for (int i = 0; i < array.length; i++) {
-                        intsList.add(i, Integer.parseInt(array[i]));
+                    if (!devices.getTempStr().equals("")) {
+                        String[] array = devices.getTempStr().split(",");
+                        List<Integer> intsList = new ArrayList<Integer>(array.length);
+                        for (int i = 0; i < array.length; i++) {
+                            intsList.add(i, Integer.parseInt(array[i]));
+                        }
+                        Iterable<DevicesSqlDao> cont = devicesRepo.findAllById(intsList);
+                        List<DevicesSqlDao> target = new ArrayList<>();
+                        cont.forEach(target::add);
+                        for (DevicesSqlDao temp : target) {
+                            contract.setOneEquip(temp);
+                            temp.setOneContract(contract);
+                            temp.setNwStr();
+                            System.out.print(temp.getTempStr());
+                        }
+                        contract.setPrice();
+                        if (devices.getTempStr() != null) {
+                            contract.setTempStr(devices.getTempStr());
+                        }
+                        devicesRepo.saveAll(target);
                     }
-                    Iterable<DevicesSqlDao> cont = devicesRepo.findAllById(intsList);
-                    List<DevicesSqlDao> target = new ArrayList<>();
-                    cont.forEach(target::add);
-                    for (DevicesSqlDao temp : target) {
-                        contract.setOneEquip(temp);
-                        temp.setOneContract(contract);
-                        temp.setNwStr();
-                        System.out.print(temp.getTempStr());
-                    }
-                    contract.setPrice();
-                    if (devices.getTempStr() != null) {
-                        contract.setTempStr(devices.getTempStr());
-                    }
-                    devicesRepo.saveAll(target);
-
                 }
                 if (contract.getClient() != null) {
                     contract.getClient().setTotalSumm(nowprice + contract.getPrice());
@@ -187,20 +188,19 @@ public class ContractsServiceImpl  implements  ContractsService{
         return contractsList;
     }
     @Override
-    public void financePdf(){
+    public void financePdf(List list) {
         Document document = new Document();
-        try{
-            BaseFont bf=BaseFont.createFont(FONT, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-            Font font=new Font(bf,14,Font.NORMAL);
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("C:\\Users\\asus\\Desktop\\Отчеты\\lab7\\AddTableExample.pdf"));
+        try {
+            BaseFont bf = BaseFont.createFont(FONT, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            Font font = new Font(bf, 14, Font.NORMAL);
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("C:\\Users\\asus\\Desktop\\Отчеты\\lab7\\Finance.pdf"));
             document.open();
             PdfPTable table = new PdfPTable(7); // 7 columns.
             table.setWidthPercentage(100); //Width 100%
             table.setSpacingBefore(10f); //Space before table
             table.setSpacingAfter(10f); //Space after table
 
-            float[] columnWidths = {1f, 1f, 1f, 1f, 1f, 1f, 1f};
-            table.setWidths(columnWidths);
+            table.setWidths(new int[]{15,50,20,35,35,15,90});
             PdfPCell cell0 = new PdfPCell(new Paragraph("№"));
             PdfPCell cell1 = new PdfPCell(new Paragraph("Name"));
 
@@ -245,45 +245,141 @@ public class ContractsServiceImpl  implements  ContractsService{
             table.addCell(cell4);
             table.addCell(cell5);
             table.addCell(cell6);
-            List<ContractsSqlDao> dataset = contractsRepo.findAll();
+            Iterable<ContractsSqlDao> dataset1 = contractsRepo.findAllById(list);
+            List<ContractsSqlDao> dataset = new ArrayList<>();
+            dataset1.forEach(dataset::add);
+
             //Set Column widths
             int i = 1;
-            /*for (ContractsSqlDao record : dataset) {
+            for (ContractsSqlDao record : dataset) {
+                String nStr = "";
                 table.addCell(String.valueOf(i));
-                table.addCell(new Paragraph(record.getName(),font));
-                table.addCell(String.valueOf(record.getPrice()));
-                table.addCell(String.valueOf(record.getCountSale()));
-                table.addCell(String.valueOf(record.getTotalSumm()));
+                table.addCell(new Paragraph(record.getCompName(), font));
+                table.addCell(String.valueOf(record.getRelevance()));
+                table.addCell(String.valueOf(record.getFDate()));
+                table.addCell(String.valueOf(record.getLDate()));
+                table.addCell(String.valueOf(record.getId()));
+                for (DevicesSqlDao devic : record.getEquipments()) {
+                    nStr = nStr.concat("Наименование: ").concat(devic.getName()).concat("\n");
+                    nStr =  nStr.concat("Количество: ").concat(Integer.toString(devic.getCountSale())).concat("\n").concat("Цена: ");
+                    nStr = nStr.concat(Integer.toString(devic.getPrice()).concat("\n"));
+                    nStr =  nStr.concat("Сумма: ").concat(Integer.toString(devic.getTotalSumm())).concat("\n");
+                }
+                nStr =nStr.concat("Итог:").concat(Integer.toString(record.getPrice())).concat("\n");
+                table.addCell(new Paragraph(nStr, font));
                 i++;
-            }*/
+            }
             document.add(table);
 
             document.close();
             writer.close();
 
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
     @Override
-    public void getPDF(int value, String name)
+    public void getPDF(List list)
     {
+        Document document = new Document();
+        try {
+            BaseFont bf = BaseFont.createFont(FONT, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            Font font = new Font(bf, 14, Font.NORMAL);
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("C:\\Users\\asus\\Desktop\\Отчеты\\lab7\\AddTableContract.pdf"));
+            document.open();
+            PdfPTable table = new PdfPTable(7); // 7 columns.
+            table.setWidthPercentage(100); //Width 100%
+            table.setSpacingBefore(10f); //Space before table
+            table.setSpacingAfter(10f); //Space after table
 
+            table.setWidths(new int[]{15,50,20,35,35,15,90});
+            PdfPCell cell0 = new PdfPCell(new Paragraph("№"));
+            PdfPCell cell1 = new PdfPCell(new Paragraph("Name"));
+
+            cell0.setPaddingLeft(10);
+            cell0.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell0.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+            cell1.setPaddingLeft(10);
+            cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell1.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+            PdfPCell cell2 = new PdfPCell(new Paragraph("Relevance"));
+
+            cell2.setPaddingLeft(10);
+            cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell2.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+            PdfPCell cell3 = new PdfPCell(new Paragraph("fDate"));
+
+            cell3.setPaddingLeft(10);
+            cell3.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell3.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+            PdfPCell cell4 = new PdfPCell(new Paragraph("lDate"));
+            cell4.setPaddingLeft(10);
+            cell4.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell4.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+            PdfPCell cell5 = new PdfPCell(new Paragraph("id"));
+            cell5.setPaddingLeft(10);
+            cell5.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell5.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            PdfPCell cell6 = new PdfPCell(new Paragraph("Equipments"));
+            cell6.setPaddingLeft(10);
+            cell6.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell6.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+            table.addCell(cell0);
+            table.addCell(cell1);
+            table.addCell(cell2);
+            table.addCell(cell3);
+            table.addCell(cell4);
+            table.addCell(cell5);
+            table.addCell(cell6);
+            Iterable<ContractsSqlDao> dataset1 = contractsRepo.findAllById(list);
+            List<ContractsSqlDao> dataset = new ArrayList<>();
+            dataset1.forEach(dataset::add);
+
+            //Set Column widths
+            int i = 1;
+            for (ContractsSqlDao record : dataset) {
+                String nStr = "";
+                table.addCell(String.valueOf(i));
+                table.addCell(new Paragraph(record.getCompName(), font));
+                table.addCell(String.valueOf(record.getRelevance()));
+                table.addCell(String.valueOf(record.getFDate()));
+                table.addCell(String.valueOf(record.getLDate()));
+                table.addCell(String.valueOf(record.getId()));
+                for (DevicesSqlDao devic : record.getEquipments()) {
+                    nStr = nStr.concat("Наименование: ").concat(devic.getName()).concat("\n");
+                }
+                table.addCell(new Paragraph(nStr, font));
+                i++;
+            }
+            document.add(table);
+
+            document.close();
+            writer.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public List<ContractsSqlDao> getRelev(){
+    public List<ContractsSqlDao> getRelev(String name){
         List <ContractsSqlDao> relList, contractsList;
-        contractsList = contractsRepo.findAll();
-        relList = contractsList.stream().filter(element-> ((element.getRelevance() == true))).collect(Collectors.toList());
+        contractsList = contractsRepo.findByCompNameContainingIgnoreCaseOrderByCompName(name);
+        relList = contractsList.stream().filter(element-> ((element.getRelevance()))).collect(Collectors.toList());
         return relList;
     }
 
     @Override
-    public List<ContractsSqlDao> getNotRelev(){
+    public List<ContractsSqlDao> getNotRelev(String name){
         List <ContractsSqlDao> relList, contractsList;
-        contractsList = contractsRepo.findAll();
-        relList = contractsList.stream().filter(element-> ((element.getRelevance() == false))).collect(Collectors.toList());
+        contractsList = contractsRepo.findByCompNameContainingIgnoreCaseOrderByCompName(name);
+        relList = contractsList.stream().filter(element-> ((!element.getRelevance()))).collect(Collectors.toList());
         return relList;
     }
 

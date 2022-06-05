@@ -21,6 +21,7 @@
         $scope.contracts = [];
         $scope.search = "";
         $scope.Count = 0;
+        $scope.date = [];
         $scope.oldCntr = [];
         $scope.getDevice = function(){
             $http({
@@ -46,13 +47,21 @@
                 $scope.pdfState = 3;
             });
         }
+        $scope.getDate = function (){
+            let n = $scope.contracts.length;
+            for(let i = 0; i < n; i++){
+                $scope.date.push($scope.contracts[i].id);
+            }
+        }
+
         $scope.getPdf = function(){
+            $scope.getDate();
+            console.log($scope.date);
             $http({
-                url: '/equpments/topdf?value='+$scope.pdfState+'&name='+$scope.search,
+                url: '/finance/topdf/'+ $scope.date,
                 method: 'GET',
-            }).then(resp=>{
-                $scope.contracts = resp.data;
-            });
+            }).then(
+            );
         }
         $scope.getDevice();
         $scope.Relev = function(){
@@ -86,32 +95,8 @@
 <body ng-app="CREATE_DEVICE" ng-controller="CREATE_DEVICE_CTRL">
 <header class="sticky-top">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Navbar</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
-                <ul class="navbar-nav">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Function
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
-                            <li><button type="button" class="dropdown-item" ng-click="Relev()">Relevante</button></li>
-                            <li><button type="button" class="dropdown-item" ng-click="NotRelev()">Not relevante</button></li>
-                            <li><a href="#zat2" type="button" class="dropdown-item" ng-click="ContractsCount()" role="button">Countract</a></li>
-                            <li><a role="button" class="dropdown-item" href="#" onclick="document.getElementById('zat2').style.display = 'block'; return false;">Finance</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <span id = "nameList">Contracts</span>
-        <form class="d-flex" id="search">
-            <input ng-model="search" type="search" name = "q" placeholder = "Search query" class="form-control me-2" aria-label="readonly input example">
-            <button class="btn btn-primary me-4" type="submit" ng-click="searchDevice()"> Go! </button>
-        </form>
+        <a id="date" class="btn btn-outline-secondary text-white" role="button" href="#" onclick="document.getElementById('zat2').style.display = 'block'; return false;">Указать дату</a>
+        <span id = "nameList">Finance</span>
     </nav>
 </header>
 <main>
@@ -151,9 +136,11 @@
                     <td>{{contract.id}}</td>
                     <td>
                         <span  ng-repeat="old in contract.equipments">
-                            <p href="/equpments/view/{{old.id}}" >{{old.name}} x{{old.countSale}}</p>
-                            <p>Total price: {{old.price}}</p>
+                            <p >Наименование: {{old.name}}</p>
+                            <p>Количество: x{{old.countSale}}; Цена: {{old.price}}</p>
+                            <p>Суммарно: {{old.totalSumm}}</p>
                         </span>
+                        <p>Total price: {{contract.price}}</p>
                     </td>
                 </tr>
                 </tr>
@@ -171,7 +158,6 @@
                         </td>
                     </tr>
                 </table>
-                <p>Количество контрактов: {{Count}}</p>
                 <td class="mai">
                     <button class="btn btn-primary" type="button" onclick="document.getElementById('zat2').style.display = 'none'; return false;" ng-click="ContractsCount()">Показать контракты</button>
                 </td>

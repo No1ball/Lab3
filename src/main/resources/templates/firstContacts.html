@@ -22,6 +22,46 @@
         $scope.edcontcontact = 13;
         $scope.pdfState = 0;
         $scope.search = "";
+        $scope.allCl = [];
+
+        $scope.getDevice1 = function(){
+            $http({
+                url: '/client',
+                method: 'GET',
+            }).then(resp=>{
+                $scope.allCl = resp.data;
+                console.log(resp.data);
+            });
+        }
+        $scope.getDevice1();
+        $scope.checkId = function(id){
+            let n = $scope.allCl.length;
+            let fl = true;
+            for(let i = 0; i < n; i++){
+                let temp = $scope.allCl[i].contractId;
+                if(temp?.id!=null) {
+                    console.log(Number(id) === temp.id);
+                    if (temp?.id === Number(id)) {
+                        alert("Контракт с таким id существует!");
+                        fl = false;
+                        return false;
+                    }
+                }
+                let mOld = $scope.allCl[i].oldContracts;
+                let m = mOld.length;
+                for(let j= 0; j < m; j++){
+                    if(mOld[j]?.id!=null) {
+                        if (mOld[j].id === Number(id)) {
+                            alert("Контракт с таким id существует!");
+                            fl = false;
+                            return false;
+                        }
+                    }
+                }
+            }
+            return fl;
+        }
+
         $scope.getDevice = function(){
             $http({
                 url: '/company',
@@ -65,29 +105,30 @@
 
             });
         }
-        $scope.toClient = function (){
-            $http
-            ({
-                url:"/company/toClient/" + $scope.edcontid,
-                method:'PUT',
-                data:{
-                    id: $scope.edcontid,
-                    name: $scope.edcontname,
-                    contact: $scope.edcontcontact,
-                    totalSumm: $scope.client.totalSumm,
-                    contractId: null,
-                    num:$scope.client.contract,
-                    tempStr: null,
-                    oldContracts: null,
-                }
-            }).then(function (response) {
-                console.log(response.data);
-                $scope.getDevice();
-                $scope.client.totalSumm = null;
-                $scope.client.contract = null;
-            });
+        $scope.toClient = function () {
+            if ($scope.checkId($scope.client.contract)) {
+                $http
+                ({
+                    url: "/company/toClient/" + $scope.edcontid,
+                    method: 'PUT',
+                    data: {
+                        id: $scope.edcontid,
+                        name: $scope.edcontname,
+                        contact: $scope.edcontcontact,
+                        totalSumm: $scope.client.totalSumm,
+                        contractId: null,
+                        num: $scope.client.contract,
+                        tempStr: null,
+                        oldContracts: null,
+                    }
+                }).then(function (response) {
+                    console.log(response.data);
+                    $scope.getDevice();
+                    $scope.client.totalSumm = null;
+                    $scope.client.contract = null;
+                });
+            }
         }
-
         $scope.saveDevice = function(){
             if($scope.cont.name != null && $scope.cont.name !="") {
                 if($scope.cont.contact != null && $scope.cont.contact !="") {

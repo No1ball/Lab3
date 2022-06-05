@@ -37,8 +37,8 @@ public class clientsController {
         return "clients";
     }
     @GetMapping("/client/topSumm")
-    public ResponseEntity topClient(){
-        return ResponseEntity.ok(clientsService.topClient());
+    public ResponseEntity topClient(@RequestParam("name") String name){
+        return ResponseEntity.ok(clientsService.topClient(name));
     }
     @DeleteMapping("/client/del/{id}")
     public String deleteClient(@PathVariable("id") int id){

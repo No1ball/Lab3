@@ -67,8 +67,6 @@
         }
         $scope.topCount = function(){
             $http.get("/equpments/topCount?name="+$scope.search).then(resp=>{
-
-                console.log(resp.data);
                 if($scope.pdfState==3 || $scope.pdfState == 4 || $scope.pdfState == 5){
                     $scope.pdfState = 4;
                 }else{
@@ -78,10 +76,8 @@
                 $scope.devices = resp.data;
             });
         }
-
         $scope.topSumm = function (){
             $http.get("/equpments/topSumm?name="+$scope.search).then(resp=>{
-                console.log(resp.data);
                 if($scope.pdfState == 3 || $scope.pdfState == 5 || $scope.pdfState == 4){
                     $scope.pdfState = 5;
                 }else {
@@ -148,11 +144,7 @@
             if($scope.eddevice.contract ==null || $scope.eddevice.contract ==""){
                 $scope.eddevice.contract = null;
             }
-            /*if(isFinite(k1)==false) {
-                alert("price не может быть строкой");
-            }else if(isFinite(k2)==false){
-                alert("Count не может быть строкой");
-            }*/
+
             $http
             ({
                 url:"/equpments/ed/" + $scope.eddevid,

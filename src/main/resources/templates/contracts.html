@@ -116,7 +116,6 @@
                 url: '/equpments/topdf?value='+$scope.pdfState+'&name='+$scope.search,
                 method: 'GET',
             }).then(resp=>{
-                $scope.contracts = resp.data;
             });
         }
         $scope.getDevice();
@@ -129,13 +128,15 @@
             }
         }
         $scope.Relev = function(){
-            $http.get("/contracts/relev").then(resp=>{
+            $http.get("/contracts/relev?name="+$scope.search).then(resp=>{
                 $scope.contracts = resp.data;
+                $scope.pdfState = 1;
             });
         }
         $scope.NotRelev = function(){
-            $http.get("/contracts/notRelev").then(resp=>{
+            $http.get("/contracts/notRelev?name="+$scope.search).then(resp=>{
                 $scope.contracts = resp.data;
+                $scope.pdfState = 2;
             });
         }
         $scope.saveDevice = function(){
@@ -190,12 +191,14 @@
             console.log($scope.l);
             $http
             ({
-                url: "/contracts/searchContracts?name1=" + $scope.f + '&name2='+$scope.l,
+                url: "/contracts/searchContracts?name1=" + $scope.f + '&name2='+$scope.l+
+                    "&name="+$scope.search,
                 method: 'GET',
             }).then(resp=>{
                 $scope.contracts = resp.data;
                 console.log(resp.data);
                 $scope.Count = resp.data.length;
+                $scope.pdfState = 4;
             });
         }
         $scope.delNowCntr = function(qid){

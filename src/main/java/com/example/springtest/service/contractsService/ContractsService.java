@@ -8,18 +8,16 @@ import java.util.List;
 
 public interface ContractsService<T> {
 
-    void getPDF(int value, String name);
-
+    void getPDF(List<T> list);
     T searchCompName(String name);
-
     T addDevice(ContractsSqlDao devices);
-    void financePdf();
+    void financePdf(List<T> list);
     void delDev(int id);
     T noContractId(int idc, int idd);
     T putDec(int id, ContractsSqlDao devices);
     T viewId(int id);
     T getDevices();
-    T searchContracts(String fDate, String lDate);
-    List<ContractsSqlDao> getRelev();
-    List<ContractsSqlDao> getNotRelev();
+    T searchContracts(String fDate, String lDate,String name);
+    List<ContractsSqlDao> getRelev(String name);
+    List<ContractsSqlDao> getNotRelev(String name);
 }

@@ -8,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Controller
 public class contractsController {
@@ -24,9 +26,16 @@ public class contractsController {
     public ResponseEntity addContracts(@RequestBody ContractsSqlDao contracts){
         return ResponseEntity.ok(contractsService.addDevice(contracts));
     }
-    @GetMapping("/finance/topdf")
-    public void getPDF(){
-       contractsService.financePdf();
+    @GetMapping("/finance/topdf/{list}")
+    public String getPDF1(@PathVariable("list") String list){
+        System.out.println(list);
+        String[] array = list.split(",");
+        List<Integer> intsList = new ArrayList<Integer>(array.length);
+        for (int i = 0; i < array.length; i++) {
+            intsList.add(i, Integer.parseInt(array[i]));
+        }
+        contractsService.financePdf(intsList);
+        return "finance";
     }
     @GetMapping("/newcontracts")
     public ResponseEntity view(){
@@ -55,6 +64,17 @@ public class contractsController {
     public ResponseEntity search(@RequestParam("name") String name){
         return  ResponseEntity.ok(contractsService.searchCompName(name));
     }
+    @GetMapping("/contracts/topdf/{list}")
+    public String pdfCon(@PathVariable("list") String list){
+        System.out.println(list);
+        String[] array = list.split(",");
+        List<Integer> intsList = new ArrayList<Integer>(array.length);
+        for (int i = 0; i < array.length; i++) {
+            intsList.add(i, Integer.parseInt(array[i]));
+        }
+        contractsService.financePdf(intsList);
+        return "contracts";
+    }
     @GetMapping("/contracts/view/{id}")
     public String find(@PathVariable("id") int id){
         if(id == 0){
@@ -63,19 +83,19 @@ public class contractsController {
         return "contracts/{id}";}
     }
     @GetMapping("/contracts/searchContracts")
-    public ResponseEntity searchContracts(@RequestParam("name1") String fDate, @RequestParam("name2") String lDate){
-        return ResponseEntity.ok(contractsService.searchContracts(fDate, lDate));
+    public ResponseEntity searchContracts(@RequestParam("name1") String fDate, @RequestParam("name2") String lDate, @RequestParam("name") String name){
+        return ResponseEntity.ok(contractsService.searchContracts(fDate, lDate, name));
     }
     @GetMapping("/contracts/ht/{id}")
     public ResponseEntity findId(@PathVariable("id") int id){
         return ResponseEntity.ok(contractsService.viewId(id));
     }
     @GetMapping("/contracts/relev")
-    public ResponseEntity getRelev(){
-        return ResponseEntity.ok(contractsService.getRelev());
+    public ResponseEntity getRelev(@RequestParam("name") String name){
+        return ResponseEntity.ok(contractsService.getRelev(name));
     }
     @GetMapping("/contracts/notRelev")
-    public ResponseEntity getNotRelev(){
-        return ResponseEntity.ok(contractsService.getNotRelev());
+    public ResponseEntity getNotRelev(@RequestParam("name") String name){
+        return ResponseEntity.ok(contractsService.getNotRelev(name));
     }
 }

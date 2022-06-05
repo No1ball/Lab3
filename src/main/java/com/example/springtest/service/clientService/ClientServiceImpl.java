@@ -56,7 +56,7 @@ public class ClientServiceImpl implements ClientService{
         ContractsSqlDao contract;
         comp.setName(company.getName());
         comp.setContact(company.getContact());
-        if(company.getNum()!= 0){
+        if(company.getNum()!= 0 && comp.getContractId().getId() !=company.getNum()){
             if(comp.getNum() != 0){
                 contract = contractsRepo.findById(comp.getNum()).orElseThrow();
                 contract.setClient(null);
@@ -127,8 +127,8 @@ public class ClientServiceImpl implements ClientService{
     }
 
     @Override
-    public List<ClientsSqlDao> topClient(){
-        List<ClientsSqlDao> client = clientsRepo.findAll();
+    public List<ClientsSqlDao> topClient(String name){
+        List<ClientsSqlDao> client = clientsRepo.findByNameContainsIgnoreCaseOrderByName(name);
         List<ClientsSqlDao> listComp = client.stream().filter(element->(element.getTotalSumm()>=0)).collect(Collectors.toList());
         return listComp.stream().sorted(Comparator.comparingInt(ClientsSqlDao::getTotalSumm).reversed()).collect(Collectors.toList());
     }

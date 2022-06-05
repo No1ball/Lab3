@@ -76,13 +76,21 @@
       });
     }
 
-    $scope.getPdf = function(){
-      $http({
-        url: '/equpments/topdf?value='+$scope.pdfState+'&name='+$scope.search,
-        method: 'GET',
-      }).then(resp=>{
+    $scope.getDate = function (){
+      let n = $scope.contracts.length;
+      for(let i = 0; i < n; i++){
+        $scope.date.push($scope.contracts[i].id);
+      }
+    }
 
-      });
+    $scope.getPdf = function(){
+      $scope.getDate();
+      console.log($scope.date);
+      $http({
+        url: '/finance/topdf/'+ $scope.date,
+        method: 'GET',
+      }).then(
+      );
     }
 
     $scope.getDevice();
@@ -96,9 +104,8 @@
       }
     }
     $scope.topSumm = function (){
-      $http.get("/client/topSumm").then(resp=>{
+      $http.get("/client/topSumm?name="+$scope.search).then(resp=>{
         console.log(resp.data);
-        $scope.fcontacts = resp.data;
       });
     }
     $scope.editContra = function(edcontcontractId){
@@ -177,6 +184,7 @@
       $scope.oldCntr = devic.oldContracts;
     }
     $scope.edit = function(){
+      let fl = false;
       if($scope.edcont.name == "" || $scope.edcont.name == null){
         $scope.edcont.name = $scope.edcontname;
       }
@@ -185,9 +193,35 @@
       }
       if($scope.edcont.contract == 0 || $scope.edcont.contract==null){
         $scope.edcont.contract =  $scope.edcontcontractId;
+        fl = true;
       }
       console.log($scope.edcont.name, $scope.edcont.contact, $scope.edcont.contract);
-      if($scope.checkId($scope.edcont.contract)){
+      if(fl===false) {
+        if ($scope.checkId($scope.edcont.contract)) {
+          $http
+          ({
+            url: "/client/ed/" + $scope.edcontid,
+            method: 'PUT',
+            data: {
+              id: $scope.edcontid,
+              name: $scope.edcont.name,
+              contact: $scope.edcont.contact,
+              num: $scope.edcont.contract,
+              totalSumm: null,
+              contractId: null,
+              oldContracts: null,
+              tempStr: null,
+            }
+          }).then(function (response) {
+            console.log(response.data);
+            $scope.getDevice();
+            $scope.edcont.name = null;
+            $scope.edcont.contact = null;
+          });
+        }else{
+          alert("No-no-no!");
+        }
+      }else{
         $http
         ({
           url: "/client/ed/" + $scope.edcontid,
@@ -208,8 +242,6 @@
           $scope.edcont.name = null;
           $scope.edcont.contact = null;
         });
-      }else{
-        alert("No-no-no!");
       }
     }
   });
