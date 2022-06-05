@@ -24,6 +24,10 @@ public class contractsController {
     public ResponseEntity addContracts(@RequestBody ContractsSqlDao contracts){
         return ResponseEntity.ok(contractsService.addDevice(contracts));
     }
+    @GetMapping("/finance/topdf")
+    public void getPDF(){
+       contractsService.financePdf();
+    }
     @GetMapping("/newcontracts")
     public ResponseEntity view(){
         return ResponseEntity.ok(contractsService.getDevices());
@@ -42,6 +46,10 @@ public class contractsController {
         System.out.println(id);
         System.out.println(dd.getTempStr());
         return ResponseEntity.ok(contractsService.noContractId(id, Integer.parseInt(dd.getTempStr())));
+    }
+    @GetMapping("/finance")
+    public String finance(){
+        return "finance";
     }
     @GetMapping("/contracts1")
     public ResponseEntity search(@RequestParam("name") String name){

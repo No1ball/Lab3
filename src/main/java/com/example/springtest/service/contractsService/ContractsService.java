@@ -13,7 +13,7 @@ public interface ContractsService<T> {
     T searchCompName(String name);
 
     T addDevice(ContractsSqlDao devices);
-
+    void financePdf();
     void delDev(int id);
     T noContractId(int idc, int idd);
     T putDec(int id, ContractsSqlDao devices);

@@ -48,7 +48,6 @@
                 $scope.pdfState = 3;
             });
         }
-
         $scope.getPdf = function(){
             $http({
                 url: '/equpments/topdf?value='+$scope.pdfState+'&name='+$scope.search,
@@ -57,17 +56,15 @@
 
             });
         }
-
         $scope.getDevice();
-
         $scope.delete = function(devic){
-            $http.delete("/equpments/del/" + devic.id).then(devices=>{
-                let ix = $scope.devices.map(devic=>devic.id).indexOf(devic.id);
-                $scope.devices.splice(ix,1);
-
-            });
+            if(confirm('Вы точно хотите удалить девайс?')) {
+                $http.delete("/equpments/del/" + devic.id).then(devices => {
+                    let ix = $scope.devices.map(devic => devic.id).indexOf(devic.id);
+                    $scope.devices.splice(ix, 1);
+                });
+            }
         }
-
         $scope.topCount = function(){
             $http.get("/equpments/topCount?name="+$scope.search).then(resp=>{
 
@@ -178,23 +175,25 @@
             });
         }
         $scope.delNowCntr = function(qid){
-            $http
-            ({
-                url: "/equpments/edir/" + $scope.eddevid,
-                method: 'PUT',
-                data: {
-                    id: $scope.eddevid,
-                    name: null,
-                    price: qid,
-                    countSale: null,
-                    contract: null,
-                    tempStr: null,
-                }
-            }).then(function (response) {
-                console.log(response.data);
-                $scope.getDevice();
-                alert("Удаение произошло успешно! Закройте таблицу девайсов");
-            });
+            if(confirm('Вы точно хотите удалить контракт?')) {
+                $http
+                ({
+                    url: "/equpments/edir/" + $scope.eddevid,
+                    method: 'PUT',
+                    data: {
+                        id: $scope.eddevid,
+                        name: null,
+                        price: qid,
+                        countSale: null,
+                        contract: null,
+                        tempStr: null,
+                    }
+                }).then(function (response) {
+                    console.log(response.data);
+                    $scope.getDevice();
+                    alert("Удаение произошло успешно! Закройте таблицу девайсов");
+                });
+            }
         }
     });
 
@@ -258,6 +257,7 @@
                 <th>Price</th>
                 <th>CountSale</th>
                 <th>TotalSumm</th>
+                <th>ID</th>
                 <th>Contract</th>
                 <th>Buttons</th>
             </tr>
@@ -270,6 +270,7 @@
                 <td >{{devic.price}}</td>
                 <td >{{devic.countSale}}</td>
                 <td >{{devic.totalSumm}}</td>
+                <td>{{devic.id}}</td>
                 <td>
                     <span ng-repeat="old in devic.tempStr">
                         <a href="/contracts/view/{{old}}" >
@@ -301,8 +302,8 @@
                     <td class="mai">
                         <input class="form-control" ng-model="device.count" type="text" id = "deviceCount" placeholder = "Input Count Sale" >
                     </td>
-                    <td>
-                    </td>
+                    <td></td>
+                    <td></td>
                     <td class="mai">
                         <input ng-model="device.contract" class="form-control" type="text" name = "q" placeholder = "Input cntrct id" >
                     </td>

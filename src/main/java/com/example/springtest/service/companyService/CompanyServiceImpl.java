@@ -59,7 +59,11 @@ public class CompanyServiceImpl implements CompanyService{
             contractsRepo.save(contract);
         }
         clien.setContractId(contract);
-        clien.setTotalSumm(client.getTotalSumm());
+        if(clien.getContractId()==null){
+            clien.setTotalSumm(0);
+        }else{
+            clien.setTotalSumm(clien.getContractId().getPrice());
+        }
         clien.setNum(clien.getContractId().getId());
         List<ClientsSqlDao> clie = Arrays.asList(clien);
         return companyRepo.saveAll(clie);

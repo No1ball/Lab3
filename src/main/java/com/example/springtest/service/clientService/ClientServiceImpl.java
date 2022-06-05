@@ -104,12 +104,18 @@ public class ClientServiceImpl implements ClientService{
     public Iterable<ClientsSqlDao> addCompany(ClientsSqlDao company){
         ContractsSqlDao contract = new ContractsSqlDao();
         if(company.getNum() != 0){
-            contract.setId(company.getNum());
-            contract.setCompName(company.getName());
-            contract.setLDate(new Date());
-            contract.setFDate(new Date());
-            contract.setPrice();
-            contractsRepo.save(contract);
+            try{
+                contract = contractsRepo.findById(company.getNum()).orElseThrow();
+                contract.setClient(company);
+                contract.setCompName(company.getName());
+            }catch (Exception ex) {
+                contract.setId(company.getNum());
+                contract.setCompName(company.getName());
+                contract.setLDate(new Date());
+                contract.setFDate(new Date());
+                contract.setPrice();
+                contractsRepo.save(contract);
+            }
             company.setContractId(contract);
             contract.setClient(company);
             company.setTotalSumm(contract.getPrice());

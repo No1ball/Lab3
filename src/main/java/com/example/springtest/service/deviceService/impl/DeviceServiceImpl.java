@@ -35,7 +35,24 @@ public class DeviceServiceImpl implements DeviceService{
     @Override
     public Iterable<DevicesSqlDao> addDevice(DevicesSqlDao devices){
         devices.setTotalSumm();
+        if (devices.getTempStr()!=null) {
+            String[] array = devices.getTempStr().split(",");
+            List<Integer> intsList = new ArrayList<Integer>(array.length);
+            for (int i = 0; i < array.length; i++) {
+                intsList.add(i, Integer.parseInt(array[i]));
+            }
 
+            Iterable<ContractsSqlDao> cont = contractsRepo.findAllById(intsList);
+            List<ContractsSqlDao> target = new ArrayList<>();
+            cont.forEach(target::add);
+            devices.setContract(target);
+            devices.setNwStr();
+            for (int i = 0; i < target.size(); i++) {
+                ContractsSqlDao tem = target.get(i);
+                tem.setOneEquip(devices);
+                tem.setPrice();
+            }
+        }
         List<DevicesSqlDao>dev = Arrays.asList(devices);
         return devicesRepo.saveAll(dev);
     }
