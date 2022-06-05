@@ -29,7 +29,7 @@ public class ContractsServiceImpl  implements  ContractsService{
         return contractsRepo.findByCompNameContainingIgnoreCaseOrderByCompName(name);
     }
     @Override
-    public ContractsSqlDao addDevice(ContractsSqlDao devices){
+    public Iterable<ContractsSqlDao> addDevice(ContractsSqlDao devices){
         devices.setRelevance();
         if (devices.getTempStr()!=null) {
             String[] array = devices.getTempStr().split(",");
@@ -45,11 +45,12 @@ public class ContractsServiceImpl  implements  ContractsService{
             for (int i = 0; i < target.size(); i++) {
                 DevicesSqlDao tem = target.get(i);
                 tem.setOneContract(devices);
+                tem.setNwStr();
             }
             devices.setPrice();
-            List<ContractsSqlDao> dev = Arrays.asList(devices);
         }
-        return contractsRepo.save(devices);
+        List<ContractsSqlDao> dev = Arrays.asList(devices);
+        return contractsRepo.saveAll(dev);
     }
     @Override
     public ContractsSqlDao viewId(int id){
@@ -69,6 +70,7 @@ public class ContractsServiceImpl  implements  ContractsService{
                 for(int i = 0; i < dev.size(); i++){
                     DevicesSqlDao tem= dev.get(i);
                     tem.delOneCntr(contracts);
+                    tem.setNwStr();
                     contracts.setPrice();
                 }
                 contracts.setEquipments(null);
@@ -85,6 +87,7 @@ public class ContractsServiceImpl  implements  ContractsService{
                 for(int i = 0; i < dev.size(); i++){
                     DevicesSqlDao tem= dev.get(i);
                     tem.delOneCntr(contracts);
+                    tem.setNwStr();
                     contracts.setPrice();
                 }
                 contracts.setEquipments(null);
@@ -98,6 +101,7 @@ public class ContractsServiceImpl  implements  ContractsService{
                 for(int i = 0; i < dev.size(); i++){
                     DevicesSqlDao tem= dev.get(i);
                     tem.delOneCntr(contracts);
+                    tem.setNwStr();
                     contracts.setPrice();
                 }
                 contracts.setEquipments(null);
@@ -142,22 +146,16 @@ public class ContractsServiceImpl  implements  ContractsService{
                     cont.forEach(target::add);
                     for (DevicesSqlDao temp : target) {
                         contract.setOneEquip(temp);
+                        temp.setOneContract(contract);
+                        temp.setNwStr();
+                        System.out.print(temp.getTempStr());
                     }
                     contract.setPrice();
                     if (devices.getTempStr() != null) {
                         contract.setTempStr(devices.getTempStr());
                     }
                     devicesRepo.saveAll(target);
-                    for (DevicesSqlDao temp : target) {
-                        List<ContractsSqlDao> contr = temp.getContract();
-                        String newStr = "";
-                        for (ContractsSqlDao cntrc : contr) {
-                            newStr.concat(String.valueOf(cntrc.getId()));
-                            //newStr.concat(" ");
-                        }
-                        System.out.print(newStr);
-                        temp.setTempStr(newStr);
-                    }
+
                 }
                 if (contract.getClient() != null) {
                     contract.getClient().setTotalSumm(nowprice + contract.getPrice());
@@ -173,7 +171,7 @@ public class ContractsServiceImpl  implements  ContractsService{
         dev.delOneCntr(clie);
         clie.delOneEquip(dev);
         clie.setTempStr(clie.getEquipments().toString());
-        dev.setTempStr(dev.getContract().toString());
+        dev.setNwStr();
         devicesRepo.saveAll(Arrays.asList(dev));
         return contractsRepo.saveAll(Arrays.asList(clie));
     }

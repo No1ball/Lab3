@@ -28,6 +28,26 @@ public class ClientServiceImpl implements ClientService{
     }
     @Override
     public void delCompany(int id){
+        ClientsSqlDao client = clientsRepo.findById(id).orElseThrow();
+        ContractsSqlDao clientContr = client.getContractId();
+        if(clientContr != null) {
+            List<DevicesSqlDao> devises = clientContr.getEquipments();
+            for (DevicesSqlDao eqiup : devises) {
+                eqiup.delOneCntr(clientContr);
+                eqiup.setNwStr();
+            }
+            clientContr.setEquipments(null);
+        }
+        List<ContractsSqlDao> oldCntr = client.getOldContracts();
+        if(oldCntr!=null){
+            for (ContractsSqlDao iContr: oldCntr) {
+                for (DevicesSqlDao eqiup: iContr.getEquipments()) {
+                    eqiup.delOneCntr(iContr);
+                    eqiup.setNwStr();
+                }
+                iContr.setEquipments(null);
+            }
+        }
         clientsRepo.deleteById(id);
     }
     @Override

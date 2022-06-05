@@ -41,6 +41,7 @@ public class ContractsSqlDao {
     private ClientsSqlDao oldClient;
     private String tempStr;
 
+
     public boolean setTempStr(String newname){
         this.tempStr = newname;
         return true;

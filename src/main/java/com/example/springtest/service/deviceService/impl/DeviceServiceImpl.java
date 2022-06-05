@@ -35,21 +35,7 @@ public class DeviceServiceImpl implements DeviceService{
     @Override
     public Iterable<DevicesSqlDao> addDevice(DevicesSqlDao devices){
         devices.setTotalSumm();
-        String[] array = devices.getTempStr().split(",");
-        List <Integer> intsList = new ArrayList<Integer>(array.length);
-        for (int i = 0; i < array.length; i++){
-            intsList.add(i, Integer.parseInt(array[i]));
-        }
 
-        Iterable<ContractsSqlDao> cont = contractsRepo.findAllById(intsList);
-        List<ContractsSqlDao> target = new ArrayList<>();
-        cont.forEach(target::add);
-        devices.setContract(target);
-        for(int i = 0; i < target.size(); i++){
-            ContractsSqlDao tem= target.get(i);
-            tem.setOneEquip(devices);
-            tem.setPrice();
-        }
         List<DevicesSqlDao>dev = Arrays.asList(devices);
         return devicesRepo.saveAll(dev);
     }
@@ -59,6 +45,18 @@ public class DeviceServiceImpl implements DeviceService{
         List<ContractsSqlDao> contr = clie.getContract();
 
         return devicesRepo.saveAll(Arrays.asList(clie));
+    }
+    @Override
+    public Iterable<DevicesSqlDao> deleteOnlyCntrc(int idd, int idc){
+        DevicesSqlDao dev = devicesRepo.findById(idd).orElseThrow();
+        ContractsSqlDao clie = contractsRepo.findById(idc).orElseThrow();
+        clie.delOneEquip(dev);
+        dev.delOneCntr(clie);
+        clie.setTempStr(clie.getEquipments().toString());
+        dev.setNwStr();
+        contractsRepo.saveAll(Arrays.asList(clie));
+        return devicesRepo.saveAll(Arrays.asList(dev));
+
     }
     @Override
     public DevicesSqlDao viewId(int id){
@@ -87,13 +85,45 @@ public class DeviceServiceImpl implements DeviceService{
         devicesRepo.deleteById(id);
     }
     @Override
-    public DevicesSqlDao putDec(int id, DevicesSqlDao devices){
+    public Iterable<DevicesSqlDao> putDec(int id, DevicesSqlDao devices){
         DevicesSqlDao device = devicesRepo.findById(id).orElseThrow();
         device.setName(devices.getName());
         device.setPrice(devices.getPrice());
         device.setCountSale(devices.getCountSale());
         device.setTotalSumm();
-        return devicesRepo.save(device);
+        if(devices.getTempStr()!=null && !devices.getTempStr().equals(" ") && !devices.getTempStr().equals("")) {
+            String[] array = devices.getTempStr().split(",");
+            List<Integer> intsList = new ArrayList<Integer>(array.length);
+            for (int i = 0; i < array.length; i++) {
+                intsList.add(i, Integer.parseInt(array[i]));
+            }
+            Iterable<ContractsSqlDao> cont = contractsRepo.findAllById(intsList);
+            List<ContractsSqlDao> target = new ArrayList<>();
+            cont.forEach(target::add);
+            device.setContract(target);
+            device.setNwStr();
+            for (int i = 0; i < target.size(); i++) {
+                ContractsSqlDao tem = target.get(i);
+                int price = tem.getPrice();
+                tem.setOneEquip(device);
+                tem.setPrice();
+                if(tem.getClient()!=null) {
+                    ClientsSqlDao client = tem.getClient();
+                    client.setTotalSumm(client.getTotalSumm() - price + tem.getPrice());
+                }
+            }
+        }
+        if(device.getContract() !=null) {
+            for (ContractsSqlDao iCont : device.getContract()) {
+                int price = iCont.getPrice();
+                iCont.setPrice();
+                if (iCont.getClient() != null) {
+                    ClientsSqlDao client = iCont.getClient();
+                    client.setTotalSumm(client.getTotalSumm() - price + iCont.getPrice());
+                }
+            }
+        }
+        return devicesRepo.saveAll(Arrays.asList(device));
     }
     @Override
     public List<DevicesSqlDao> getDevices(){

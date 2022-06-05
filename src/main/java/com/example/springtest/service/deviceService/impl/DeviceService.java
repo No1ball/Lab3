@@ -14,7 +14,7 @@ public interface DeviceService<T> {
     T getDevices();
     T noContractId(int id);
     T viewId(int id);
-
+    T deleteOnlyCntrc(int idd, int idc);
     List<DevicesSqlDao> sortByPrice(String name);
     List<DevicesSqlDao> sortByCount(String name);
 }
