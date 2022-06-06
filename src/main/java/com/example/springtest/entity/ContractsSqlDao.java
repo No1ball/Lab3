@@ -41,6 +41,7 @@ public class ContractsSqlDao {
     private ClientsSqlDao oldClient;
     private String tempStr;
 
+
     public boolean setTempStr(String newname){
         this.tempStr = newname;
         return true;
@@ -58,6 +59,9 @@ public class ContractsSqlDao {
     public boolean setCompName(String new_CompName){ //prototype
         this.compName = new_CompName;
         return true;
+    }
+    public void setNewCompName(String new_CompName){
+        this.compName = new_CompName;
     }
     public boolean setId(int new_CompName){ //prototype
         this.id = new_CompName;

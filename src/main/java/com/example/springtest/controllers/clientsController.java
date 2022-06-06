@@ -37,8 +37,8 @@ public class clientsController {
         return "clients";
     }
     @GetMapping("/client/topSumm")
-    public ResponseEntity topClient(){
-        return ResponseEntity.ok(clientsService.topClient());
+    public ResponseEntity topClient(@RequestParam("name") String name){
+        return ResponseEntity.ok(clientsService.topClient(name));
     }
     @DeleteMapping("/client/del/{id}")
     public String deleteClient(@PathVariable("id") int id){
@@ -52,5 +52,16 @@ public class clientsController {
     @PutMapping("/client/ed/{id}")
     public ResponseEntity editClient(@PathVariable("id") int id, @RequestBody ClientsSqlDao client){
         return ResponseEntity.ok(clientsService.putCompany(id, client));
+    }
+    @GetMapping("/client/topdf/{list}")
+    public String pdfClient(@PathVariable("list") String list, @RequestParam("status") int status){
+        System.out.println(list);
+        String[] array = list.split(",");
+        List<Integer> intsList = new ArrayList<Integer>(array.length);
+        for (int i = 0; i < array.length; i++) {
+            intsList.add(i, Integer.parseInt(array[i]));
+        }
+        clientsService.toPdf(intsList, status);
+        return "clients";
     }
 }

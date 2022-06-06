@@ -11,5 +11,5 @@ public interface CompanyService<T> {
     T addCompany(ClientsSqlDao company);
     T toClient(int id, ClientsSqlDao client);
     T searchCompany(String name);
-    void toPdf(String name);
+    void toPdf(List<T> name);
 }

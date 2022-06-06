@@ -1,5 +1,7 @@
 package com.example.springtest.entity;
 
+import org.springframework.lang.NonNull;
+
 import javax.persistence.*;
 
 @MappedSuperclass
@@ -8,6 +10,7 @@ public abstract class CompanySqlDAO {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     protected int id;
+    @NonNull
     @Column(name = "name")
     protected String name;
     @Column(name = "contact")

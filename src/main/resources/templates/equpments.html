@@ -15,7 +15,6 @@
 
     var app = angular.module("CREATE_DEVICE",[]);
     app.controller("CREATE_DEVICE_CTRL", function($scope, $http){
-        console.log("check");
         $scope.devices = [];
         $scope.contracts = [];
         $scope.eddevid = 13;
@@ -24,6 +23,7 @@
         $scope.eddevcount = 13;
         $scope.pdfState = 0;
         $scope.search = "";
+        $scope.contrList = "";
         $scope.getDevice = function(){
             $http({
                 url: '/newequpments',
@@ -31,6 +31,7 @@
             }).then(resp=>{
                 $scope.devices = resp.data;
                 console.log(resp.data);
+                console.log(resp.data.equipments);
             });
         }
         $scope.searchDevice = function(){
@@ -47,7 +48,6 @@
                 $scope.pdfState = 3;
             });
         }
-
         $scope.getPdf = function(){
             $http({
                 url: '/equpments/topdf?value='+$scope.pdfState+'&name='+$scope.search,
@@ -56,21 +56,17 @@
 
             });
         }
-
         $scope.getDevice();
-
         $scope.delete = function(devic){
-            $http.delete("/equpments/del/" + devic.id).then(devices=>{
-                let ix = $scope.devices.map(devic=>devic.id).indexOf(devic.id);
-                $scope.devices.splice(ix,1);
-
-            });
+            if(confirm('Вы точно хотите удалить девайс?')) {
+                $http.delete("/equpments/del/" + devic.id).then(devices => {
+                    let ix = $scope.devices.map(devic => devic.id).indexOf(devic.id);
+                    $scope.devices.splice(ix, 1);
+                });
+            }
         }
-
         $scope.topCount = function(){
             $http.get("/equpments/topCount?name="+$scope.search).then(resp=>{
-
-                console.log(resp.data);
                 if($scope.pdfState==3 || $scope.pdfState == 4 || $scope.pdfState == 5){
                     $scope.pdfState = 4;
                 }else{
@@ -80,10 +76,8 @@
                 $scope.devices = resp.data;
             });
         }
-
         $scope.topSumm = function (){
             $http.get("/equpments/topSumm?name="+$scope.search).then(resp=>{
-                console.log(resp.data);
                 if($scope.pdfState == 3 || $scope.pdfState == 5 || $scope.pdfState == 4){
                     $scope.pdfState = 5;
                 }else {
@@ -107,7 +101,7 @@
                                 price: $scope.device.price,
                                 countSale: $scope.device.count,
                                 contract: null,
-                                tempStr: $scope.contracts,
+                                tempStr: $scope.device.contract,
                             }
                         }).then(function (response) {
                             console.log(response);
@@ -132,6 +126,8 @@
             $scope.eddevname = devic.name;
             $scope.eddevprice = devic.price;
             $scope.eddevcount = devic.countSale;
+            $scope.eddevstr = devic.tempStr;
+            $scope.contrList = devic.tempStr;
         }
         $scope.edit = function(){
             let k1 = $scope.eddevice.price;
@@ -139,17 +135,16 @@
             if($scope.eddevice.name == null || $scope.eddevice.name == ''){
                 $scope.eddevice.name = $scope.eddevname;
             }
-            if($scope.eddevice.price == null || $scope.eddevice.price == 0 || isFinite($scope.eddevice.price)==false){
+            if(($scope.eddevice.price == null || $scope.eddevice.price == 0) && isFinite($scope.eddevice.price)==false){
                 $scope.eddevice.price = $scope.eddevprice;
             }
-            if($scope.eddevice.count == null || isFinite($scope.eddevice.count)==false){
+            if($scope.eddevice.count == null && isFinite($scope.eddevice.count)==false){
                 $scope.eddevice.count = $scope.eddevcount;
             }
-            if(isFinite(k1)==false) {
-                alert("Count не может быть строкой");
-            }else if(isFinite(k2)==false){
-                alert("Count не может быть строкой");
+            if($scope.eddevice.contract ==null || $scope.eddevice.contract ==""){
+                $scope.eddevice.contract = null;
             }
+
             $http
             ({
                 url:"/equpments/ed/" + $scope.eddevid,
@@ -160,6 +155,7 @@
                     price: $scope.eddevice.price,
                     countSale: $scope.eddevice.count,
                     contract: null,
+                    tempStr: $scope.eddevice.contract,
                 }
             }).then(function (response) {
                 console.log(response.data);
@@ -167,7 +163,29 @@
                 $scope.eddevice.name = null;
                 $scope.eddevice.price = null;
                 $scope.eddevice.count = null;
+                $scope.eddevice.contract = null;
             });
+        }
+        $scope.delNowCntr = function(qid){
+            if(confirm('Вы точно хотите удалить контракт?')) {
+                $http
+                ({
+                    url: "/equpments/edir/" + $scope.eddevid,
+                    method: 'PUT',
+                    data: {
+                        id: $scope.eddevid,
+                        name: null,
+                        price: qid,
+                        countSale: null,
+                        contract: null,
+                        tempStr: null,
+                    }
+                }).then(function (response) {
+                    console.log(response.data);
+                    $scope.getDevice();
+                    alert("Удаение произошло успешно! Закройте таблицу девайсов");
+                });
+            }
         }
     });
 
@@ -231,6 +249,7 @@
                 <th>Price</th>
                 <th>CountSale</th>
                 <th>TotalSumm</th>
+                <th>ID</th>
                 <th>Contract</th>
                 <th>Buttons</th>
             </tr>
@@ -243,17 +262,20 @@
                 <td >{{devic.price}}</td>
                 <td >{{devic.countSale}}</td>
                 <td >{{devic.totalSumm}}</td>
+                <td>{{devic.id}}</td>
                 <td>
-                    <a href="/contracts/view/{{old}}" ng-repeat="old in devic.tempStr">
-                        {{old}}
-                    </a>
-
+                    <span ng-repeat="old in devic.tempStr">
+                        <a href="/contracts/view/{{old}}" >
+                            {{old}}
+                        </a>
+                    </span>
                 </td>
                 <td>
                     <div class="d-grid gap-2">
                     <button class="btn btn-outline-primary btn-sm" ng-click="delete(devic)" type="button">
                         Удалить
                     </button>
+                        <a class="btn btn-outline-primary btn-sm" href="#zat1" role="button" ng-click="s(devic)">Контракты</a>
                         <a class="btn btn-outline-primary btn-sm" href="#zat" role="button" ng-click="s(devic)">Редактировать</a>
                     </div>
                 </td>
@@ -272,8 +294,8 @@
                     <td class="mai">
                         <input class="form-control" ng-model="device.count" type="text" id = "deviceCount" placeholder = "Input Count Sale" >
                     </td>
-                    <td>
-                    </td>
+                    <td></td>
+                    <td></td>
                     <td class="mai">
                         <input ng-model="device.contract" class="form-control" type="text" name = "q" placeholder = "Input cntrct id" >
                     </td>
@@ -286,7 +308,32 @@
 
         </table>
             </div>
+        <div id="zat1">
+            <div id="form1">
 
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <td>№</td>
+                        <td>ContractId</td>
+                        <td>FFDS</td>
+                    </tr>
+                    </thead>
+                    <tr ng-repeat="old in contrList track by $index">
+                        <td>{{$index+1}}</td>
+                        <td>
+                            {{old}}
+                        </td>
+                        <td>
+                            <form>
+                                <button class="btn btn-primary" type="button" ng-click="delNowCntr(old)">Удалить из списка</button>
+                            </form>
+                        </td>
+                    </tr>
+                </table>
+                <a href="#"><button type="button" class="btn btn-primary" aria-label="Close">Закрыть</button></a>
+            </div>
+        </div>
         <div id="zat">
         <div id="form">
 
@@ -309,7 +356,7 @@
                         <input class="form-control" ng-model="eddevice.count" type="text" id = "eddeviceCount" placeholder = "Search Count Sale" >
                     </td>
                     <td>
-                        <input class="form-control" type="text" name = "q" placeholder = "Search query" >
+                        <input class="form-control" ng-model="eddevice.contract" type="text" name = "q" placeholder = "Search query" >
                     </td>
 
                 </form>

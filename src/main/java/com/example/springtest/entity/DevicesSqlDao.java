@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,10 +22,25 @@ public class DevicesSqlDao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "iddevice")
     private int id;
-    @ManyToMany(mappedBy = "equipments")
+    @ManyToMany(mappedBy = "equipments", cascade = {CascadeType.REFRESH, CascadeType.REMOVE,CascadeType.DETACH})
     @JsonBackReference(value="test")
     private List<ContractsSqlDao> contract;
     private String tempStr;
+    public void setNwStr(){
+        List<ContractsSqlDao> clList = this.contract;
+        String nwStr = " ";
+        List<Integer> intS = new ArrayList<>();
+        for (ContractsSqlDao clien:clList) {
+            intS.add(clien.getId());
+        }
+        for (Integer inT:intS) {
+            nwStr = nwStr.concat(String.valueOf(inT));
+        }
+        this.tempStr = nwStr;
+    }
+    public List<ContractsSqlDao> getContract(){
+        return this.contract;
+    }
     public boolean setOneContract(ContractsSqlDao one){
         this.contract.add(one);
         return true;
@@ -63,10 +79,6 @@ public class DevicesSqlDao {
     public boolean setTotalSumm(){ //prototype
         this.totalSumm = this.getPrice()*this.getCountSale();
         return true;
-    }
-
-    public List<ContractsSqlDao> getContract(){
-        return this.contract;
     }
 
     public String getName(){

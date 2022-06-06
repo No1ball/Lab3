@@ -1,5 +1,6 @@
 package com.example.springtest.controllers;
 
+import com.example.springtest.entity.ContractsSqlDao;
 import com.example.springtest.entity.DevicesSqlDao;
 import com.example.springtest.service.deviceService.impl.DeviceServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,11 @@ public class deviceController {
     public String showEquipments() {
         deviceService.getDevices();
         return "equpments";
+    }
+    @PutMapping("/equpments/edir/{id}")
+    public ResponseEntity deliteOnlyCntrc(@PathVariable("id") int id, @RequestBody DevicesSqlDao dd){
+        System.out.println(dd.getPrice());
+        return ResponseEntity.ok(deviceService.deleteOnlyCntrc(id, dd.getPrice()));
     }
     @GetMapping("/equpments/view/{id}")
     public String findq(@PathVariable("id") int id){
