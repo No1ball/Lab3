@@ -5,6 +5,14 @@ import com.example.springtest.entity.ContractsSqlDao;
 import com.example.springtest.entity.DevicesSqlDao;
 import com.example.springtest.repos.ClientsRepo;
 import com.example.springtest.repos.ContractsRepo;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +28,7 @@ public class ClientServiceImpl implements ClientService{
     private ClientsRepo clientsRepo;
     @Autowired
     private ContractsRepo contractsRepo;
+    public static final String FONT = "./src/main/resources/arialmt.ttf";
     @Override
     public List<ClientsSqlDao> getCompany(){
         List<ClientsSqlDao> fullList = clientsRepo.findAll();
@@ -138,7 +147,87 @@ public class ClientServiceImpl implements ClientService{
         return client.stream().filter(element->(element.getTotalSumm()>=0)).collect(Collectors.toList());
     }
     @Override
-    public void toPdf(String name){
+    public void toPdf(List list, int status){
+        Document document = new Document();
+        try {
+            BaseFont bf = BaseFont.createFont(FONT, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            Font font = new Font(bf, 14, Font.NORMAL);
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("C:\\Users\\asus\\Desktop\\Отчеты\\lab7\\AddTableClients.pdf"));
+            document.open();
+            PdfPTable table = new PdfPTable(6); // 6 columns.
+            table.setWidthPercentage(100); //Width 100%
+            table.setSpacingBefore(10f); //Space before table
+            table.setSpacingAfter(10f); //Space after table
 
+            table.setWidths(new int[]{15,50,20,35,35,90});
+            PdfPCell cell0 = new PdfPCell(new Paragraph("№"));
+            PdfPCell cell1 = new PdfPCell(new Paragraph("Name"));
+
+            cell0.setPaddingLeft(10);
+            cell0.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell0.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+            cell1.setPaddingLeft(10);
+            cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell1.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+            PdfPCell cell2 = new PdfPCell(new Paragraph("Contact"));
+
+            cell2.setPaddingLeft(10);
+            cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell2.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+            PdfPCell cell3 = new PdfPCell(new Paragraph("ContractID"));
+
+            cell3.setPaddingLeft(10);
+            cell3.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell3.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+            PdfPCell cell4 = new PdfPCell(new Paragraph("OldCntrctID"));
+            cell4.setPaddingLeft(10);
+            cell4.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell4.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+            PdfPCell cell5 = new PdfPCell(new Paragraph("Total Summ"));
+            cell5.setPaddingLeft(10);
+            cell5.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell5.setVerticalAlignment(Element.ALIGN_MIDDLE);
+
+
+            table.addCell(cell0);
+            table.addCell(cell1);
+            table.addCell(cell2);
+            table.addCell(cell3);
+            table.addCell(cell4);
+            table.addCell(cell5);
+            Iterable<ClientsSqlDao> dataset1 = clientsRepo.findAllById(list);
+            List<ClientsSqlDao> dataset = new ArrayList<>();
+            dataset1.forEach(dataset::add);
+            if(status == 1){
+                dataset = dataset.stream().sorted(Comparator.comparingInt(ClientsSqlDao::getTotalSumm).reversed()).collect(Collectors.toList());
+            }
+            //Set Column widths
+            int i = 1;
+            for (ClientsSqlDao record : dataset) {
+                String nStr = "";
+                table.addCell(String.valueOf(i));
+                table.addCell(new Paragraph(record.getName(), font));
+                table.addCell(new Paragraph(record.getContact(), font));
+                table.addCell(String.valueOf(record.getContractId().getId()));
+                for (ContractsSqlDao devic : record.getOldContracts()) {
+                    nStr = nStr.concat("Id : ").concat(String.valueOf(devic.getId())).concat("\n");
+                }
+                table.addCell(new Paragraph(nStr, font));
+                table.addCell(String.valueOf(record.getTotalSumm()));
+                i++;
+            }
+            document.add(table);
+
+            document.close();
+            writer.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

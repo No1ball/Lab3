@@ -23,7 +23,7 @@
         $scope.pdfState = 0;
         $scope.search = "";
         $scope.allCl = [];
-
+        $scope.date = [];
         $scope.getDevice1 = function(){
             $http({
                 url: '/client',
@@ -86,13 +86,20 @@
             });
         }
 
+        $scope.getDate = function (){
+            let n = $scope.fcontacts.length;
+            for(let i = 0; i < n; i++){
+                $scope.date.push($scope.fcontacts[i].id);
+            }
+        }
         $scope.getPdf = function(){
+            $scope.getDate();
+            console.log($scope.date);
             $http({
-                url: '/equpments/topdf?value='+$scope.pdfState+'&name='+$scope.search,
+                url: '/company/topdf/'+ $scope.date,
                 method: 'GET',
-            }).then(resp=>{
-
-            });
+            }).then(
+            );
         }
 
         $scope.getDevice();

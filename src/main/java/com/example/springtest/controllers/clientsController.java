@@ -53,4 +53,15 @@ public class clientsController {
     public ResponseEntity editClient(@PathVariable("id") int id, @RequestBody ClientsSqlDao client){
         return ResponseEntity.ok(clientsService.putCompany(id, client));
     }
+    @GetMapping("/client/topdf/{list}")
+    public String pdfClient(@PathVariable("list") String list, @RequestParam("status") int status){
+        System.out.println(list);
+        String[] array = list.split(",");
+        List<Integer> intsList = new ArrayList<Integer>(array.length);
+        for (int i = 0; i < array.length; i++) {
+            intsList.add(i, Integer.parseInt(array[i]));
+        }
+        clientsService.toPdf(intsList, status);
+        return "clients";
+    }
 }

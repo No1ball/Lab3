@@ -71,6 +71,10 @@ public class DeviceServiceImpl implements DeviceService{
         dev.delOneCntr(clie);
         clie.setTempStr(clie.getEquipments().toString());
         dev.setNwStr();
+        clie.setPrice();
+        if(clie.getClient()!= null) {
+            clie.getClient().setTotalSumm(clie.getPrice());
+        }
         contractsRepo.saveAll(Arrays.asList(clie));
         return devicesRepo.saveAll(Arrays.asList(dev));
 
@@ -136,7 +140,7 @@ public class DeviceServiceImpl implements DeviceService{
                 iCont.setPrice();
                 if (iCont.getClient() != null) {
                     ClientsSqlDao client = iCont.getClient();
-                    client.setTotalSumm(client.getTotalSumm() - price + iCont.getPrice());
+                    client.setTotalSumm(iCont.getPrice());
                 }
             }
         }

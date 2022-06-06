@@ -9,6 +9,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
 public class companyController {
 
@@ -37,6 +40,17 @@ public class companyController {
     @DeleteMapping("/company/del/{id}")
     public String delCompany(@PathVariable("id") int id){
         companyService.delCompany(id);
+        return "firstContacts";
+    }
+    @GetMapping("/company/topdf/{list}")
+    public String pdf(@PathVariable("list") String list){
+        System.out.println(list);
+        String[] array = list.split(",");
+        List<Integer> intsList = new ArrayList<Integer>(array.length);
+        for (int i = 0; i < array.length; i++) {
+            intsList.add(i, Integer.parseInt(array[i]));
+        }
+        companyService.toPdf(intsList);
         return "firstContacts";
     }
     @PutMapping("/company/toClient/{id}")

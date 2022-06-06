@@ -179,6 +179,10 @@ public class ContractsServiceImpl implements ContractsService{
         clie.delOneEquip(dev);
         clie.setTempStr(clie.getEquipments().toString());
         dev.setNwStr();
+        clie.setPrice();
+        if(clie.getClient() != null) {
+            clie.getClient().setTotalSumm(clie.getPrice());
+        }
         devicesRepo.saveAll(Arrays.asList(dev));
         return contractsRepo.saveAll(Arrays.asList(clie));
     }

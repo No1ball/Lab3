@@ -15,5 +15,5 @@ public interface ClientService<T> {
     T noContractId(int id);
     T topClient(String name);
     T searchCompany(String name);
-    void toPdf(String name);
+    void toPdf(List<T> list, int status);
 }
